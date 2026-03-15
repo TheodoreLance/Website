@@ -24,9 +24,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           lfs: true
-          sparse-checkout: false
-      - name: Force LFS Pull
-        run: git lfs pull
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact
