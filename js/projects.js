@@ -4,7 +4,7 @@ window.portfolioData = {
             "id": "digitalMedia",
             "title": "SOAP! Periodica",
             "description": "A collection of digital media projects, including branding, motion graphics, and creative campaigns.",
-            "redirectUrl": "https://example.com"
+            "redirectUrl": "https://soapmag.art"
         },
         {
             "id": "archive",
