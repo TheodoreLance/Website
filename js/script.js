@@ -99,20 +99,18 @@ window.addEventListener('load', () => {
     const navBar = document.querySelector('nav');
     navBar.innerHTML = ""; // Clear existing hardcoded links
 
-    // 1. Always add Home
-    let homeEl = document.createElement('div');
-    homeEl.className = "nav-item";
-    homeEl.innerHTML = "HOME";
-    homeEl.onclick = () => navigate('home');
-    navBar.appendChild(homeEl);
-
-    // 2. Add dynamic categories
     if (window.portfolioData && window.portfolioData.categories) {
         window.portfolioData.categories.forEach(cat => {
             let el = document.createElement('div');
             el.className = "nav-item";
-            el.innerHTML = cat.title.toUpperCase();
-            el.onclick = () => navigate(cat.id);
+            el.innerHTML = cat.title;
+            el.onclick = () => {
+                if (cat.redirectUrl) {
+                    window.open(cat.redirectUrl, '_blank');
+                } else {
+                    navigate(cat.id);
+                }
+            };
             navBar.appendChild(el);
         });
     }
