@@ -27,7 +27,15 @@ window.portfolioData = {
         }
     ],
     "projects": {
-        "digitalMedia": [],
+        "digitalMedia": [
+            {
+                "title": "SOAP",
+                "description": "SOAP",
+                "media": [
+                    "https://github.com/kiltura/kiltura"
+                ]
+            }
+        ],
         "archive": [],
         "MUSIC_VIDEO": [
             {
