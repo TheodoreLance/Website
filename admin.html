@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>KILTURA // ADMIN_PANEL</title>
+    <style>
+        body { background: #050505; color: #00DBFF; font-family: 'Courier New', monospace; padding: 20px; }
+        .panel { border: 2px solid #FF007A; padding: 20px; max-width: 600px; margin: auto; background: #111; }
+        input, select, textarea { width: 100%; margin-bottom: 10px; background: #000; color: #fff; border: 1px solid #00DBFF; padding: 8px; font-family: inherit; box-sizing: border-box; }
+        button { background: #FF007A; color: #000; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px;}
+        button:hover { background: #00DBFF; color: #000;}
+        #status { margin-top: 15px; color: #0f0; }
+        
+        .tab-buttons { display: flex; gap: 10px; margin-bottom: 20px;}
+        .tab-btn { flex: 1; background: #333; color: #aaa; margin: 0; }
+        .tab-btn.active { background: #FF007A; color: #000; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        #app-wrapper { display: none; }
+        .back-link { display: block; margin-bottom: 20px; color: #fff; text-decoration: none; font-size: 12px; }
+        .back-link:hover { color: #FF007A; }
+    </style>
+</head>
+<body>
+    <div class="panel">
+        <a href="index.html" class="back-link">&lt; RETURN_TO_SYSTEM</a>
+        <h2>PORTFOLIO_DATA // ADMIN_MODULE</h2>
+        
+        <div id="init-step">
+            <p>1. Authorize Local Directory Access</p>
+            <button id="btn-auth">SELECT "public" FOLDER</button>
+            <p style="font-size: 10px; color: #666; margin-top:10px;">To securely upload and edit files locally in your browser, you must select the 'public' folder of this website project. Chrome/Edge will ask for permission to view and edit files.</p>
+        </div>
+
+        <div id="app-wrapper">
+            <div class="tab-buttons">
+                <button class="tab-btn active" id="tab-btn-project">Upload Project</button>
+                <button class="tab-btn" id="tab-btn-category">Create Category</button>
+            </div>
+
+            <!-- UPLOAD PROJECT TAB -->
+            <div id="tab-project" class="tab-content active">
+                <p>Upload a New Project (Supports Multiple Photos/Videos)</p>
+                <label>Target Category:</label>
+                <select id="proj-category"></select>
+
+                <label>Title:</label>
+                <input type="text" id="proj-title" placeholder="ENTER_TITLE">
+
+                <label>Description:</label>
+                <textarea id="proj-desc" rows="3" placeholder="ENTER_DESCRIPTION"></textarea>
+
+                <label>Media Files (Select multiple JPG, PNG, MP4, GIF):</label>
+                <input type="file" id="proj-media" accept="image/*,video/mp4,video/webm" multiple>
+
+                <label>YouTube Link(s) (Optional, comma-separated):</label>
+                <input type="text" id="proj-yt" placeholder="https://www.youtube.com/watch?v=..., https://youtu.be/...">
+
+                <button id="btn-save-project">EXECUTE_UPLOAD</button>
+            </div>
+
+            <!-- CREATE CATEGORY TAB -->
+            <div id="tab-category" class="tab-content">
+                <p>Create a New Navigation Page / Category</p>
+                <label>Category ID (No spaces, e.g., '3dArt'):</label>
+                <input type="text" id="cat-id" placeholder="ENTER_ID">
+
+                <label>Frontend Title (e.g., '3D_Graphics'):</label>
+                <input type="text" id="cat-title" placeholder="ENTER_TITLE">
+
+                <label>Page Description:</label>
+                <textarea id="cat-desc" rows="3" placeholder="ENTER_DESCRIPTION"></textarea>
+
+                <button id="btn-save-category">CREATE_CATEGORY</button>
+            </div>
+
+            <div id="status"></div>
+            
+            <hr style="border:1px solid #333; margin: 30px 0;">
+            <p style="font-size: 10px; color: #666;">NOTE: Successfully updated data is instantly written to your local hard drive and into projects.js. You can safely preview changes on index.html.</p>
+        </div>
+    </div>
+
+    <script>
+        let dirHandle;
+        let pData = null;
+
+        // Tabs Logic
+        document.getElementById('tab-btn-project').onclick = () => switchTab('project');
+        document.getElementById('tab-btn-category').onclick = () => switchTab('category');
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById('tab-btn-' + tabName).classList.add('active');
+            document.getElementById('tab-' + tabName).classList.add('active');
+            document.getElementById('status').innerText = "";
+        }
+
+        // Authorization Logic
+        document.getElementById('btn-auth').addEventListener('click', async () => {
+            try {
+                // Prompt user to select directory
+                dirHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
+                
+                // Check if we actually got readwrite access
+                const permission = await dirHandle.requestPermission({ mode: 'readwrite' });
+                if (permission !== 'granted') {
+                    alert("Write permission is required to save new projects!");
+                    return;
+                }
+
+                // Verify they selected the right folder by checking if js/projects.js exists
+                let fileHandle;
+                try {
+                    const jsDir = await dirHandle.getDirectoryHandle('js');
+                    fileHandle = await jsDir.getFileHandle('projects.js');
+                } catch (err) {
+                    alert("ERROR: js/projects.js not found. Please make sure you selected the exact 'public' folder! (" + err.message + ")");
+                    return;
+                }
+
+                // Load existing data
+                const file = await fileHandle.getFile();
+                const contents = await file.text();
+                
+                let jsonStr = contents.replace('window.portfolioData = ', '').trim();
+                if (jsonStr.endsWith(';')) jsonStr = jsonStr.slice(0, -1);
+                
+                pData = JSON.parse(jsonStr);
+
+                // Populate Dropdown
+                updateCategoryDropdown();
+
+                document.getElementById('init-step').style.display = 'none';
+                document.getElementById('app-wrapper').style.display = 'block';
+                document.getElementById('status').innerText = 'SYSTEM_READY';
+            } catch (e) {
+                console.error("Authorization Error:", e);
+                alert("Authorization Failed or Cancelled. Reason: " + e.message);
+            }
+        });
+
+        function updateCategoryDropdown() {
+            const select = document.getElementById('proj-category');
+            select.innerHTML = "";
+            if (pData.categories && pData.categories.length > 0) {
+                pData.categories.forEach(cat => {
+                    let opt = document.createElement('option');
+                    opt.value = cat.id;
+                    opt.innerHTML = cat.title;
+                    select.appendChild(opt);
+                });
+            }
+        }
+
+        function sanitizeFolderName(name) {
+            return name.toLowerCase()
+                .trim()
+                .replace(/[^a-z0-9_-]/g, '_')   // Replace non-alphanumeric with underscores
+                .replace(/_{2,}/g, '_')          // Collapse multiple underscores
+                .replace(/^_|_$/g, '');           // Trim leading/trailing underscores
+        }
+
+        async function writeDataToDisk() {
+            const jsDir = await dirHandle.getDirectoryHandle('js');
+            const jsHandle = await jsDir.getFileHandle('projects.js');
+            const writableJs = await jsHandle.createWritable();
+            await writableJs.write('window.portfolioData = ' + JSON.stringify(pData, null, 4) + ';');
+            await writableJs.close();
+        }
+
+        // Save Category
+        document.getElementById('btn-save-category').addEventListener('click', async () => {
+            if (!dirHandle || !pData) return;
+            const status = document.getElementById('status');
+            
+            try {
+                const id = document.getElementById('cat-id').value.trim();
+                const title = document.getElementById('cat-title').value.trim();
+                const desc = document.getElementById('cat-desc').value.trim();
+
+                if (!id || !title) throw new Error("ID and Title are strictly required!");
+                if (id.includes(" ")) throw new Error("ID cannot contain spaces!");
+
+                if (!pData.categories) pData.categories = [];
+                if (!pData.projects) pData.projects = {};
+
+                // Check if exists
+                if (pData.categories.find(c => c.id === id)) {
+                    throw new Error("Category ID already exists!");
+                }
+
+                status.innerText = "PROCESSING_CATEGORY...";
+
+                pData.categories.push({ id, title, description: desc });
+                pData.projects[id] = [];
+
+                await writeDataToDisk();
+                updateCategoryDropdown();
+
+                status.innerText = "CATEGORY_CREATED_SUCCESSFULLY.";
+                
+                document.getElementById('cat-id').value = "";
+                document.getElementById('cat-title').value = "";
+                document.getElementById('cat-desc').value = "";
+            } catch (e) {
+                console.error(e);
+                status.innerText = "ERROR: " + e.message;
+            }
+        });
+
+        // Save Project
+        document.getElementById('btn-save-project').addEventListener('click', async () => {
+            if (!dirHandle || !pData) return;
+            const status = document.getElementById('status');
+            
+            try {
+                const category = document.getElementById('proj-category').value;
+                const title = document.getElementById('proj-title').value.trim();
+                const desc = document.getElementById('proj-desc').value.trim();
+                const fileInput = document.getElementById('proj-media');
+                const ytInput = document.getElementById('proj-yt').value.trim();
+
+                if (!title) throw new Error("TITLE_REQUIRED");
+                if (!category) throw new Error("CATEGORY_NOT_SELECTED");
+                
+                // Allow either files OR youtube links
+                if (fileInput.files.length === 0 && !ytInput) throw new Error("NO_MEDIA_SELECTED");
+
+                status.innerText = "INIT_STORAGE_SEQUENCE...";
+
+                let mediaPaths = [];
+
+                // 1. Process YouTube Links first (if any)
+                if (ytInput) {
+                    const links = ytInput.split(',').map(l => l.trim()).filter(l => l !== "");
+                    mediaPaths = [...links];
+                }
+
+                // 2. Process Files (if any)
+                if (fileInput.files.length > 0) {
+                    const assetsFolder = await dirHandle.getDirectoryHandle('assets', { create: true });
+                    const imgFolder = await assetsFolder.getDirectoryHandle('img', { create: true });
+                    const folderName = sanitizeFolderName(title);
+                    if (!folderName) throw new Error("INVALID_TITLE_FOR_FOLDER");
+                    
+                    const projectFolder = await imgFolder.getDirectoryHandle(folderName, { create: true });
+                    
+                    for (let i = 0; i < fileInput.files.length; i++) {
+                        const file = fileInput.files[i];
+                        status.innerText = `UPLOADING: ${file.name} (${i+1}/${fileInput.files.length})`;
+                        
+                        const newFileHandle = await projectFolder.getFileHandle(file.name, { create: true });
+                        const writableFile = await newFileHandle.createWritable();
+                        await writableFile.write(file);
+                        await writableFile.close();
+                        
+                        mediaPaths.push(`assets/img/${folderName}/${file.name}`);
+                    }
+                }
+
+                // 3. Update memory data structure
+                if (!pData.projects) pData.projects = {};
+                if (!pData.projects[category]) pData.projects[category] = [];
+
+                pData.projects[category].unshift({
+                    title: title,
+                    description: desc,
+                    media: mediaPaths
+                });
+
+                // 4. Finalize and write to projects.js
+                status.innerText = "WRITING_TO_DATABASE...";
+                await writeDataToDisk();
+
+                status.innerText = "SYSTEM_SYNC_COMPLETE. PROJECT_ONLINE.";
+                
+                // Clear form
+                document.getElementById('proj-title').value = "";
+                document.getElementById('proj-desc').value = "";
+                document.getElementById('proj-yt').value = "";
+                fileInput.value = "";
+                
+            } catch (e) {
+                console.error("Save Project Error:", e);
+                status.innerText = "CRITICAL_ERROR: " + e.message;
+            }
+        });
+    </script>
+</body>
+</html>
