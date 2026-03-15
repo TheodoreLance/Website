@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KILTURA // CDT.REV.04</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.9.6/lottie.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/quick-loader.css">
+    <script src="js/typewriter.js"></script>
+</head>
+
+<body>
+
+    <div id="lottie-loader" class="loader-overlay">
+        <div id="lottie-loader-bg" class="lottie-bg-dup"></div>
+        <div id="lottie-foreground" class="lottie-fg-dup"></div>
+        <div id="lottie-container"></div>
+        <div id="loader-title"
+            style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 240px; font-family: Arial, Helvetica, sans-serif; font-weight: 900; color: white; z-index: 10; pointer-events: none; mix-blend-mode: difference;">
+            KILTURA</div>
+    </div>
+    <div id="lottie-background" class="lottie-bg-container"></div>
+    <div class="scanlines"></div>
+
+    <div id="shutter" class="transition-layer">
+        <div class="shutter-text">PROCESSING_DATA_STREAM...</div>
+    </div>
+
+    <div class="background-layer">
+        <div class="side-cyan"></div>
+        <div class="center-void"></div>
+        <div class="side-magenta">
+
+        </div>
+    </div>
+
+    <main class="ui-wrapper">
+        <section class="nav-section">
+            <div class="logo-container">
+                <div class="logo-box" onclick="navigate('home')">
+                    <div class="logo-inner">
+                        <span class="logo-text">KILTURA</span>
+                        <span class="logo-sub">CDT.SYS.REV04</span>
+                    </div>
+                </div>
+            </div>
+            <nav>
+                <div class="nav-item" onclick="navigate('media')">SOAP! Periodica</div>
+                <div class="nav-item" onclick="navigate('photo')">Photography</div>
+                <div class="nav-item" onclick="navigate('archive')">Archive_83</div>
+                <div class="nav-item" onclick="navigate('contact')">Contact</div>
+            </nav>
+            <div class="code-stream" id="nav-code"></div>
+        </section>
+
+        <section class="content-main" id="mainframe">
+            <div class="lottie-bg-container" style="z-index: 10;"></div>
+        </section>
+
+        <section class="right-panel" id="side-terminal">
+            <div id="lottie-panel" style="z-index: 0;"></div>
+            <div id="terminal-content" style="padding-top: 20px;"></div>
+        </section>
+
+        <div id="audio-controls"
+            style="position: fixed; bottom: 100px; right: 30px; cursor: pointer; font-weight: 900; color: #fff; font-size: 10px; z-index: 1000; text-align: right;">
+            <div class="volume-control">
+                <span class="volume-label">SYSTEM_VOL</span>
+                <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="0.3">
+            </div>
+            <div onclick="togglePanelAnim()" style="margin-bottom: 5px;"><span id="anim-toggle">[ANIM: ON]</span></div>
+            <div onclick="toggleSFX()" style="margin-bottom: 5px;"><span id="sfx-toggle">[SFX: ON]</span></div>
+            <div onclick="toggleMusic()"><span id="music-toggle">[MUSIC: OFF]</span></div>
+        </div>
+    </main>
+
+    <div id="audio-container" style="display:none;">
+        <audio id="bgm-player" loop>
+            <source src="assets/audio/bgm.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="sfx-player">
+            <source src="assets/audio/click.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="hover-player">
+            <source src="assets/audio/hover.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="switch-player">
+            <source src="assets/audio/switch.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <footer class="system-footer">
+        <div class="log-window">
+            <div class="log-header">SYSTEM_LOG // LIVE_FEED</div>
+            <div id="kernel-log" class="log-content"></div>
+        </div>
+        <div class="metadata-bits">
+            <span>LOC: FLR_IT</span>
+            <span>BUILD: 4.0.OS</span>
+            <span id="system-time">00:00:00</span>
+        </div>
+    </footer>
+
+    <script src="js/projects.js"></script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>
