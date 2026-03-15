@@ -24,6 +24,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           lfs: true
+          # Providing explicit token permissions helps authorize LFS downloads in private repos
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact
