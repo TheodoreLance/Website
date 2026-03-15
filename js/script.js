@@ -2,6 +2,7 @@
 const loaderAnim = lottie.loadAnimation({
     container: document.getElementById('lottie-container'),
     renderer: 'canvas', loop: true, autoplay: true, path: 'data/data.json',
+    assetsPath: 'data/images/',
     rendererSettings: { preserveAspectRatio: 'xMidYMid slice' }
 });
 
@@ -11,11 +12,13 @@ window.addEventListener('DOMContentLoaded', () => {
     loaderBgAnim = lottie.loadAnimation({
         container: document.getElementById('lottie-loader-bg'),
         renderer: 'canvas', loop: true, autoplay: true, path: 'data/data2.json',
+        assetsPath: 'data/images/',
         rendererSettings: { preserveAspectRatio: 'xMidYMid slice' }
     });
     loaderFgAnim = lottie.loadAnimation({
         container: document.getElementById('lottie-foreground'),
         renderer: 'canvas', loop: true, autoplay: true, path: 'data/data2.json',
+        assetsPath: 'data/images/',
         rendererSettings: { preserveAspectRatio: 'xMidYMid slice' }
     });
 });
@@ -24,6 +27,7 @@ window.addEventListener('DOMContentLoaded', () => {
 const bgAnim = lottie.loadAnimation({
     container: document.getElementById('lottie-background'),
     renderer: 'canvas', loop: true, autoplay: false, path: 'data/data2.json',
+    assetsPath: 'data/images/',
     rendererSettings: { preserveAspectRatio: 'xMidYMid slice' }
 });
 
@@ -31,6 +35,7 @@ const bgAnim = lottie.loadAnimation({
 const panelAnim = lottie.loadAnimation({
     container: document.getElementById('lottie-panel'),
     renderer: 'canvas', loop: true, autoplay: true, path: 'data/data3.json',
+    assetsPath: 'data/images/',
     rendererSettings: { preserveAspectRatio: 'xMidYMid slice' }
 });
 
