@@ -49,8 +49,12 @@
     <script src="js/projects.js" defer></script>
     <script src="js/script.js" defer></script>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
+    
+    <link rel="preload" href="css/style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/style.css"></noscript>
+    
     <link rel="icon" type="image/x-icon" href="kilturalogo.ico">
 </head>
 
@@ -106,7 +110,7 @@
             <div id="terminal-content" style="padding-top: 20px;"></div>
         </section>
 
-        <div id="audio-controls"
+        <div id="audio-controls" class="desktop-only"
             style="position: fixed; bottom: 100px; right: 30px; cursor: pointer; font-weight: 900; color: #fff; font-size: 10px; z-index: 1000; text-align: right;">
             <div class="volume-control">
                 <span class="volume-label">SYSTEM_VOL</span>
@@ -118,7 +122,7 @@
         </div>
     </main>
 
-    <div id="audio-container" style="display:none;">
+    <div id="audio-container" class="desktop-only" style="display:none;">
         <audio id="bgm-player" loop>
             <source src="assets/audio/bgm.mp3" type="audio/mpeg">
         </audio>
