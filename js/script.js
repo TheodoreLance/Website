@@ -30,9 +30,10 @@ window.addEventListener('DOMContentLoaded', () => {
 // 2. Background Animation Logic
 // Site background is now static bg.png handled via index.html/style.css.
 
-// Secondary Panel Animation (123z.mp4)
+// Secondary Panel Animation (123z.mp4 -> HLS Stream)
 let panelAnimOn = true;
 let sidePanelVideo = null;
+let hlsInstance = null;
 
 if (!isMobile) {
     const panelContainer = document.getElementById('lottie-panel');
@@ -47,11 +48,26 @@ if (!isMobile) {
         sidePanelVideo.style.height = '100%';
         sidePanelVideo.style.objectFit = 'cover';
 
-        const source = document.createElement('source');
-        source.src = 'data/123z.mp4';
-        source.type = 'video/mp4';
+        const videoSrc = 'https://cdn-prod-ccv.adobe.com/2RpcAZN4BfX/rend/master.m3u8?hdnts=st%3D1773681857%7Eexp%3D1773941057%7Eacl%3D%2Fshared_assets%2Fimage%2F*%21%2Fz%2F2RpcAZN4BfX%2Frend%2F*%21%2Fi%2F2RpcAZN4BfX%2Frend%2F*%21%2F2RpcAZN4BfX%2Frend%2F*%21%2F2RpcAZN4BfX%2Fimage%2F*%21%2F2RpcAZN4BfX%2Fcaptions%2F*%7Ehmac%3Df845a81382d59f39eb8fc059113df16fffe7bef44cf1e7c5256071028dc18f4d';
 
-        sidePanelVideo.appendChild(source);
+        // Wait for hls.js to load since script.js is deferred
+        window.addEventListener('load', () => {
+             if (Hls.isSupported()) {
+                hlsInstance = new Hls();
+                hlsInstance.loadSource(videoSrc);
+                hlsInstance.attachMedia(sidePanelVideo);
+                hlsInstance.on(Hls.Events.MANIFEST_PARSED, function() {
+                    sidePanelVideo.play().catch(e => console.log("Autoplay prevented:", e));
+                });
+            } else if (sidePanelVideo.canPlayType('application/vnd.apple.mpegurl')) {
+                // Native Safari support
+                sidePanelVideo.src = videoSrc;
+                sidePanelVideo.addEventListener('loadedmetadata', function() {
+                    sidePanelVideo.play().catch(e => console.log("Autoplay prevented:", e));
+                });
+            }
+        });
+
         panelContainer.appendChild(sidePanelVideo);
     }
 }
@@ -456,7 +472,7 @@ function closeLightbox() {
 function togglePanelAnim() {
     const toggleTxt = document.getElementById('anim-toggle');
     panelAnimOn = !panelAnimOn;
-    
+
     if (sidePanelVideo) {
         if (panelAnimOn) {
             sidePanelVideo.play();
