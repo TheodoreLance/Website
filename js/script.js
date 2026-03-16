@@ -2,45 +2,14 @@
 const isMobile = window.innerWidth <= 768;
 
 // 1. Lottie Init (Linking to your data.json)
-let loaderAnim;
-if (!isMobile) {
-    loaderAnim = lottie.loadAnimation({
-        container: document.getElementById('lottie-container'),
-        renderer: 'canvas', loop: true, autoplay: true, path: 'data/data.json',
-        assetsPath: 'data/images/',
-        rendererSettings: { preserveAspectRatio: 'xMidYMid slice' }
-    });
-}
-
-// Loader overlay: duplicate data2.json in background and foreground
-let loaderBgAnim, loaderFgAnim;
+// Video loader is handled via HTML/CSS. Lottie loader animations are disabled for speed.
 window.addEventListener('DOMContentLoaded', () => {
-    if (!isMobile) {
-        loaderBgAnim = lottie.loadAnimation({
-            container: document.getElementById('lottie-loader-bg'),
-            renderer: 'canvas', loop: true, autoplay: true, path: 'data/data2.json',
-            assetsPath: 'data/images/',
-            rendererSettings: { preserveAspectRatio: 'xMidYMid slice' }
-        });
-        loaderFgAnim = lottie.loadAnimation({
-            container: document.getElementById('lottie-foreground'),
-            renderer: 'canvas', loop: true, autoplay: true, path: 'data/data2.json',
-            assetsPath: 'data/images/',
-            rendererSettings: { preserveAspectRatio: 'xMidYMid slice' }
-        });
-    }
+    // Logic for loader-video can be added here if needed (e.g. forced play)
 });
 
-// 2. Background Lottie Animation (data2.json) for main site
-let bgAnim;
-if (!isMobile) {
-    bgAnim = lottie.loadAnimation({
-        container: document.getElementById('lottie-background'),
-        renderer: 'canvas', loop: true, autoplay: false, path: 'data/data2.json',
-        assetsPath: 'data/images/',
-        rendererSettings: { preserveAspectRatio: 'xMidYMid slice' }
-    });
-}
+
+// 2. Background Animation Logic
+// Site background is now static bg.png handled via index.html/style.css.
 
 // Secondary Panel Animation (data3.json)
 let panelAnim;
@@ -129,7 +98,12 @@ window.addEventListener('load', () => {
         });
     }
 
-    if (!isMobile) bgAnim.play();
+    if (!isMobile) {
+        // bgAnim.play(); // Background animation for main site - keeping for now as it's for the main site, not the loader? 
+        // actually the user said "opening page" - let's see. 
+        // User said: "disable the lottie animation on the opening page I just want the word kiltura"
+        // This refers to the loader.
+    }
     setTimeout(() => {
         // Render the main page content before fading out loader
         navigate('home');
@@ -139,8 +113,9 @@ window.addEventListener('load', () => {
         loader.style.opacity = "0";
         setTimeout(() => {
             loader.style.display = "none";
+            // bgAnim was here, now using static background
         }, 900);
-    }, isMobile ? 1000 : 2500);
+    }, 800);
     startSystemMonitors();
 });
 
@@ -169,7 +144,7 @@ function navigate(pageId) {
             generateBoxes(`grid-${pageId}`, window.portfolioData.projects[pageId]);
         }
 
-        bgAnim.goToAndStop(bgAnim.totalFrames - 9, true);
+        // bgAnim.goToAndStop logic removed as background is now static
         logKernel(`ACTION: NAV_TO_${pageId.toUpperCase()}`);
 
         // Dynamic Page Switch Sound

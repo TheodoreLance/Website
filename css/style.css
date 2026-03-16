@@ -88,6 +88,46 @@ body {
     justify-content: center;
 }
 
+#desktop-loader-text {
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 14px;
+    font-weight: 900;
+    color: var(--cyan);
+    letter-spacing: 5px;
+    z-index: 20;
+    animation: blink 1s infinite alternate;
+}
+
+@keyframes blink {
+    from {
+        opacity: 0.2;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    #desktop-loader-text {
+        display: none;
+    }
+}
+
+.loader-video-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    z-index: 1;
+    pointer-events: none;
+}
+
 #lottie-container {
     width: 100vw;
     height: 100vh;
@@ -615,7 +655,27 @@ body {
     background: #000;
 }
 
-/* Background Lottie Animation */
+/* Static Site Background */
+.site-bg-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.site-bg-image {
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    object-fit: cover;
+    opacity: 0.8;
+    /* Adjust as needed */
+}
+
+/* Background Lottie Animation (Now only for panels/foregrounds) */
 .lottie-bg-container {
     position: fixed;
     top: 0;
@@ -679,14 +739,17 @@ weather p,
     .media-gallery {
         grid-template-columns: 1fr 1fr;
     }
+
     .video-container {
-        grid-column: 1 / -1; /* Make videos span full width for cinematic look */
+        grid-column: 1 / -1;
+        /* Make videos span full width for cinematic look */
     }
 }
 
 .video-container {
     position: relative;
-    padding-bottom: 56.25%; /* 16:9 ratio */
+    padding-bottom: 56.25%;
+    /* 16:9 ratio */
     height: 0;
     overflow: hidden;
     border: 1px solid var(--cyan);
