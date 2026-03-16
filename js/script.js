@@ -48,7 +48,7 @@ if (!isMobile) {
         sidePanelVideo.style.objectFit = 'cover';
 
         const source = document.createElement('source');
-        source.src = 'data/123z.mp4';
+        source.src = 'https://cdn.myportfolio.com/v1/ccvproxy/UJIjiIr7hxJ?width=640&type=mp4&h=4f05d9bf3e55f096967f6eb21c9a5c09';
         source.type = 'video/mp4';
 
         sidePanelVideo.appendChild(source);
