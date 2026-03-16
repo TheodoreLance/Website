@@ -112,8 +112,8 @@ body {
 }
 
 @media (max-width: 768px) {
-    #desktop-loader-text {
-        display: none;
+    #desktop-loader-text, .desktop-only {
+        display: none !important;
     }
 }
 
