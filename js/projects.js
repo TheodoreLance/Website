@@ -37,7 +37,50 @@ window.portfolioData = {
                 ]
             }
         ],
-        "archive": [],
+        "archive": [
+            {
+                "title": "66",
+                "description": "",
+                "media": [
+                    "https://youtu.be/NCL-AyIStmw"
+                ]
+            },
+            {
+                "title": "NEVER RUN OUT",
+                "description": "",
+                "media": [
+                    "https://youtu.be/WBlMA4kvhM8"
+                ]
+            },
+            {
+                "title": "OLAF",
+                "description": "",
+                "media": [
+                    "https://youtu.be/9GG0y2-EuDg"
+                ]
+            },
+            {
+                "title": "CHRISTMASLANTAVEGAS",
+                "description": "",
+                "media": [
+                    "https://studio.youtube.com/video/RxIicyL_s7A/edit"
+                ]
+            },
+            {
+                "title": "Y GATE Y DRAGON",
+                "description": "",
+                "media": [
+                    "https://youtu.be/ooCAd27PDDk"
+                ]
+            },
+            {
+                "title": "PICTURE PERFECT",
+                "description": "",
+                "media": [
+                    "https://youtu.be/YZwyOCC5R0o"
+                ]
+            }
+        ],
         "MUSIC_VIDEO": [
             {
                 "title": "CAPÍTULO 1 - KID PRESSA",
