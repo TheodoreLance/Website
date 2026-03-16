@@ -666,13 +666,15 @@ body {
     overflow: hidden;
 }
 
-.site-bg-image {
-    width: 100%;
-    height: 100%;
-    z-index: 3;
-    object-fit: cover;
-    opacity: 0.8;
-    /* Adjust as needed */
+/* Load background only on desktop (width > 768px) */
+@media (min-width: 769px) {
+    .site-bg-container {
+        background-image: url('../data/bg.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        opacity: 0.8;
+    }
 }
 
 /* Background Lottie Animation (Now only for panels/foregrounds) */

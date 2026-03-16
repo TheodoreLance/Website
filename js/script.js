@@ -2,9 +2,28 @@
 const isMobile = window.innerWidth <= 768;
 
 // 1. Lottie Init (Linking to your data.json)
-// Video loader is handled via HTML/CSS. Lottie loader animations are disabled for speed.
+// Video loader is handled dynamically. Lottie loader animations are disabled for speed.
 window.addEventListener('DOMContentLoaded', () => {
-    // Logic for loader-video can be added here if needed (e.g. forced play)
+    // Inject video loader only for desktop to save mobile bandwidth
+    if (!isMobile) {
+        const loaderContainer = document.getElementById('lottie-loader');
+        if (loaderContainer) {
+            const video = document.createElement('video');
+            video.id = 'loader-video';
+            video.autoplay = true;
+            video.muted = true;
+            video.loop = true;
+            video.playsInline = true;
+            video.className = 'loader-video-bg';
+            
+            const source = document.createElement('source');
+            source.src = 'data/Comp 1.mp4';
+            source.type = 'video/mp4';
+            
+            video.appendChild(source);
+            loaderContainer.prepend(video);
+        }
+    }
 });
 
 
