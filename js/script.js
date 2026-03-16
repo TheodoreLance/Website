@@ -34,27 +34,26 @@ window.addEventListener('DOMContentLoaded', () => {
 let panelAnimOn = true;
 let sidePanelVideo = null;
 
-if (!isMobile) {
-    const panelContainer = document.getElementById('lottie-panel');
-    if (panelContainer) {
-        sidePanelVideo = document.createElement('video');
-        sidePanelVideo.id = 'side-panel-video';
-        sidePanelVideo.autoplay = true;
-        sidePanelVideo.muted = true;
-        sidePanelVideo.loop = true;
-        sidePanelVideo.playsInline = true;
-        sidePanelVideo.style.width = '100%';
-        sidePanelVideo.style.height = '100%';
-        sidePanelVideo.style.objectFit = 'cover';
+const panelContainer = document.getElementById('lottie-panel');
+if (panelContainer) {
+    sidePanelVideo = document.createElement('video');
+    sidePanelVideo.id = 'side-panel-video';
+    sidePanelVideo.autoplay = true;
+    sidePanelVideo.muted = true;
+    sidePanelVideo.loop = true;
+    sidePanelVideo.playsInline = true;
+    sidePanelVideo.style.width = '100%';
+    sidePanelVideo.style.height = '100%';
+    sidePanelVideo.style.objectFit = 'cover';
 
-        const source = document.createElement('source');
-        source.src = 'https://cdn.myportfolio.com/v1/ccvproxy/UJIjiIr7hxJ?width=640&type=mp4&h=4f05d9bf3e55f096967f6eb21c9a5c09';
-        source.type = 'video/mp4';
+    const source = document.createElement('source');
+    source.src = 'https://cdn.myportfolio.com/v1/ccvproxy/UJIjiIr7hxJ?width=640&type=mp4&h=4f05d9bf3e55f096967f6eb21c9a5c09';
+    source.type = 'video/mp4';
 
-        sidePanelVideo.appendChild(source);
-        panelContainer.appendChild(sidePanelVideo);
-    }
+    sidePanelVideo.appendChild(source);
+    panelContainer.appendChild(sidePanelVideo);
 }
+
 
 // 3. PAGE CONTENT & DATA - EDIT YOUR TEXT HERE
 
@@ -73,11 +72,11 @@ let pages = {
         <div class="text-block">
             <span class="block-label">[SYS_MESSAGE]</span>
             <h3>PORTFOLIO OVERVIEW</h3>
-            <p>Kiltura.art highlights the multidisciplinary work of Theodore Lance, a creator skilled in graphic design, photography, and motion graphics. His portfolio showcases a seamless blend of digital media and physical creative exhibitions, emphasizing a diverse technical range and a sharp eye for visual storytelling.</p>
+            <p>Kiltura.com highlights the multidisciplinary work of Theodore Lance, a creator skilled in graphic design, photography, and motion graphics. His portfolio showcases a blend of digital media and creative video editing, emphasizing a diverse technical range and a sharp eye for visual storytelling.</p>
         </div>
         <div class="text-block secondary">
             <span class="block-label">[MISSION_STATEMENT]</span>
-            <p>Theodore currently serves as the Digital Marketing Coordinator at TAIT, balancing corporate strategy with his roots in architectural photography and editorial design. Pursuing advanced studies in Digital Media and Fine Art in Florence, he combines professional marketing expertise with a sophisticated artistic perspective.</p>
+            <p>Theodore currently serves as a freelance Digital Marketing Coordinator, balancing corporate strategy with his roots in fine art photography and editorial design. Pursuing advanced studies in Digital Media and Fine Art in Florence, he combines professional marketing experience with a sophisticated artistic perspective.</p>
         </div>
          <div class="text-block secondary social-links">
             <span class="block-label">[CONTACT_LINKS]</span>
@@ -456,7 +455,7 @@ function closeLightbox() {
 function togglePanelAnim() {
     const toggleTxt = document.getElementById('anim-toggle');
     panelAnimOn = !panelAnimOn;
-    
+
     if (sidePanelVideo) {
         if (panelAnimOn) {
             sidePanelVideo.play();
