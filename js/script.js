@@ -1,43 +1,57 @@
+// 1. Mobile Detection
+const isMobile = window.innerWidth <= 768;
+
 // 1. Lottie Init (Linking to your data.json)
-const loaderAnim = lottie.loadAnimation({
-    container: document.getElementById('lottie-container'),
-    renderer: 'canvas', loop: true, autoplay: true, path: 'data/data.json',
-    assetsPath: 'data/images/',
-    rendererSettings: { preserveAspectRatio: 'xMidYMid slice' }
-});
+let loaderAnim;
+if (!isMobile) {
+    loaderAnim = lottie.loadAnimation({
+        container: document.getElementById('lottie-container'),
+        renderer: 'canvas', loop: true, autoplay: true, path: 'data/data.json',
+        assetsPath: 'data/images/',
+        rendererSettings: { preserveAspectRatio: 'xMidYMid slice' }
+    });
+}
 
 // Loader overlay: duplicate data2.json in background and foreground
 let loaderBgAnim, loaderFgAnim;
 window.addEventListener('DOMContentLoaded', () => {
-    loaderBgAnim = lottie.loadAnimation({
-        container: document.getElementById('lottie-loader-bg'),
-        renderer: 'canvas', loop: true, autoplay: true, path: 'data/data2.json',
-        assetsPath: 'data/images/',
-        rendererSettings: { preserveAspectRatio: 'xMidYMid slice' }
-    });
-    loaderFgAnim = lottie.loadAnimation({
-        container: document.getElementById('lottie-foreground'),
-        renderer: 'canvas', loop: true, autoplay: true, path: 'data/data2.json',
-        assetsPath: 'data/images/',
-        rendererSettings: { preserveAspectRatio: 'xMidYMid slice' }
-    });
+    if (!isMobile) {
+        loaderBgAnim = lottie.loadAnimation({
+            container: document.getElementById('lottie-loader-bg'),
+            renderer: 'canvas', loop: true, autoplay: true, path: 'data/data2.json',
+            assetsPath: 'data/images/',
+            rendererSettings: { preserveAspectRatio: 'xMidYMid slice' }
+        });
+        loaderFgAnim = lottie.loadAnimation({
+            container: document.getElementById('lottie-foreground'),
+            renderer: 'canvas', loop: true, autoplay: true, path: 'data/data2.json',
+            assetsPath: 'data/images/',
+            rendererSettings: { preserveAspectRatio: 'xMidYMid slice' }
+        });
+    }
 });
 
 // 2. Background Lottie Animation (data2.json) for main site
-const bgAnim = lottie.loadAnimation({
-    container: document.getElementById('lottie-background'),
-    renderer: 'canvas', loop: true, autoplay: false, path: 'data/data2.json',
-    assetsPath: 'data/images/',
-    rendererSettings: { preserveAspectRatio: 'xMidYMid slice' }
-});
+let bgAnim;
+if (!isMobile) {
+    bgAnim = lottie.loadAnimation({
+        container: document.getElementById('lottie-background'),
+        renderer: 'canvas', loop: true, autoplay: false, path: 'data/data2.json',
+        assetsPath: 'data/images/',
+        rendererSettings: { preserveAspectRatio: 'xMidYMid slice' }
+    });
+}
 
 // Secondary Panel Animation (data3.json)
-const panelAnim = lottie.loadAnimation({
-    container: document.getElementById('lottie-panel'),
-    renderer: 'canvas', loop: true, autoplay: true, path: 'data/data3.json',
-    assetsPath: 'data/images/',
-    rendererSettings: { preserveAspectRatio: 'xMidYMid slice' }
-});
+let panelAnim;
+if (!isMobile) {
+    panelAnim = lottie.loadAnimation({
+        container: document.getElementById('lottie-panel'),
+        renderer: 'canvas', loop: true, autoplay: true, path: 'data/data3.json',
+        assetsPath: 'data/images/',
+        rendererSettings: { preserveAspectRatio: 'xMidYMid slice' }
+    });
+}
 
 // 3. PAGE CONTENT & DATA - EDIT YOUR TEXT HERE
 
@@ -115,7 +129,7 @@ window.addEventListener('load', () => {
         });
     }
 
-    bgAnim.play();
+    if (!isMobile) bgAnim.play();
     setTimeout(() => {
         // Render the main page content before fading out loader
         navigate('home');
@@ -126,7 +140,7 @@ window.addEventListener('load', () => {
         setTimeout(() => {
             loader.style.display = "none";
         }, 900);
-    }, 2500);
+    }, isMobile ? 1000 : 2500);
     startSystemMonitors();
 });
 

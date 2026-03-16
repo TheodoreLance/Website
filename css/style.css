@@ -900,35 +900,14 @@ img.media-fit.clickable:hover {
         padding-bottom: 10px;
     }
 
-    #lottie-container {
-        width: 90vw;
-        height: auto;
-    }
-
-    .logo-box {
-        padding: 8px;
-        margin-bottom: 20px;
-    }
-
-    .nav-item {
-        font-size: 14px;
-    }
-
-    .text-block {
-        font-size: 13px;
-    }
-
-    .project-box {
-        padding: 20px;
-        z-index: 2;
-    }
-
-    .ascii-clock-style {
-        font-size: 8px;
-    }
-
-    /* Hide animation and volume controls on mobile */
+    /* Hide all animation containers on mobile for performance */
+    #lottie-loader,
+    #lottie-loader-bg,
+    #lottie-foreground,
+    #lottie-container,
+    #lottie-background,
     #lottie-panel,
+    .lottie-bg-container,
     .volume-control,
     div[onclick="togglePanelAnim()"] {
         display: none !important;
