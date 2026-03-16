@@ -30,15 +30,30 @@ window.addEventListener('DOMContentLoaded', () => {
 // 2. Background Animation Logic
 // Site background is now static bg.png handled via index.html/style.css.
 
-// Secondary Panel Animation (data3.json)
-let panelAnim;
+// Secondary Panel Animation (123z.mp4)
+let panelAnimOn = true;
+let sidePanelVideo = null;
+
 if (!isMobile) {
-    panelAnim = lottie.loadAnimation({
-        container: document.getElementById('lottie-panel'),
-        renderer: 'canvas', loop: true, autoplay: true, path: 'data/data3.json',
-        assetsPath: 'data/images/',
-        rendererSettings: { preserveAspectRatio: 'xMidYMid slice' }
-    });
+    const panelContainer = document.getElementById('lottie-panel');
+    if (panelContainer) {
+        sidePanelVideo = document.createElement('video');
+        sidePanelVideo.id = 'side-panel-video';
+        sidePanelVideo.autoplay = true;
+        sidePanelVideo.muted = true;
+        sidePanelVideo.loop = true;
+        sidePanelVideo.playsInline = true;
+        sidePanelVideo.style.width = '100%';
+        sidePanelVideo.style.height = '100%';
+        sidePanelVideo.style.objectFit = 'cover';
+
+        const source = document.createElement('source');
+        source.src = 'data/123z.mp4';
+        source.type = 'video/mp4';
+
+        sidePanelVideo.appendChild(source);
+        panelContainer.appendChild(sidePanelVideo);
+    }
 }
 
 // 3. PAGE CONTENT & DATA - EDIT YOUR TEXT HERE
@@ -438,16 +453,18 @@ function closeLightbox() {
 
 //// 9. UI Toggles
 
-let panelAnimOn = true;
 function togglePanelAnim() {
     const toggleTxt = document.getElementById('anim-toggle');
     panelAnimOn = !panelAnimOn;
-    if (panelAnimOn) {
-        panelAnim.play();
-        toggleTxt.innerText = "[ANIM: ON]";
-    } else {
-        panelAnim.pause();
-        toggleTxt.innerText = "[ANIM: OFF]";
+    
+    if (sidePanelVideo) {
+        if (panelAnimOn) {
+            sidePanelVideo.play();
+            toggleTxt.innerText = "[ANIM: ON]";
+        } else {
+            sidePanelVideo.pause();
+            toggleTxt.innerText = "[ANIM: OFF]";
+        }
     }
     logKernel(`ACTION: PANEL_ANIM_${panelAnimOn ? 'PLAY' : 'PAUSE'}`);
 }
