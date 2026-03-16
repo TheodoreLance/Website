@@ -15,11 +15,11 @@ window.addEventListener('DOMContentLoaded', () => {
             video.loop = true;
             video.playsInline = true;
             video.className = 'loader-video-bg';
-            
+
             const source = document.createElement('source');
-            source.src = 'data/Comp 1.mp4';
+            source.src = 'https://cdn.myportfolio.com/v1/ccvproxy/2EkMvw9Bpyy?width=2560&type=mp4&h=221d7bcc86c94e0eb1fe10e83f76071a';
             source.type = 'video/mp4';
-            
+
             video.appendChild(source);
             loaderContainer.prepend(video);
         }
@@ -123,30 +123,34 @@ window.addEventListener('load', () => {
         // User said: "disable the lottie animation on the opening page I just want the word kiltura"
         // This refers to the loader.
     }
+    // Speed up initial load for mobile
+    const initialDelay = isMobile ? 200 : 800;
+
     setTimeout(() => {
         // Render the main page content before fading out loader
-        navigate('home');
+        // Skip the inner quick-loader for the initial mobile sequence
+        navigate('home', isMobile);
+
         // Fade out loader overlay
         const loader = document.getElementById('lottie-loader');
-        loader.style.transition = 'opacity 1s';
+        loader.style.transition = isMobile ? 'opacity 0.4s' : 'opacity 1s';
         loader.style.opacity = "0";
         setTimeout(() => {
             loader.style.display = "none";
-            // bgAnim was here, now using static background
-        }, 900);
-    }, 800);
+        }, isMobile ? 400 : 900);
+    }, initialDelay);
     startSystemMonitors();
 });
 
-function navigate(pageId) {
-    // Show quick loading overlay with status bar for all pages
-    showQuickLoading(() => {
+function navigate(pageId, skipLoader = false) {
+    const renderAction = () => {
         document.getElementById('mainframe').innerHTML = pages[pageId];
         if (pageId === 'home') {
             renderNodeMap();
             // Pop-in animation for .text-blocks, bottom to top
             setTimeout(() => {
                 const blocks = Array.from(document.getElementById('mainframe').querySelectorAll('.text-block'));
+                const staggerDelay = isMobile ? 50 : 120;
                 blocks.forEach((block, i) => {
                     block.style.opacity = 0;
                     block.style.transform = 'translateY(40px)';
@@ -154,7 +158,7 @@ function navigate(pageId) {
                         block.style.transition = 'opacity 0.4s, transform 0.4s';
                         block.style.opacity = 1;
                         block.style.transform = 'translateY(0)';
-                    }, i * 120);
+                    }, i * staggerDelay);
                 });
             }, 10);
             initInfoWidget();
@@ -163,13 +167,17 @@ function navigate(pageId) {
             generateBoxes(`grid-${pageId}`, window.portfolioData.projects[pageId]);
         }
 
-        // bgAnim.goToAndStop logic removed as background is now static
         logKernel(`ACTION: NAV_TO_${pageId.toUpperCase()}`);
 
-        // Dynamic Page Switch Sound
         currentPageId = pageId;
-        playPageSwitchSound();
-    });
+    };
+
+    if (skipLoader) {
+        renderAction();
+    } else {
+        // Show quick loading overlay with status bar for all pages
+        showQuickLoading(renderAction);
+    }
 }
 // End of navigate
 
@@ -428,16 +436,7 @@ function closeLightbox() {
     }
 }
 
-// 9. Audio System
-let musicOn = false;
-let sfxOn = true;
-
-function toggleSFX() {
-    const toggleTxt = document.getElementById('sfx-toggle');
-    sfxOn = !sfxOn;
-    toggleTxt.innerText = sfxOn ? "[SFX: ON]" : "[SFX: OFF]";
-    logKernel(`ACTION: SFX_${sfxOn ? 'ENABLED' : 'DISABLED'}`);
-}
+//// 9. UI Toggles
 
 let panelAnimOn = true;
 function togglePanelAnim() {
@@ -453,106 +452,3 @@ function togglePanelAnim() {
     logKernel(`ACTION: PANEL_ANIM_${panelAnimOn ? 'PLAY' : 'PAUSE'}`);
 }
 
-// Global Volume Logic
-window.addEventListener('DOMContentLoaded', () => {
-    const volSlider = document.getElementById('volume-slider');
-    const bgm = document.getElementById('bgm-player');
-
-    if (bgm) {
-        // Detect mobile for a lower default volume
-        const isMobile = window.innerWidth <= 768;
-        const defaultVol = isMobile ? 0.1 : 0.3;
-
-        bgm.volume = defaultVol;
-        if (volSlider) volSlider.value = defaultVol;
-
-        // Also sync SFX players to this volume for consistency
-        ['sfx-player', 'hover-player', 'switch-player'].forEach(id => {
-            const p = document.getElementById(id);
-            if (p) p.volume = defaultVol;
-        });
-
-        if (volSlider) {
-            volSlider.addEventListener('input', (e) => {
-                const val = parseFloat(e.target.value);
-                bgm.volume = val;
-
-                // Sync SFX players
-                ['sfx-player', 'hover-player', 'switch-player'].forEach(id => {
-                    const p = document.getElementById(id);
-                    if (p) p.volume = val;
-                });
-
-                if (Math.random() > 0.98) logKernel(`VOL_SET: ${Math.round(val * 100)}%`);
-            });
-        }
-    }
-});
-
-function toggleMusic() {
-    const bgm = document.getElementById('bgm-player');
-    const toggleTxt = document.getElementById('music-toggle');
-    if (!bgm) return;
-
-    if (musicOn) {
-        bgm.pause();
-        musicOn = false;
-        toggleTxt.innerText = "[MUSIC: OFF]";
-        logKernel("ACTION: BGM_PAUSED");
-    } else {
-        bgm.play().catch(e => {
-            console.log("Audio autoplay blocked by browser", e);
-            logKernel("ERROR: AUDIO_AUTOPLAY_BLOCKED");
-        });
-        musicOn = true;
-        toggleTxt.innerText = "[MUSIC: ON]";
-        logKernel("ACTION: BGM_PLAYING");
-    }
-}
-
-function playClickSound() {
-    if (!sfxOn) return;
-    const player = document.getElementById('sfx-player');
-    if (player) {
-        player.src = 'assets/audio/click.mp3';
-        player.currentTime = 0;
-        player.play().catch(e => { });
-    }
-}
-
-function playHoverSound() {
-    if (!sfxOn) return;
-    const player = document.getElementById('hover-player');
-    if (player) {
-        player.src = 'assets/audio/hover.mp3';
-        player.currentTime = 0;
-        player.play().catch(e => { });
-    }
-}
-
-function playPageSwitchSound() {
-    if (!sfxOn) return;
-    const player = document.getElementById('switch-player');
-    if (player) {
-        player.src = 'assets/audio/switch.mp3';
-        player.currentTime = 0;
-        player.play().catch(e => { });
-    }
-}
-
-// Global listeners for UI elements
-document.addEventListener('click', (e) => {
-    const clickableElements = ['.nav-item', '.logo-box', '.project-box', '.lightbox-close', '.media-fit.clickable', '.tab-btn', 'button'];
-    if (clickableElements.some(selector => e.target.closest(selector))) {
-        playClickSound();
-    }
-});
-
-document.addEventListener('mouseover', (e) => {
-    const clickableElements = ['.nav-item', '.logo-box', '.project-box', '.lightbox-close', '.media-fit.clickable', '.tab-btn', 'button'];
-    if (clickableElements.some(selector => e.target.closest(selector))) {
-        playHoverSound();
-    }
-});
-
-// Auto-play music on first user interaction (Browser Policy workaround)
