@@ -9,22 +9,22 @@ window.portfolioData = {
         {
             "id": "archive",
             "title": "Archive_83",
-            "description": "This is a collection of experimental and personal projects."
+            "description": "This is a collection of experimental and personal projects CLICK AND SCROLL DOWN"
         },
         {
             "id": "MUSIC_VIDEO",
             "title": "Music Videos",
-            "description": "These are various music videos made in Florence Italy"
+            "description": "These are various music videos made in Florence Italy CLICK AND SCROLL DOWN"
         },
         {
             "id": "PHOTOGRAPHY",
             "title": "Photography",
-            "description": "A collection of photography projects, including film, fashion, and street photography."
+            "description": "A collection of photography projects, including film, fashion, and street photography. CLICK AND SCROLL DOWN"
         },
         {
             "id": "GRAPHIC_DESIGN",
             "title": "Graphic Design Projects",
-            "description": "various graphic design projects made in school"
+            "description": "various graphic design projects made in school CLICK AND SCROLL DOWN"
         }
     ],
     "projects": {
@@ -63,7 +63,7 @@ window.portfolioData = {
                 "title": "CHRISTMASLANTAVEGAS",
                 "description": "",
                 "media": [
-                    "https://studio.youtube.com/video/RxIicyL_s7A/edit"
+                    "https://www.youtube.com/watch?v=RxIicyL_s7A"
                 ]
             },
             {
