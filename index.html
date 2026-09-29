@@ -608,8 +608,9 @@
     }
 
     .name-field,
+    .email-field,
     .subject-field {
-      height: calc(48 / 576 * 100vh);
+      height: calc(44 / 576 * 100vh);
     }
 
     .message-field {
@@ -863,13 +864,16 @@
           <!-- Form Inputs -->
           <form class="contact-form" id="contactForm" onsubmit="event.preventDefault();">
             <div class="form-field name-field">
-              <input type="text" class="contact-input" id="inputName" name="name" placeholder="NAME" autocomplete="name" />
+              <input type="text" class="contact-input" id="inputName" name="name" placeholder="NAME" autocomplete="name" required />
+            </div>
+            <div class="form-field email-field">
+              <input type="email" class="contact-input" id="inputEmail" name="email" placeholder="EMAIL" autocomplete="email" required />
             </div>
             <div class="form-field subject-field">
               <input type="text" class="contact-input" id="inputSubject" name="subject" placeholder="SUBJECT" />
             </div>
             <div class="form-field message-field">
-              <textarea class="contact-textarea" id="inputMessage" name="message" placeholder="MESSAGE"></textarea>
+              <textarea class="contact-textarea" id="inputMessage" name="message" placeholder="MESSAGE" required></textarea>
             </div>
           </form>
 
@@ -1181,26 +1185,71 @@
 
       // Big Dog Send Button Handler
       if (dogSendBtn) {
-        dogSendBtn.addEventListener('click', function(e) {
+        dogSendBtn.addEventListener('click', async function(e) {
           e.preventDefault();
-          const nameVal = document.getElementById('inputName')?.value || '';
-          const subjectVal = document.getElementById('inputSubject')?.value || 'Message from Kiltura Website';
-          const messageVal = document.getElementById('inputMessage')?.value || '';
+          const nameInput = document.getElementById('inputName');
+          const emailInput = document.getElementById('inputEmail');
+          const subjectInput = document.getElementById('inputSubject');
+          const messageInput = document.getElementById('inputMessage');
 
-          // Visual feedback on send
-          dogSendBtn.style.transform = 'scale(0.95)';
+          const nameVal = nameInput?.value.trim() || '';
+          const emailVal = emailInput?.value.trim() || '';
+          const subjectVal = subjectInput?.value.trim() || 'Message from Kiltura Website';
+          const messageVal = messageInput?.value.trim() || '';
+
+          // Validate required fields
+          if (!nameVal) {
+            nameInput?.focus();
+            return;
+          }
+          if (!messageVal) {
+            messageInput?.focus();
+            return;
+          }
+
           const dogLabel = dogSendBtn.querySelector('.dog-send-label');
           const prevText = dogLabel ? dogLabel.textContent : 'SEND';
-          if (dogLabel) dogLabel.textContent = 'SENT!';
+          dogSendBtn.style.transform = 'scale(0.95)';
+          if (dogLabel) dogLabel.textContent = 'SENDING...';
 
-          setTimeout(function() {
-            dogSendBtn.style.transform = '';
-            if (dogLabel) dogLabel.textContent = prevText;
-          }, 1800);
+          try {
+            const res = await fetch('/api/contact', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                name: nameVal,
+                email: emailVal,
+                subject: subjectVal,
+                message: messageVal
+              })
+            });
 
-          // Open mail client with user input
-          const mailto = `mailto:theodore@kiltura.com?subject=${encodeURIComponent(subjectVal)}&body=${encodeURIComponent("From: " + nameVal + "\n\n" + messageVal)}`;
-          window.location.href = mailto;
+            if (!res.ok) {
+              throw new Error('API submission error');
+            }
+
+            if (dogLabel) dogLabel.textContent = 'SENT!';
+            if (nameInput) nameInput.value = '';
+            if (emailInput) emailInput.value = '';
+            if (subjectInput) subjectInput.value = '';
+            if (messageInput) messageInput.value = '';
+
+            setTimeout(function() {
+              dogSendBtn.style.transform = '';
+              if (dogLabel) dogLabel.textContent = prevText;
+            }, 2500);
+
+          } catch (err) {
+            console.warn('API submission failed, falling back to mailto:', err);
+            if (dogLabel) dogLabel.textContent = 'OPENING MAIL...';
+            const mailto = `mailto:theodore@kiltura.com?subject=${encodeURIComponent(subjectVal)}&body=${encodeURIComponent("From: " + nameVal + (emailVal ? " <" + emailVal + ">" : "") + "\n\n" + messageVal)}`;
+            window.location.href = mailto;
+
+            setTimeout(function() {
+              dogSendBtn.style.transform = '';
+              if (dogLabel) dogLabel.textContent = prevText;
+            }, 2500);
+          }
         });
       }
 
