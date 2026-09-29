@@ -1224,6 +1224,213 @@
         max-height: 100% !important;
       }
     }
+
+    /* ==========================================================================
+       RESUME CONTENT — Box 3 (Goat Panel)
+       ========================================================================== */
+    .resume-wrap {
+      position: absolute;
+      inset: 0;
+      /* Leave right margin for the goat SVG on desktop */
+      padding: clamp(18px, 3.2vh, 36px) calc(180 / 1024 * 100vw) clamp(18px, 3vh, 30px) clamp(20px, 3.2vw, 42px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease 0.12s;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(10px, 1.6vh, 20px);
+    }
+
+    body.box-3-open .resume-wrap {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Scrollable inner */
+    .resume-scroll {
+      overflow-y: auto;
+      overflow-x: hidden;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(10px, 1.8vh, 22px);
+      scrollbar-width: none;
+    }
+    .resume-scroll::-webkit-scrollbar { display: none; }
+
+    /* Name / header */
+    .resume-name {
+      font-family: 'ReplicaLLTT-Bold', sans-serif;
+      font-size: clamp(16px, 2.4vw, 28px);
+      letter-spacing: 0.1em;
+      color: var(--bg);
+      text-transform: uppercase;
+      line-height: 1;
+    }
+    .resume-tagline {
+      font-family: 'ReplicaLLTT-Bold', sans-serif;
+      font-size: clamp(8px, 0.95vw, 12px);
+      letter-spacing: 0.2em;
+      color: var(--bg);
+      opacity: 0.5;
+      text-transform: uppercase;
+      margin-top: 3px;
+    }
+
+    /* Two-column body */
+    .resume-body {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: clamp(14px, 2.2vw, 36px);
+      flex: 1;
+      min-height: 0;
+    }
+    .resume-col-side {
+      width: clamp(120px, 18vw, 200px);
+      flex-shrink: 0;
+    }
+
+    /* Section headers */
+    .resume-section-title {
+      font-family: 'ReplicaLLTT-Bold', sans-serif;
+      font-size: clamp(7px, 0.78vw, 10px);
+      letter-spacing: 0.22em;
+      color: var(--bg);
+      opacity: 0.45;
+      text-transform: uppercase;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+      padding-bottom: 4px;
+      margin-bottom: clamp(6px, 1vh, 12px);
+    }
+
+    /* Job entries */
+    .resume-job {
+      margin-bottom: clamp(8px, 1.3vh, 16px);
+    }
+    .resume-job-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .resume-job-company {
+      font-family: 'ReplicaLLTT-Bold', sans-serif;
+      font-size: clamp(9px, 1.1vw, 14px);
+      letter-spacing: 0.1em;
+      color: var(--bg);
+      text-transform: uppercase;
+    }
+    .resume-job-date {
+      font-family: 'ReplicaLLTT-Bold', sans-serif;
+      font-size: clamp(7px, 0.75vw, 9px);
+      letter-spacing: 0.12em;
+      color: var(--bg);
+      opacity: 0.4;
+      text-transform: uppercase;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .resume-job-title {
+      font-family: 'ReplicaLLTT-Bold', sans-serif;
+      font-size: clamp(7px, 0.82vw, 10px);
+      letter-spacing: 0.14em;
+      color: var(--bg);
+      opacity: 0.6;
+      text-transform: uppercase;
+      margin-top: 1px;
+    }
+    .resume-job-desc {
+      font-family: 'ReplicaLLTT-Bold', sans-serif;
+      font-size: clamp(7px, 0.78vw, 9.5px);
+      letter-spacing: 0.08em;
+      color: var(--bg);
+      opacity: 0.35;
+      text-transform: uppercase;
+      margin-top: 3px;
+      line-height: 1.5;
+    }
+
+    /* Education / skill entries */
+    .resume-edu {
+      margin-bottom: clamp(8px, 1.2vh, 14px);
+    }
+    .resume-edu-school {
+      font-family: 'ReplicaLLTT-Bold', sans-serif;
+      font-size: clamp(8px, 0.95vw, 12px);
+      letter-spacing: 0.1em;
+      color: var(--bg);
+      text-transform: uppercase;
+    }
+    .resume-edu-detail {
+      font-family: 'ReplicaLLTT-Bold', sans-serif;
+      font-size: clamp(7px, 0.72vw, 9px);
+      letter-spacing: 0.12em;
+      color: var(--bg);
+      opacity: 0.4;
+      text-transform: uppercase;
+      margin-top: 2px;
+      line-height: 1.5;
+    }
+
+    .resume-skill-group {
+      margin-bottom: clamp(6px, 1vh, 12px);
+    }
+    .resume-skill-label {
+      font-family: 'ReplicaLLTT-Bold', sans-serif;
+      font-size: clamp(7px, 0.72vw, 9px);
+      letter-spacing: 0.18em;
+      color: var(--bg);
+      opacity: 0.3;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+    .resume-skill-items {
+      font-family: 'ReplicaLLTT-Bold', sans-serif;
+      font-size: clamp(7px, 0.82vw, 10px);
+      letter-spacing: 0.1em;
+      color: var(--bg);
+      opacity: 0.6;
+      text-transform: uppercase;
+      line-height: 1.7;
+    }
+
+    /* Footer contact line */
+    .resume-footer-bar {
+      display: flex;
+      gap: clamp(12px, 2vw, 28px);
+      padding-top: clamp(6px, 0.9vh, 10px);
+      border-top: 1px solid rgba(255,255,255,0.1);
+      flex-shrink: 0;
+    }
+    .resume-footer-bar a,
+    .resume-footer-bar span {
+      font-family: 'ReplicaLLTT-Bold', sans-serif;
+      font-size: clamp(7px, 0.75vw, 9px);
+      letter-spacing: 0.15em;
+      color: var(--bg);
+      opacity: 0.4;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+    .resume-footer-bar a:hover { opacity: 0.8; }
+
+    /* Mobile resume overrides */
+    @media (max-width: 768px), (orientation: portrait) {
+      .resume-wrap {
+        padding: 72px 12px 16px 12px !important;
+      }
+      .resume-body {
+        grid-template-columns: 1fr !important;
+      }
+      .resume-col-side {
+        width: 100% !important;
+      }
+      .resume-name {
+        font-size: clamp(15px, 5vw, 22px) !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1284,6 +1491,119 @@
           <path class="animal-shape animal-text" d="M82.53,365.31C82.53,366.28 82.39,367.16 82.10,367.95C81.82,368.74 81.43,369.44 80.93,370.04C80.44,370.65 79.87,371.15 79.23,371.55C78.59,371.96 77.92,372.24 77.20,372.40L77.20,372.76L81.82,378.80L81.82,382.34L81.47,382.70L79.34,382.70L78.62,382.34L71.53,373.12L70.81,372.76L67.27,372.76L66.91,373.12L66.91,382.34L66.56,382.70L62.30,382.70L61.94,382.34L61.94,358.20L62.30,357.85L74.01,357.85C75.24,357.85 76.38,358.00 77.44,358.31C78.49,358.62 79.39,359.09 80.13,359.71C80.88,360.34 81.46,361.12 81.89,362.06C82.32,362.99 82.53,364.07 82.53,365.31ZM77.56,365.31C77.56,364.07 77.23,363.23 76.58,362.78C75.93,362.33 75.08,362.11 74.01,362.11L67.27,362.11L66.91,362.46L66.91,368.14L67.27,368.50L74.01,368.50C74.53,368.50 75.01,368.45 75.45,368.36C75.89,368.26 76.26,368.09 76.58,367.84C76.90,367.59 77.15,367.26 77.31,366.85C77.48,366.44 77.56,365.92 77.56,365.31ZM103.83,382.70L87.15,382.70L86.79,382.34L86.79,358.20L87.15,357.85L103.83,357.85L104.19,358.20L104.19,361.75L103.83,362.11L92.12,362.11L91.76,362.46L91.76,367.44L92.12,367.79L103.12,367.79L103.48,368.14L103.48,371.69L103.12,372.05L92.12,372.05L91.76,372.40L91.76,378.08L92.12,378.44L103.83,378.44L104.19,378.80L104.19,382.34ZM128.32,375.60C128.32,376.57 128.14,377.51 127.76,378.40C127.38,379.30 126.78,380.10 125.96,380.78C125.15,381.47 124.09,382.02 122.79,382.43C121.49,382.85 119.90,383.06 118.03,383.06C116.25,383.06 114.72,382.85 113.43,382.43C112.14,382.02 111.07,381.45 110.22,380.71C109.37,379.98 108.74,379.11 108.34,378.12C107.94,377.13 107.73,376.05 107.73,374.89L108.09,374.53L112.35,374.53L112.70,374.89C112.70,376.14 113.12,377.11 113.95,377.78C114.78,378.46 116.25,378.80 118.39,378.80C119.99,378.80 121.22,378.53 122.08,378.00C122.93,377.46 123.36,376.67 123.36,375.60C123.36,374.98 123.25,374.46 123.05,374.04C122.85,373.61 122.51,373.26 122.02,372.97C121.54,372.69 120.88,372.45 120.05,372.26C119.23,372.07 118.20,371.88 116.97,371.69C115.71,371.53 114.55,371.27 113.47,370.93C112.39,370.59 111.46,370.13 110.66,369.56C109.87,369.00 109.24,368.28 108.78,367.42C108.32,366.55 108.09,365.49 108.09,364.24C108.09,363.36 108.27,362.52 108.64,361.70C109.01,360.89 109.58,360.16 110.36,359.54C111.14,358.91 112.14,358.41 113.34,358.05C114.55,357.68 115.99,357.50 117.67,357.50C119.36,357.50 120.80,357.68 122.01,358.06C123.21,358.44 124.21,358.96 124.99,359.62C125.77,360.29 126.34,361.07 126.71,361.99C127.08,362.90 127.26,363.88 127.26,364.95L126.91,365.31L122.64,365.31L122.29,364.95C122.29,364.43 122.21,363.97 122.06,363.57C121.91,363.16 121.64,362.83 121.26,362.55C120.88,362.28 120.37,362.08 119.73,361.95C119.09,361.82 118.29,361.75 117.32,361.75C116.52,361.75 115.84,361.82 115.30,361.95C114.75,362.08 114.31,362.25 113.98,362.46C113.65,362.68 113.42,362.94 113.27,363.25C113.13,363.55 113.06,363.88 113.06,364.24C113.06,364.78 113.16,365.24 113.36,365.61C113.56,365.97 113.91,366.29 114.39,366.55C114.88,366.81 115.53,367.04 116.34,367.24C117.16,367.44 118.20,367.62 119.45,367.79C120.68,367.98 121.84,368.26 122.93,368.62C124.02,368.99 124.96,369.48 125.75,370.10C126.54,370.71 127.17,371.48 127.63,372.39C128.09,373.30 128.32,374.37 128.32,375.60ZM152.47,373.12C152.47,376.33 151.61,378.79 149.91,380.50C148.20,382.20 145.74,383.06 142.53,383.06C139.31,383.06 136.85,382.20 135.14,380.50C133.44,378.79 132.59,376.33 132.59,373.12L132.59,358.20L132.94,357.85L137.20,357.85L137.56,358.20L137.56,373.12C137.56,374.89 137.94,376.28 138.71,377.29C139.48,378.29 140.75,378.80 142.53,378.80C144.30,378.80 145.57,378.29 146.34,377.29C147.11,376.28 147.50,374.89 147.50,373.12L147.50,358.20L147.85,357.85L152.11,357.85L152.47,358.20ZM184.42,382.70L180.16,382.70L179.80,382.34L179.80,368.50L179.45,368.50L173.77,382.34L173.41,382.70L169.50,382.70L169.15,382.34L163.47,368.50L163.12,368.50L163.12,382.34L162.76,382.70L158.50,382.70L158.15,382.34L158.15,358.20L158.50,357.85L163.83,357.85L164.18,358.20L171.28,375.60L171.64,375.60L178.74,358.20L179.09,357.85L184.42,357.85L184.77,358.20L184.77,382.34ZM207.49,382.70L190.81,382.70L190.45,382.34L190.45,358.20L190.81,357.85L207.49,357.85L207.85,358.20L207.85,361.75L207.49,362.11L195.78,362.11L195.42,362.46L195.42,367.44L195.78,367.79L206.78,367.79L207.14,368.14L207.14,371.69L206.78,372.05L195.78,372.05L195.42,372.40L195.42,378.08L195.78,378.44L207.49,378.44L207.85,378.80L207.85,382.34Z"/>
         </svg>
       </div>
+
+      <!-- ── Resume Content (visible when box-3 is open) ─────────────────── -->
+      <div class="resume-wrap" id="resumeWrap" aria-label="Resume">
+        <div class="resume-scroll">
+
+          <!-- Header -->
+          <div>
+            <div class="resume-name">Theodore W. Lance</div>
+            <div class="resume-tagline">Digital Media · Graphic Design · Photography · Florence, Italy 2026</div>
+          </div>
+
+          <!-- Two-column body -->
+          <div class="resume-body">
+
+            <!-- LEFT: Experience + Projects -->
+            <div class="resume-col resume-col-main">
+
+              <div class="resume-section-title">Experience</div>
+
+              <div class="resume-job">
+                <div class="resume-job-header">
+                  <span class="resume-job-company">TAIT</span>
+                  <span class="resume-job-date">2025 – Present</span>
+                </div>
+                <div class="resume-job-title">Digital Marketing Coordinator</div>
+                <div class="resume-job-desc">Motion graphics · Social campaigns · Salesforce implementation · Vendor coordination · Case study film production</div>
+              </div>
+
+              <div class="resume-job">
+                <div class="resume-job-header">
+                  <span class="resume-job-company">Marist College</span>
+                  <span class="resume-job-date">2024 – 2025</span>
+                </div>
+                <div class="resume-job-title">Video Production — Student Worker</div>
+                <div class="resume-job-desc">Event video production · Instagram content · Post-production editing</div>
+              </div>
+
+              <div class="resume-job">
+                <div class="resume-job-header">
+                  <span class="resume-job-company">Nick Gould Photography</span>
+                  <span class="resume-job-date">2022</span>
+                </div>
+                <div class="resume-job-title">Photography Internship</div>
+                <div class="resume-job-desc">Event videography · Adobe mentorship · Photo retouching · Equipment management</div>
+              </div>
+
+              <div class="resume-section-title" style="margin-top: clamp(8px,1.4vh,18px);">Projects</div>
+
+              <div class="resume-job">
+                <div class="resume-job-header">
+                  <span class="resume-job-company">Kiltura</span>
+                  <span class="resume-job-date">2020 – Present</span>
+                </div>
+                <div class="resume-job-desc">Founded digital media company · Music videos in Italy · Graphic design · Fashion shoots · Web + merch store</div>
+              </div>
+
+              <div class="resume-job">
+                <div class="resume-job-header">
+                  <span class="resume-job-company">Soap Magazine</span>
+                  <span class="resume-job-date">2024 – 2026</span>
+                </div>
+                <div class="resume-job-desc">Co-founded student literary magazine · Florence, Italy · Website · Logo · Photography · Cover design</div>
+              </div>
+
+            </div>
+
+            <!-- RIGHT: Education + Skills -->
+            <div class="resume-col resume-col-side">
+
+              <div class="resume-section-title">Education</div>
+              <div class="resume-edu">
+                <div class="resume-edu-school">Marist Italy</div>
+                <div class="resume-edu-detail">Florence, Italy · 2026<br>Cum Laude · GPA 3.591<br>Dean's List</div>
+              </div>
+              <div class="resume-edu">
+                <div class="resume-edu-detail">B.A. Digital Media<br>Graphic Design</div>
+              </div>
+              <div class="resume-edu" style="margin-top: 4px;">
+                <div class="resume-edu-detail">B.A. Studio Art<br>Photography</div>
+              </div>
+              <div class="resume-edu" style="margin-top: 4px;">
+                <div class="resume-edu-detail">Minor: Art History</div>
+              </div>
+
+              <div class="resume-section-title" style="margin-top: clamp(8px,1.4vh,18px);">Skills</div>
+
+              <div class="resume-skill-group">
+                <div class="resume-skill-label">Adobe</div>
+                <div class="resume-skill-items">Illustrator · Photoshop<br>Premiere · After Effects<br>Lightroom · InDesign</div>
+              </div>
+              <div class="resume-skill-group">
+                <div class="resume-skill-label">Code</div>
+                <div class="resume-skill-items">HTML · CSS · JS<br>Node.js · Next.js<br>Arduino</div>
+              </div>
+              <div class="resume-skill-group">
+                <div class="resume-skill-label">Tools</div>
+                <div class="resume-skill-items">Git · Vercel · Sanity<br>CAD · 3D Printing<br>Google Analytics</div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <div class="resume-footer-bar">
+            <a href="mailto:theowlance@gmail.com">theowlance@gmail.com</a>
+            <span>717 742 8617</span>
+            <a href="http://kiltura.com" target="_blank" rel="noopener">kiltura.com</a>
+          </div>
+
+        </div>
+      </div>
+      <!-- ── End Resume Content ─────────────────────────────────────────────── -->
+
     </div>
 
     <!-- Contact Me Reveal Bar (under Box 1 & 2) -->
