@@ -796,6 +796,7 @@
       .stage .box {
         opacity: calc(min(1, var(--p1) * 15) * max(0, 1 - var(--p2) * 5)) !important;
         pointer-events: auto !important;
+        z-index: 5 !important;
       }
 
       /* When genuinely on the hero/landing page (p1 < 0.07), prevent accidental taps */
@@ -882,15 +883,13 @@
         transform: translateY(0) !important;
         display: flex !important;
         align-items: center !important;
-        justify-content: space-between !important;
-        z-index: 55 !important;
+        justify-content: center !important;
+        z-index: 10 !important;
       }
 
+      /* Hide the big CONTACT ME text SVG on mobile — arrow hint is enough */
       .contact-text-wrap {
-        flex: 1 !important;
-        height: 100% !important;
-        display: flex !important;
-        align-items: center !important;
+        display: none !important;
       }
 
       .contact-scroll-hint {
