@@ -765,6 +765,374 @@
     .copy-tooltip.show {
       opacity: 1;
     }
+
+    /* =========================================================================
+       MOBILE PORTRAIT OPTIMIZATION (CONCEPT A: PURE DESKTOP DNA)
+       Identical aesthetic to desktop: 3 dark red columns, pure animal SVGs,
+       zero extra words, perfectly proportioned for smartphones.
+       ========================================================================= */
+    @media (max-width: 768px), (orientation: portrait) {
+      :root {
+        --m-col-w: 29vw;
+        --m-gap: 3vw;
+        --m-margin: 3.5vw;
+        --m-top: 16px;
+        --m-bottom: 24px;
+        --m-menu-h: 36px;
+      }
+
+      /* Logo at p=0: scales down smoothly in width when color drawer opens (--px) */
+      .logo-wrap {
+        left: var(--m-margin) !important;
+        width: calc(100vw - 2 * var(--m-margin) - (var(--m-col-w) + var(--m-gap)) * var(--px)) !important;
+        top: var(--m-top) !important;
+        height: max(0px, calc(100dvh - var(--m-top) - var(--m-bottom) - (100dvh * var(--p1)))) !important;
+      }
+
+      /* Theme Color Selector Drawer on Mobile: matches Column 3 width and slides into Column 3 slot */
+      .theme-drawer {
+        top: var(--m-top) !important;
+        bottom: var(--m-bottom) !important;
+        left: calc(100vw - (100vw - (var(--m-margin) + 2 * (var(--m-col-w) + var(--m-gap)))) * var(--px)) !important;
+        width: var(--m-col-w) !important;
+        padding: 24px 8px !important;
+        opacity: calc(var(--px) * max(0, 1 - var(--p1) * 3)) !important;
+        z-index: 40 !important;
+      }
+
+      .theme-swatches {
+        gap: clamp(10px, 2.5vh, 22px) !important;
+      }
+
+      .theme-swatch {
+        width: clamp(38px, 16vw, 60px) !important;
+        height: clamp(38px, 16vw, 60px) !important;
+        cursor: pointer !important;
+      }
+
+      .theme-swatch.active {
+        outline: 2.5px solid #ffffff !important;
+        outline-offset: 2.5px !important;
+      }
+
+      .theme-label {
+        font-size: 10px !important;
+        letter-spacing: 0.12em !important;
+        font-weight: 700 !important;
+        white-space: nowrap !important;
+        line-height: 1.2 !important;
+      }
+
+      /* 3 Columns side-by-side: balanced 29vw width, 3vw gap, 3.5vw margins */
+      .box-1 {
+        left: var(--m-margin) !important;
+        width: var(--m-col-w) !important;
+        top: calc(var(--m-top) + (100dvh - var(--m-top)) * (1 - var(--p1))) !important;
+        bottom: calc(var(--m-bottom) + (100dvh - var(--m-bottom) - var(--m-top)) * var(--p2)) !important;
+      }
+
+      .box-2 {
+        left: calc(var(--m-margin) + var(--m-col-w) + var(--m-gap)) !important;
+        width: var(--m-col-w) !important;
+        top: calc(var(--m-top) + (100dvh - var(--m-top)) * (1 - var(--p1))) !important;
+        bottom: calc(var(--m-bottom) + (100dvh - var(--m-bottom) - var(--m-top)) * var(--p2)) !important;
+      }
+
+      .box-3 {
+        left: calc(var(--m-margin) + 2 * (var(--m-col-w) + var(--m-gap))) !important;
+        width: var(--m-col-w) !important;
+        top: calc(var(--m-top) + (100dvh - var(--m-top)) * (1 - var(--p1))) !important;
+        bottom: calc(var(--m-bottom) + var(--m-menu-h) + 10px + (100dvh - var(--m-bottom) - var(--m-top)) * var(--p2)) !important;
+      }
+
+      /* Contact Bar & Menu Bar at bottom (p2=0) rising to top (p2=1) */
+      .contact-bar {
+        left: var(--m-margin) !important;
+        width: calc(2 * var(--m-col-w) + var(--m-gap)) !important;
+        height: var(--m-menu-h) !important;
+        bottom: calc(var(--m-bottom) + (100dvh - var(--m-bottom) - var(--m-top) - var(--m-menu-h)) * var(--p2)) !important;
+      }
+
+      .menu-btn {
+        left: calc(var(--m-margin) + 2 * (var(--m-col-w) + var(--m-gap))) !important;
+        width: var(--m-col-w) !important;
+        height: var(--m-menu-h) !important;
+        bottom: calc(var(--m-bottom) + (100dvh - var(--m-bottom) - var(--m-top) - var(--m-menu-h)) * var(--p2)) !important;
+        padding: 0 !important; /* Zero padding ensures pixel-perfect alignment with Box 3 */
+        margin: 0 !important;
+        box-sizing: border-box !important;
+      }
+
+      .menu-bar {
+        width: 100% !important;
+        height: 6px !important;
+      }
+
+      .menu-btn:not(.open) .bar-1 {
+        transform: translateY(24px) !important;
+      }
+      .menu-btn:not(.open) .bar-2 {
+        transform: translateY(12px) !important;
+      }
+      .menu-btn:not(.open) .bar-3 {
+        transform: translateY(0) !important;
+      }
+
+      /* Animals: Identical Visual Scale & Baseline Alignment */
+      .box .animal {
+        top: 50% !important;
+        left: 50% !important;
+        right: auto !important;
+        transform: translate(-50%, -50%) !important;
+        height: 25.5vw !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+
+      .box-1 .animal-chicken {
+        width: 21.9vw !important;
+        height: 25.5vw !important;
+      }
+
+      .box-2 .animal-tiger {
+        width: 25.4vw !important;
+        height: 25.5vw !important;
+      }
+
+      .box-3 .animal-goat {
+        width: 17.6vw !important;
+        height: 25.5vw !important;
+      }
+
+      .animal svg {
+        width: 100% !important;
+        height: 100% !important;
+        display: block !important;
+        overflow: visible !important;
+      }
+
+      /* Enlarged Text Below Animals (VIDEO, PHOTO, RESUME) */
+      .animal-chicken .animal-text {
+        transform: scale(1.45) translate(4px, 2px) !important;
+        transform-origin: 84.4px 361.5px !important;
+        transform-box: view-box !important;
+      }
+
+      .animal-tiger .animal-text {
+        transform: scale(1.45) translate(10px, 2px) !important;
+        transform-origin: 74.1px 369.5px !important;
+        transform-box: view-box !important;
+      }
+
+      .animal-goat .animal-text {
+        transform: scale(1.45) translate(0px, 2px) !important;
+        transform-origin: 134.9px 369.5px !important;
+        transform-box: view-box !important;
+      }
+
+      /* When boxes are open, text is cleanly hidden */
+      body.box-1-open .animal-text,
+      body.box-2-open .animal-text,
+      body.box-3-open .animal-text {
+        opacity: 0 !important;
+        pointer-events: none !important;
+      }
+
+      /* When menu is open: All 3 boxes lift up to align their bottoms 10px above CONTACT ME and 3 bars */
+      body.menu-open .box-1,
+      body.menu-open .box-2,
+      body.menu-open .box-3 {
+        bottom: calc(var(--m-bottom) + var(--m-menu-h) + 10px + (100dvh - var(--m-bottom) - var(--m-top)) * var(--p2)) !important;
+      }
+
+      /* Hover / Active feedback */
+      .box-1:active, .box-2:active, .box-3:active {
+        background-color: var(--dark-red-hover) !important;
+      }
+
+      /* =========================================================================
+         BOX EXPANSION STATES ON MOBILE:
+         Completely hides the menu button, contact bar, and inactive animals so
+         there is ZERO weird overlap, and sets unified top & bottom for all boxes.
+         ========================================================================= */
+      body.box-1-open .menu-btn,
+      body.box-2-open .menu-btn,
+      body.box-3-open .menu-btn,
+      body.box-1-open .contact-bar,
+      body.box-2-open .contact-bar,
+      body.box-3-open .contact-bar {
+        display: none !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+      }
+
+      body.box-1-open .box-2 .animal,
+      body.box-1-open .box-3 .animal,
+      body.box-2-open .box-1 .animal,
+      body.box-2-open .box-3 .animal,
+      body.box-3-open .box-1 .animal,
+      body.box-3-open .box-2 .animal {
+        display: none !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+      }
+
+      .goat-panel {
+        display: none !important;
+      }
+
+      /* Box 1 Open */
+      body.box-1-open .box-1 {
+        left: var(--m-margin) !important;
+        width: calc(100vw - 2 * var(--m-margin) - 28px) !important;
+        top: var(--m-top) !important;
+        bottom: var(--m-bottom) !important;
+      }
+      body.box-1-open .box-2 {
+        left: calc(100vw - var(--m-margin) - 22px) !important;
+        width: 10px !important;
+        top: var(--m-top) !important;
+        bottom: var(--m-bottom) !important;
+      }
+      body.box-1-open .box-3 {
+        left: calc(100vw - var(--m-margin) - 10px) !important;
+        width: 10px !important;
+        top: var(--m-top) !important;
+        bottom: var(--m-bottom) !important;
+      }
+
+      /* Box 2 Open */
+      body.box-2-open .box-1 {
+        left: var(--m-margin) !important;
+        width: 10px !important;
+        top: var(--m-top) !important;
+        bottom: var(--m-bottom) !important;
+      }
+      body.box-2-open .box-2 {
+        left: calc(var(--m-margin) + 14px) !important;
+        width: calc(100vw - 2 * var(--m-margin) - 28px) !important;
+        top: var(--m-top) !important;
+        bottom: var(--m-bottom) !important;
+      }
+      body.box-2-open .box-3 {
+        left: calc(100vw - var(--m-margin) - 10px) !important;
+        width: 10px !important;
+        top: var(--m-top) !important;
+        bottom: var(--m-bottom) !important;
+      }
+
+      /* Box 3 Open */
+      body.box-3-open .box-1 {
+        left: var(--m-margin) !important;
+        width: 10px !important;
+        top: var(--m-top) !important;
+        bottom: var(--m-bottom) !important;
+      }
+      body.box-3-open .box-2 {
+        left: calc(var(--m-margin) + 14px) !important;
+        width: 10px !important;
+        top: var(--m-top) !important;
+        bottom: var(--m-bottom) !important;
+      }
+      body.box-3-open .box-3 {
+        left: calc(var(--m-margin) + 28px) !important;
+        width: calc(100vw - 2 * var(--m-margin) - 28px) !important;
+        top: var(--m-top) !important;
+        bottom: var(--m-bottom) !important;
+      }
+
+      /* Contact Section on Mobile */
+      .contact-modal {
+        left: var(--m-margin) !important;
+        width: calc(100vw - 2 * var(--m-margin)) !important;
+        top: calc(var(--m-top) + var(--m-menu-h) + 12px + (100dvh - var(--m-top) - var(--m-menu-h) - 12px) * (1 - var(--p2))) !important;
+        height: calc(100dvh - var(--m-top) - var(--m-menu-h) - var(--m-bottom) - 24px) !important;
+        bottom: var(--m-bottom) !important;
+        opacity: var(--p2) !important;
+      }
+
+      .contact-modal-content {
+        flex-direction: column !important;
+        gap: 10px !important;
+        width: 100% !important;
+        height: 100% !important;
+        overflow-y: auto !important;
+      }
+
+      .contact-main-card {
+        flex-direction: column !important;
+        gap: 10px !important;
+        width: 100% !important;
+        padding: 14px !important;
+        flex: 1 !important;
+      }
+
+      .contact-form {
+        gap: 8px !important;
+        flex: 1 !important;
+      }
+
+      .name-field,
+      .email-field,
+      .subject-field {
+        height: 42px !important;
+      }
+
+      .message-field {
+        flex: 1 !important;
+        min-height: 70px !important;
+      }
+
+      .contact-input,
+      .contact-textarea {
+        font-size: 14px !important;
+        padding: 8px 12px !important;
+      }
+
+      .contact-dog-btn {
+        width: 100% !important;
+        height: 64px !important;
+        flex-direction: row !important;
+        justify-content: center !important;
+        gap: 14px !important;
+        padding: 8px 16px !important;
+      }
+
+      .dog-svg-wrap {
+        width: 48px !important;
+        height: 48px !important;
+      }
+
+      .dog-send-label {
+        font-size: 18px !important;
+        letter-spacing: 0.12em !important;
+      }
+
+      .contact-side-panel {
+        width: 100% !important;
+        flex-direction: row !important;
+        height: 52px !important;
+        gap: 10px !important;
+        flex-shrink: 0 !important;
+      }
+
+      .contact-action-btn {
+        height: 52px !important;
+        flex: 1 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 8px !important;
+      }
+
+      .contact-action-btn svg {
+        width: 28px !important;
+        height: 28px !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
+      }
+    }
   </style>
 </head>
 <body>
