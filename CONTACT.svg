@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 929.74 210.63">
+  <defs>
+    <style>
+      .cls-1 {
+        letter-spacing: -.06em;
+      }
+
+      .cls-2 {
+        letter-spacing: -.02em;
+      }
+
+      .cls-3 {
+        fill: #da3520;
+        font-family: ReplicaLLTT-Bold, 'Replica LL TT';
+        font-size: 196.85px;
+        font-weight: 700;
+      }
+    </style>
+  </defs>
+  <text class="cls-3" transform="translate(0 167.32)"><tspan x="0" y="0">CON</tspan><tspan class="cls-1" x="437.02" y="0">T</tspan><tspan class="cls-2" x="547.45" y="0">AC</tspan><tspan x="807.69" y="0">T</tspan></text>
+</svg>
