@@ -1,11 +1,11 @@
 /**
- * sanity.js — Kiltura Portfolio: Sanity CDN Fetch + Portfolio Card Renderer
+ * sanity.js — Kiltura Portfolio: Sanity CDN Fetch + Dynamic CMS & Modal Showcase
  *
- * Pulls published projects from the Sanity CDN and renders them as
- * three dark-red cards inside the expanded Chicken (VIDEO) and Tiger (PHOTO) boxes.
- *
- * Usage: include this script in index.html after the main script block.
- * It reads from the public Sanity CDN — no API token needed for published content.
+ * 1. Queries Sanity CDN for published projects, site settings, and resume.
+ * 2. Renders 3 cards inside Chicken (Box 1 · Video) and Dog/Tiger (Box 2 · Photo).
+ * 3. Provides high-contrast typography and positioning to prevent overlap with animal SVGs.
+ * 4. Includes an interactive full-screen Project Showcase Modal for videos, photos, and case studies.
+ * 5. Dynamically links the downloadable Resume PDF and site settings.
  */
 
 (function () {
@@ -15,10 +15,9 @@
   const API_VER    = '2024-01-01';
   const CDN_BASE   = `https://${PROJECT_ID}.apicdn.sanity.io/v${API_VER}/data/query/${DATASET}`;
 
-  // ─── GROQ Query ─────────────────────────────────────────────────────────────
-  // Fetches all published projects, sorted by section then order
-  const QUERY = encodeURIComponent(`
-    *[_type == "project" && published == true] | order(section asc, order asc) {
+  // ─── Unified GROQ Query ─────────────────────────────────────────────────────
+  const QUERY = encodeURIComponent(`{
+    "projects": *[_type == "project" && published == true] | order(section asc, order asc) {
       _id,
       title,
       slug,
@@ -28,14 +27,36 @@
       client,
       year,
       videoUrl,
+      "videoFileUrl": videoFile.asset->url,
       "coverImageUrl": coverImage.asset->url,
       "coverImageAlt": coverImage.alt,
       "galleryUrls": gallery[].asset->url,
+      description
+    },
+    "siteSettings": *[_type == "siteSettings"][0] {
+      title,
+      heroStatement,
+      primaryThemeColor,
+      contactEmail,
+      linkedinUrl,
+      instagramUrl,
+      vimeoUrl,
+      seoDescription
+    },
+    "resume": *[_type == "resume"][0] {
+      name,
+      headline,
+      location,
+      "resumePdfUrl": resumeFile.asset->url,
+      experience[] { role, company, period, location, bullets },
+      education[] { degree, institution, period, details },
+      projects[] { title, role, description, url },
+      skillCategories[] { name, skills }
     }
-  `);
+  }`);
 
   // ─── Image URL Builder ────────────────────────────────────────────────────
-  function buildImageUrl(rawUrl, width = 600) {
+  function buildImageUrl(rawUrl, width = 800) {
     if (!rawUrl) return null;
     return `${rawUrl}?w=${width}&auto=format&fit=crop&q=80`;
   }
@@ -46,10 +67,10 @@
     const hasCover = !!imgUrl;
 
     const metaLine = [project.client, project.year].filter(Boolean).join('  ·  ');
-    const tagline  = project.tagline || '';
+    const tagline  = project.tagline || (project.section === 'video' ? 'VIDEO PROJECT' : 'PHOTOGRAPHY');
 
     return `
-      <div class="portfolio-card" data-id="${project._id}" data-section="${project.section}" role="button" tabindex="0" aria-label="View ${project.title}">
+      <div class="portfolio-card" data-id="${project._id}" role="button" tabindex="0" aria-label="View ${project.title}">
         ${hasCover ? `<div class="portfolio-card-bg" style="background-image:url('${imgUrl}')"></div>` : ''}
         <div class="portfolio-card-overlay"></div>
         <div class="portfolio-card-content">
@@ -68,6 +89,7 @@
 
   // ─── Inject CSS ───────────────────────────────────────────────────────────
   function injectStyles() {
+    if (document.getElementById('portfolio-cards-style')) return;
     const style = document.createElement('style');
     style.id = 'portfolio-cards-style';
     style.textContent = `
@@ -78,12 +100,32 @@
         display: flex;
         flex-direction: column;
         gap: clamp(8px, 1.4vh, 16px);
-        padding: clamp(12px, 2vh, 22px) clamp(14px, 2vw, 24px)
-                 clamp(12px, 2vh, 22px) clamp(14px, 2vw, 24px);
+        padding: clamp(14px, 2.2vh, 26px) clamp(16px, 2vw, 28px);
         opacity: 0;
         pointer-events: none;
         transition: opacity 0.35s ease 0.1s;
         overflow: hidden;
+        z-index: 60;
+      }
+
+      /* Desktop: Leave space for animal SVGs */
+      @media (min-width: 769px) and (orientation: landscape) {
+        body.box-1-open .box-1 .portfolio-cards-wrap {
+          padding-left: clamp(140px, 17vw, 200px);
+        }
+        body.box-2-open .box-2 .portfolio-cards-wrap {
+          padding-right: clamp(140px, 17vw, 200px);
+        }
+      }
+
+      /* Mobile: Leave top space for animal icon */
+      @media (max-width: 768px), (orientation: portrait) {
+        body.box-1-open .box-1 .portfolio-cards-wrap,
+        body.box-2-open .box-2 .portfolio-cards-wrap {
+          padding: 12px;
+          gap: 8px;
+          padding-top: 76px;
+        }
       }
 
       /* Show cards when the parent box is open */
@@ -98,21 +140,23 @@
         flex: 1;
         min-height: 0;
         position: relative;
-        background-color: rgba(0, 0, 0, 0.14);
+        background-color: rgba(0, 0, 0, 0.4);
         cursor: pointer;
         overflow: hidden;
         display: flex;
         align-items: flex-end;
-        transition: background-color 0.2s ease, transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        transition: background-color 0.2s ease, transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1), border-color 0.2s ease;
       }
 
       .portfolio-card:hover {
-        background-color: rgba(0, 0, 0, 0.22);
+        background-color: rgba(0, 0, 0, 0.55);
         transform: scale(1.012);
+        border-color: rgba(255, 255, 255, 0.35);
       }
 
       .portfolio-card:active {
-        transform: scale(0.98);
+        transform: scale(0.985);
       }
 
       .portfolio-card-bg {
@@ -120,19 +164,19 @@
         inset: 0;
         background-size: cover;
         background-position: center;
-        opacity: 0.35;
+        opacity: 0.65;
         transition: opacity 0.3s ease, transform 0.3s ease;
       }
 
       .portfolio-card:hover .portfolio-card-bg {
-        opacity: 0.5;
+        opacity: 0.85;
         transform: scale(1.03);
       }
 
       .portfolio-card-overlay {
         position: absolute;
         inset: 0;
-        background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 55%);
+        background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0.1) 100%);
         pointer-events: none;
       }
 
@@ -141,8 +185,8 @@
         z-index: 2;
         display: flex;
         flex-direction: column;
-        gap: 2px;
-        padding: clamp(8px, 1.2vh, 14px) clamp(10px, 1.5vw, 18px);
+        gap: 3px;
+        padding: clamp(10px, 1.4vh, 18px) clamp(12px, 1.6vw, 22px);
         flex: 1;
         min-width: 0;
       }
@@ -151,8 +195,8 @@
         font-family: 'ReplicaLLTT-Bold', sans-serif;
         font-size: clamp(9px, 0.95vw, 13px);
         letter-spacing: 0.14em;
-        color: var(--bg);
-        opacity: 0.65;
+        color: #FFFFFF;
+        opacity: 0.85;
         text-transform: uppercase;
         white-space: nowrap;
         overflow: hidden;
@@ -161,22 +205,22 @@
 
       .portfolio-card-title {
         font-family: 'ReplicaLLTT-Bold', sans-serif;
-        font-size: clamp(12px, 1.5vw, 20px);
+        font-size: clamp(14px, 1.8vw, 24px);
         letter-spacing: 0.06em;
-        color: var(--bg);
+        color: #FFFFFF;
         text-transform: uppercase;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
         line-height: 1.2;
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
       }
 
       .portfolio-card-meta {
         font-family: 'ReplicaLLTT-Bold', sans-serif;
-        font-size: clamp(8px, 0.85vw, 11px);
+        font-size: clamp(8px, 0.85vw, 12px);
         letter-spacing: 0.1em;
-        color: var(--bg);
-        opacity: 0.5;
+        color: rgba(255, 255, 255, 0.7);
         text-transform: uppercase;
         white-space: nowrap;
         overflow: hidden;
@@ -185,19 +229,19 @@
 
       .portfolio-card-arrow {
         position: absolute;
-        right: clamp(10px, 1.2vw, 18px);
-        bottom: clamp(10px, 1.2vh, 16px);
+        right: clamp(12px, 1.4vw, 22px);
+        bottom: clamp(12px, 1.4vh, 20px);
         z-index: 2;
-        width: clamp(14px, 1.4vw, 20px);
-        height: clamp(14px, 1.4vw, 20px);
-        color: var(--bg);
-        opacity: 0;
-        transform: translateX(-6px);
+        width: clamp(16px, 1.5vw, 22px);
+        height: clamp(16px, 1.5vw, 22px);
+        color: #FFFFFF;
+        opacity: 0.7;
+        transform: translateX(-4px);
         transition: opacity 0.2s ease, transform 0.2s ease;
       }
 
       .portfolio-card:hover .portfolio-card-arrow {
-        opacity: 0.7;
+        opacity: 1;
         transform: translateX(0);
       }
 
@@ -207,11 +251,12 @@
         display: block;
       }
 
-      /* ── Empty / Loading States ─────────────────────────────────────────── */
+      /* ── Empty / Placeholder Slots ──────────────────────────────────────── */
       .portfolio-card-placeholder {
         flex: 1;
         min-height: 0;
-        background-color: rgba(0, 0, 0, 0.08);
+        background-color: rgba(0, 0, 0, 0.18);
+        border: 1px dashed rgba(255, 255, 255, 0.15);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -221,7 +266,7 @@
         width: 6px;
         height: 6px;
         border-radius: 50%;
-        background: var(--bg);
+        background: #FFFFFF;
         opacity: 0.3;
         animation: portfolioCardPulse 1.4s ease-in-out infinite;
       }
@@ -231,39 +276,248 @@
         50%       { opacity: 0.45; }
       }
 
-      /* ── Mobile adjustments ─────────────────────────────────────────────── */
-      @media (max-width: 768px), (orientation: portrait) {
-        body.box-1-open .box-1 .portfolio-cards-wrap,
-        body.box-2-open .box-2 .portfolio-cards-wrap {
-          padding: 10px 10px 10px 10px;
-          gap: 6px;
-          /* On mobile leave the top-left animal icon area free */
-          padding-top: 72px;
-        }
+      /* ── Project Showcase Modal ─────────────────────────────────────────── */
+      .project-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: rgba(10, 10, 10, 0.92);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: clamp(16px, 4vw, 40px);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+      }
 
-        .portfolio-card-title {
-          font-size: clamp(11px, 3.5vw, 16px);
-        }
+      .project-modal.is-active {
+        opacity: 1;
+        pointer-events: auto;
+      }
 
-        .portfolio-card-tag {
-          font-size: clamp(8px, 2.5vw, 11px);
-        }
+      .project-modal-container {
+        position: relative;
+        width: 100%;
+        max-width: 1080px;
+        max-height: 90vh;
+        background: #141414;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8);
+      }
+
+      .project-modal-close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        z-index: 10;
+        width: 36px;
+        height: 36px;
+        background: rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #FFFFFF;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s, transform 0.2s;
+      }
+      .project-modal-close:hover {
+        background: var(--bg);
+        transform: scale(1.05);
+      }
+
+      .project-modal-media-wrap {
+        width: 100%;
+        background: #000;
+        position: relative;
+        min-height: 240px;
+        max-height: 60vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      .project-modal-media-wrap img,
+      .project-modal-media-wrap video,
+      .project-modal-media-wrap iframe {
+        width: 100%;
+        height: 100%;
+        max-height: 60vh;
+        object-fit: contain;
+      }
+
+      .project-modal-body {
+        padding: clamp(20px, 3.5vw, 36px);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .project-modal-tag {
+        font-family: 'ReplicaLLTT-Bold', sans-serif;
+        font-size: 11px;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--bg);
+      }
+
+      .project-modal-title {
+        font-family: 'ReplicaLLTT-Bold', sans-serif;
+        font-size: clamp(20px, 3.5vw, 34px);
+        letter-spacing: 0.04em;
+        color: #FFFFFF;
+        text-transform: uppercase;
+        margin: 0;
+        line-height: 1.15;
+      }
+
+      .project-modal-meta {
+        font-family: 'ReplicaLLTT-Bold', sans-serif;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        color: rgba(255, 255, 255, 0.5);
+        text-transform: uppercase;
+      }
+
+      .project-modal-desc {
+        font-size: 15px;
+        line-height: 1.6;
+        color: rgba(255, 255, 255, 0.85);
+        margin-top: 8px;
+      }
+
+      /* ── Resume Download Link ───────────────────────────────────────────── */
+      .sanity-resume-dl {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 6px;
+        font-family: 'ReplicaLLTT-Bold', sans-serif;
+        font-size: 11px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #FFFFFF;
+        text-decoration: underline;
+        opacity: 0.9;
+        transition: opacity 0.2s ease;
+      }
+      .sanity-resume-dl:hover {
+        opacity: 1;
       }
     `;
     document.head.appendChild(style);
   }
 
+  // ─── Project Modal Controller ─────────────────────────────────────────────
+  let modalEl = null;
+
+  function createModal() {
+    if (modalEl) return modalEl;
+
+    modalEl = document.createElement('div');
+    modalEl.className = 'project-modal';
+    modalEl.id = 'sanityProjectModal';
+    modalEl.innerHTML = `
+      <div class="project-modal-container" role="dialog" aria-modal="true">
+        <button class="project-modal-close" id="modalCloseBtn" aria-label="Close modal">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+        <div class="project-modal-media-wrap" id="modalMedia"></div>
+        <div class="project-modal-body">
+          <div class="project-modal-tag" id="modalTag"></div>
+          <h2 class="project-modal-title" id="modalTitle"></h2>
+          <div class="project-modal-meta" id="modalMeta"></div>
+          <div class="project-modal-desc" id="modalDesc"></div>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modalEl);
+
+    // Close handlers
+    const closeBtn = modalEl.querySelector('#modalCloseBtn');
+    closeBtn.addEventListener('click', closeModal);
+
+    modalEl.addEventListener('click', (e) => {
+      if (e.target === modalEl) closeModal();
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modalEl.classList.contains('is-active')) {
+        closeModal();
+      }
+    });
+
+    return modalEl;
+  }
+
+  function openModal(project) {
+    createModal();
+
+    const mediaWrap = modalEl.querySelector('#modalMedia');
+    const tagEl     = modalEl.querySelector('#modalTag');
+    const titleEl   = modalEl.querySelector('#modalTitle');
+    const metaEl    = modalEl.querySelector('#modalMeta');
+    const descEl    = modalEl.querySelector('#modalDesc');
+
+    tagEl.textContent   = project.tagline || (project.section === 'video' ? 'VIDEO PROJECT' : 'PHOTOGRAPHY');
+    titleEl.textContent = project.title;
+    metaEl.textContent  = [project.client, project.year].filter(Boolean).join('  ·  ');
+
+    // Build media
+    mediaWrap.innerHTML = '';
+    const videoUrl = project.videoUrl || project.videoFileUrl;
+
+    if (videoUrl) {
+      if (videoUrl.includes('vimeo.com')) {
+        const vimeoId = videoUrl.split('/').pop().split('?')[0];
+        mediaWrap.innerHTML = `<iframe src="https://player.vimeo.com/video/${vimeoId}?autoplay=1&title=0&byline=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+      } else if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+        const ytId = videoUrl.includes('youtu.be') ? videoUrl.split('/').pop() : new URL(videoUrl).searchParams.get('v');
+        mediaWrap.innerHTML = `<iframe src="https://www.youtube.com/embed/${ytId}?autoplay=1" frameborder="0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>`;
+      } else {
+        mediaWrap.innerHTML = `<video src="${videoUrl}" controls autoplay playsinline style="width:100%;height:100%"></video>`;
+      }
+    } else if (project.coverImageUrl) {
+      mediaWrap.innerHTML = `<img src="${project.coverImageUrl}" alt="${project.title}" />`;
+    }
+
+    // Description text
+    if (typeof project.description === 'string') {
+      descEl.textContent = project.description;
+    } else {
+      descEl.textContent = '';
+    }
+
+    modalEl.classList.add('is-active');
+  }
+
+  function closeModal() {
+    if (!modalEl) return;
+    modalEl.classList.remove('is-active');
+    const mediaWrap = modalEl.querySelector('#modalMedia');
+    if (mediaWrap) mediaWrap.innerHTML = ''; // Stop video playback
+  }
+
   // ─── Render Cards into a Box ──────────────────────────────────────────────
   function renderCards(boxEl, projects) {
-    // Remove any existing wrap
     const existing = boxEl.querySelector('.portfolio-cards-wrap');
     if (existing) existing.remove();
 
     const wrap = document.createElement('div');
     wrap.className = 'portfolio-cards-wrap';
 
-    if (projects.length === 0) {
-      // Show 3 grey placeholder slots
+    if (!projects || projects.length === 0) {
       for (let i = 0; i < 3; i++) {
         const ph = document.createElement('div');
         ph.className = 'portfolio-card-placeholder';
@@ -274,39 +528,37 @@
         wrap.appendChild(ph);
       }
     } else {
-      // Render up to 3 cards; pad with placeholders if fewer than 3
       const slots = [null, null, null];
       projects.forEach(p => {
         const idx = Math.max(0, Math.min(2, (p.order || 1) - 1));
-        slots[idx] = p;
+        // Fill slot if empty or prefer newer
+        if (!slots[idx]) slots[idx] = p;
       });
 
-      slots.forEach(project => {
+      slots.forEach((project, i) => {
         if (project) {
           const div = document.createElement('div');
           div.innerHTML = buildCardHTML(project).trim();
           const card = div.firstChild;
-          // Keyboard support
+
           card.addEventListener('keydown', e => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
-              card.click();
+              openModal(project);
             }
           });
-          // Click handler — opens project (extend as needed)
+
           card.addEventListener('click', () => {
-            if (project.videoUrl) {
-              window.open(project.videoUrl, '_blank', 'noopener');
-            } else {
-              console.log('Open project:', project.title);
-            }
+            openModal(project);
           });
+
           wrap.appendChild(card);
         } else {
           const ph = document.createElement('div');
           ph.className = 'portfolio-card-placeholder';
           const dot = document.createElement('div');
           dot.className = 'portfolio-card-placeholder-dot';
+          dot.style.animationDelay = `${i * 0.25}s`;
           ph.appendChild(dot);
           wrap.appendChild(ph);
         }
@@ -316,35 +568,96 @@
     boxEl.appendChild(wrap);
   }
 
+  // ─── Apply Dynamic Site Settings ──────────────────────────────────────────
+  function applySiteSettings(settings) {
+    if (!settings) return;
+
+    if (settings.title) {
+      document.title = settings.title;
+    }
+
+    if (settings.contactEmail) {
+      const contactBar = document.getElementById('contactBar');
+      if (contactBar) {
+        contactBar.setAttribute('href', `mailto:${settings.contactEmail}`);
+      }
+      const copyBtn = document.getElementById('btnCopyEmail');
+      if (copyBtn) {
+        copyBtn.dataset.email = settings.contactEmail;
+      }
+    }
+
+    if (settings.linkedinUrl) {
+      const linkedinBtn = document.querySelector('.btn-linkedin');
+      if (linkedinBtn) {
+        linkedinBtn.setAttribute('href', settings.linkedinUrl);
+      }
+    }
+  }
+
+  // ─── Connect Resume PDF Download ──────────────────────────────────────────
+  function applyResumeData(resume) {
+    if (!resume || !resume.resumePdfUrl) return;
+
+    if (document.getElementById('sanityResumeDl')) return;
+
+    const resumeHeader = document.querySelector('.resume-header');
+    if (resumeHeader) {
+      const dlLink = document.createElement('a');
+      dlLink.id = 'sanityResumeDl';
+      dlLink.className = 'sanity-resume-dl';
+      dlLink.href = resume.resumePdfUrl;
+      dlLink.target = '_blank';
+      dlLink.rel = 'noopener noreferrer';
+      dlLink.title = 'Download Resume PDF';
+      dlLink.innerHTML = `
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Download PDF
+      `;
+      resumeHeader.appendChild(dlLink);
+    }
+  }
+
   // ─── Fetch + Init ─────────────────────────────────────────────────────────
   async function init() {
     injectStyles();
 
     const box1 = document.getElementById('box1'); // Chicken / VIDEO
-    const box2 = document.getElementById('box2'); // Tiger  / PHOTO
+    const box2 = document.getElementById('box2'); // Dog / Tiger / PHOTO
 
-    // Show placeholders immediately so the UI doesn't look empty
     if (box1) renderCards(box1, []);
     if (box2) renderCards(box2, []);
 
     try {
       const res = await fetch(`${CDN_BASE}?query=${QUERY}`);
       if (!res.ok) throw new Error(`Sanity CDN error: ${res.status}`);
-      const { result } = await res.json();
+      const data = await res.json();
+      const result = data.result || {};
 
-      const videoProjects = (result || []).filter(p => p.section === 'video');
-      const photoProjects = (result || []).filter(p => p.section === 'photo');
+      const projects = result.projects || [];
+      const videoProjects = projects.filter(p => p.section === 'video');
+      const photoProjects = projects.filter(p => p.section === 'photo' || p.section === 'dog');
 
       if (box1) renderCards(box1, videoProjects);
       if (box2) renderCards(box2, photoProjects);
 
+      if (result.siteSettings) {
+        applySiteSettings(result.siteSettings);
+      }
+
+      if (result.resume) {
+        applyResumeData(result.resume);
+      }
+
     } catch (err) {
-      console.warn('[Kiltura] Could not load portfolio projects:', err);
-      // Keep the placeholder slots — they look intentional at this scale
+      console.warn('[Kiltura] Sanity CDN notice:', err);
     }
   }
 
-  // Run after DOM is ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {

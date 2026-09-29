@@ -1416,19 +1416,271 @@
     }
     .resume-footer-bar a:hover { opacity: 0.8; }
 
-    /* Mobile resume overrides */
+    /* ==========================================================================
+       RESUME CONTENT — Box 3 (Goat Panel) — Accordion Layout
+       ========================================================================== */
+    .resume-wrap {
+      position: absolute;
+      inset: 0;
+      /* Right padding leaves room for the goat SVG */
+      padding: clamp(16px, 2.8vh, 32px) calc(170 / 1024 * 100vw) clamp(14px, 2.4vh, 28px) clamp(18px, 2.8vw, 38px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease 0.1s;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(8px, 1.2vh, 16px);
+    }
+    body.box-3-open .resume-wrap {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Scrollable inner */
+    .resume-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .resume-scroll::-webkit-scrollbar { display: none; }
+
+    /* Header */
+    .resume-name {
+      font-family: 'ReplicaLLTT-Bold', sans-serif;
+      font-size: clamp(17px, 2.6vw, 30px);
+      letter-spacing: 0.09em;
+      color: var(--bg);
+      text-transform: uppercase;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .resume-contact-line {
+      font-family: 'ReplicaLLTT-Bold', sans-serif;
+      font-size: clamp(7px, 0.9vw, 11px);
+      letter-spacing: 0.16em;
+      color: var(--bg);
+      opacity: 0.45;
+      text-transform: uppercase;
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+    .resume-contact-line a { color: inherit; text-decoration: none; }
+    .resume-contact-line a:hover { opacity: 1; }
+
+    /* Accordion section */
+    .resume-section {
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* Clickable header row */
+    .resume-section-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      background: none;
+      border: none;
+      padding: clamp(7px, 1.1vh, 13px) 0;
+      cursor: pointer;
+      gap: 10px;
+      outline: none;
+    }
+    .resume-section-toggle:hover .resume-section-label { opacity: 0.9; }
+
+    .resume-section-label {
+      font-family: 'ReplicaLLTT-Bold', sans-serif;
+      font-size: clamp(8px, 1.0vw, 13px);
+      letter-spacing: 0.22em;
+      color: var(--bg);
+      opacity: 0.55;
+      text-transform: uppercase;
+      transition: opacity 0.2s ease;
+    }
+    .resume-section-icon {
+      font-family: 'ReplicaLLTT-Bold', sans-serif;
+      font-size: clamp(10px, 1.2vw, 16px);
+      color: var(--bg);
+      opacity: 0.4;
+      line-height: 1;
+      transition: transform 0.3s ease, opacity 0.2s ease;
+      flex-shrink: 0;
+      user-select: none;
+    }
+    .resume-section.is-open .resume-section-icon {
+      transform: rotate(45deg);
+      opacity: 0.7;
+    }
+    .resume-section.is-open .resume-section-label {
+      opacity: 0.85;
+    }
+
+    /* Accordion body — CSS grid-row trick for smooth height animation */
+    .resume-section-body {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .resume-section.is-open .resume-section-body {
+      grid-template-rows: 1fr;
+    }
+    .resume-section-inner {
+      overflow: hidden;
+      padding-bottom: 0;
+      transition: padding-bottom 0.32s ease;
+    }
+    .resume-section.is-open .resume-section-inner {
+      padding-bottom: clamp(8px, 1.2vh, 16px);
+    }
+
+    /* Job entry */
+    .resume-job {
+      margin-bottom: clamp(8px, 1.3vh, 18px);
+    }
+    .resume-job:last-child { margin-bottom: 0; }
+
+    .resume-job-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .resume-job-company {
+      font-family: 'ReplicaLLTT-Bold', sans-serif;
+      font-size: clamp(10px, 1.3vw, 16px);
+      letter-spacing: 0.09em;
+      color: var(--bg);
+      text-transform: uppercase;
+    }
+    .resume-job-date {
+      font-family: 'ReplicaLLTT-Bold', sans-serif;
+      font-size: clamp(7px, 0.82vw, 10px);
+      letter-spacing: 0.14em;
+      color: var(--bg);
+      opacity: 0.38;
+      text-transform: uppercase;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .resume-job-title {
+      font-family: 'ReplicaLLTT-Bold', sans-serif;
+      font-size: clamp(7.5px, 0.9vw, 11px);
+      letter-spacing: 0.14em;
+      color: var(--bg);
+      opacity: 0.55;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+    .resume-bullets {
+      margin-top: clamp(4px, 0.6vh, 8px);
+      display: flex;
+      flex-direction: column;
+      gap: clamp(2px, 0.4vh, 5px);
+    }
+    .resume-bullet {
+      font-family: 'ReplicaLLTT-Bold', sans-serif;
+      font-size: clamp(7.5px, 0.88vw, 11px);
+      letter-spacing: 0.07em;
+      color: var(--bg);
+      opacity: 0.35;
+      text-transform: uppercase;
+      line-height: 1.5;
+      padding-left: 12px;
+      position: relative;
+    }
+    .resume-bullet::before {
+      content: '–';
+      position: absolute;
+      left: 0;
+      opacity: 0.6;
+    }
+
+    /* Education rows */
+    .resume-edu-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: clamp(4px, 0.7vh, 10px);
+    }
+    .resume-edu-school {
+      font-family: 'ReplicaLLTT-Bold', sans-serif;
+      font-size: clamp(10px, 1.3vw, 16px);
+      letter-spacing: 0.09em;
+      color: var(--bg);
+      text-transform: uppercase;
+    }
+    .resume-edu-year {
+      font-family: 'ReplicaLLTT-Bold', sans-serif;
+      font-size: clamp(7px, 0.82vw, 10px);
+      letter-spacing: 0.14em;
+      color: var(--bg);
+      opacity: 0.38;
+      text-transform: uppercase;
+    }
+    .resume-edu-detail {
+      font-family: 'ReplicaLLTT-Bold', sans-serif;
+      font-size: clamp(7.5px, 0.88vw, 11px);
+      letter-spacing: 0.1em;
+      color: var(--bg);
+      opacity: 0.5;
+      text-transform: uppercase;
+      line-height: 1.6;
+      margin-top: 2px;
+    }
+    .resume-edu-badge {
+      font-family: 'ReplicaLLTT-Bold', sans-serif;
+      font-size: clamp(7px, 0.78vw, 9px);
+      letter-spacing: 0.16em;
+      color: var(--bg);
+      opacity: 0.32;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    /* Skills grid */
+    .resume-skills-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: clamp(8px, 1.2vh, 16px) clamp(14px, 2vw, 28px);
+    }
+    .resume-skill-group {}
+    .resume-skill-cat {
+      font-family: 'ReplicaLLTT-Bold', sans-serif;
+      font-size: clamp(7px, 0.82vw, 10px);
+      letter-spacing: 0.2em;
+      color: var(--bg);
+      opacity: 0.32;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+    .resume-skill-list {
+      font-family: 'ReplicaLLTT-Bold', sans-serif;
+      font-size: clamp(8px, 0.95vw, 12px);
+      letter-spacing: 0.08em;
+      color: var(--bg);
+      opacity: 0.6;
+      text-transform: uppercase;
+      line-height: 1.65;
+    }
+
+    /* Mobile resume */
     @media (max-width: 768px), (orientation: portrait) {
       .resume-wrap {
         padding: 72px 12px 16px 12px !important;
       }
-      .resume-body {
-        grid-template-columns: 1fr !important;
-      }
-      .resume-col-side {
-        width: 100% !important;
-      }
       .resume-name {
-        font-size: clamp(15px, 5vw, 22px) !important;
+        font-size: clamp(16px, 5.5vw, 24px) !important;
+      }
+      .resume-skills-grid {
+        grid-template-columns: 1fr !important;
       }
     }
   </style>
@@ -1492,15 +1744,189 @@
         </svg>
       </div>
 
-      <!-- ── Resume Content (visible when box-3 is open) ─────────────────── -->
+      <!-- ── Resume Content (accordion, visible when box-3 is open) ────── -->
       <div class="resume-wrap" id="resumeWrap" aria-label="Resume">
-        <div class="resume-scroll">
 
-          <!-- Header -->
-          <div>
-            <div class="resume-name">Theodore W. Lance</div>
-            <div class="resume-tagline">Digital Media · Graphic Design · Photography · Florence, Italy 2026</div>
+        <!-- Header -->
+        <div class="resume-name">Theodore W. Lance</div>
+        <div class="resume-contact-line">
+          theowlance@gmail.com &nbsp;·&nbsp; (717) 742-8617 &nbsp;·&nbsp; Lititz, PA
+        </div>
+
+        <!-- Accordion scroll area -->
+        <div class="resume-scroll" id="resumeScroll">
+
+          <!-- ▾ EXPERIENCE -->
+          <div class="resume-section is-open" id="rs-exp">
+            <button class="resume-section-toggle" aria-expanded="true" aria-controls="rb-exp">
+              <span class="resume-section-label">Experience</span>
+              <span class="resume-section-icon" aria-hidden="true">+</span>
+            </button>
+            <div class="resume-section-body" id="rb-exp" role="region">
+              <div class="resume-section-inner">
+
+                <div class="resume-job">
+                  <div class="resume-job-header">
+                    <span class="resume-job-company">TAIT</span>
+                    <span class="resume-job-date">Summer 2026 – Present</span>
+                  </div>
+                  <div class="resume-job-title">Digital Marketing Coordinator — Internship / Freelance</div>
+                  <div class="resume-bullets">
+                    <div class="resume-bullet">Coordinated with external creative vendors to manage upcoming website refresh and Salesforce + Marketing Cloud implementation</div>
+                    <div class="resume-bullet">Created social media and print campaigns for recruitment and marketing, leading from early planning to final execution</div>
+                    <div class="resume-bullet">Developed motion graphics and creative short-form content that boosted engagement and impressions</div>
+                  </div>
+                </div>
+
+                <div class="resume-job">
+                  <div class="resume-job-header">
+                    <span class="resume-job-company">TAIT</span>
+                    <span class="resume-job-date">Summer 2025 – Summer 2026</span>
+                  </div>
+                  <div class="resume-job-title">Digital Marketing Coordinator — Internship / Freelance</div>
+                  <div class="resume-bullets">
+                    <div class="resume-bullet">Produced case study videos documenting global projects in the entertainment space</div>
+                    <div class="resume-bullet">Delivered graphic design for internal communications, external marketing, and project-based initiatives</div>
+                    <div class="resume-bullet">Created a SWOT report that helped develop the brand evolution of the company</div>
+                  </div>
+                </div>
+
+                <div class="resume-job">
+                  <div class="resume-job-header">
+                    <span class="resume-job-company">Marist College</span>
+                    <span class="resume-job-date">Fall 2024 – Spring 2025</span>
+                  </div>
+                  <div class="resume-job-title">Student Worker — Video Production</div>
+                  <div class="resume-bullets">
+                    <div class="resume-bullet">Produced engaging videos to highlight college events</div>
+                    <div class="resume-bullet">Collaborated with team to manage and prepare high-quality files for Instagram publication</div>
+                    <div class="resume-bullet">Edited student-filmed event footage for the presidential dinner and speech</div>
+                  </div>
+                </div>
+
+                <div class="resume-job">
+                  <div class="resume-job-header">
+                    <span class="resume-job-company">Nick Gould Photography</span>
+                    <span class="resume-job-date">Jan 2022 – Aug 2022</span>
+                  </div>
+                  <div class="resume-job-title">Photography Internship</div>
+                  <div class="resume-bullets">
+                    <div class="resume-bullet">Managed videography during event photoshoots</div>
+                    <div class="resume-bullet">Tutored assistants and photographers on the basics of Adobe software</div>
+                    <div class="resume-bullet">Edited portrait, event, and architecture photo shoots</div>
+                    <div class="resume-bullet">Organized equipment and created prep lists for photoshoots</div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
           </div>
+
+          <!-- ▾ EDUCATION -->
+          <div class="resume-section" id="rs-edu">
+            <button class="resume-section-toggle" aria-expanded="false" aria-controls="rb-edu">
+              <span class="resume-section-label">Education</span>
+              <span class="resume-section-icon" aria-hidden="true">+</span>
+            </button>
+            <div class="resume-section-body" id="rb-edu" role="region">
+              <div class="resume-section-inner">
+
+                <div class="resume-edu-row">
+                  <span class="resume-edu-school">Marist Italy — Florence</span>
+                  <span class="resume-edu-year">Graduated 2026</span>
+                </div>
+                <div class="resume-edu-detail">B.A. Digital Media · Concentration: Graphic Design</div>
+                <div class="resume-edu-detail">B.A. Studio Art · Concentration: Photography</div>
+                <div class="resume-edu-detail">Minor: Art History</div>
+                <div class="resume-edu-badge" style="margin-top:8px;">Graduated Cum Laude &nbsp;·&nbsp; GPA 3.591 &nbsp;·&nbsp; Dean’s List: Spring 2023 – Summer 2026</div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- ▾ PROJECTS -->
+          <div class="resume-section" id="rs-proj">
+            <button class="resume-section-toggle" aria-expanded="false" aria-controls="rb-proj">
+              <span class="resume-section-label">Projects &amp; Activities</span>
+              <span class="resume-section-icon" aria-hidden="true">+</span>
+            </button>
+            <div class="resume-section-body" id="rb-proj" role="region">
+              <div class="resume-section-inner">
+
+                <div class="resume-job">
+                  <div class="resume-job-header">
+                    <span class="resume-job-company">Soap Magazine &mdash; soapmag.art</span>
+                    <span class="resume-job-date">Spring 2024 – Summer 2026</span>
+                  </div>
+                  <div class="resume-bullets">
+                    <div class="resume-bullet">Co-founded literary magazine showcasing Marist Italy students in Florence</div>
+                    <div class="resume-bullet">Developed website and logo; designed and photographed all magazine covers</div>
+                  </div>
+                </div>
+
+                <div class="resume-job">
+                  <div class="resume-job-header">
+                    <span class="resume-job-company">Kiltura — kiltura.com</span>
+                    <span class="resume-job-date">August 2020 – Present</span>
+                  </div>
+                  <div class="resume-bullets">
+                    <div class="resume-bullet">Founded digital media company to help creatives present their work cohesively</div>
+                    <div class="resume-bullet">Directed a series of music videos in Italy; created posters and cover art</div>
+                    <div class="resume-bullet">Designed website with online store and drop-shipment merchandise</div>
+                    <div class="resume-bullet">Shot and co-directed fashion photoshoots highlighting designer’s emotional and stylistic vision</div>
+                  </div>
+                </div>
+
+                <div class="resume-job">
+                  <div class="resume-job-header">
+                    <span class="resume-job-company">Uncovered &amp; (IN)ANIMATE Art Exhibitions</span>
+                    <span class="resume-job-date">Spring 2024</span>
+                  </div>
+                  <div class="resume-bullets">
+                    <div class="resume-bullet">Created exhibition video showcasing artists in Florence, Italy</div>
+                    <div class="resume-bullet">Shot photography for the exhibition used across social media</div>
+                    <div class="resume-bullet">Created installation video art project with sound design connecting all exhibited artworks</div>
+                    <div class="resume-bullet">Collaborated with other artists on a joint project</div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- ▾ SKILLS -->
+          <div class="resume-section" id="rs-skills">
+            <button class="resume-section-toggle" aria-expanded="false" aria-controls="rb-skills">
+              <span class="resume-section-label">Technical Strengths</span>
+              <span class="resume-section-icon" aria-hidden="true">+</span>
+            </button>
+            <div class="resume-section-body" id="rb-skills" role="region">
+              <div class="resume-section-inner">
+                <div class="resume-skills-grid">
+                  <div class="resume-skill-group">
+                    <div class="resume-skill-cat">Adobe Suite</div>
+                    <div class="resume-skill-list">Illustrator &nbsp;·&nbsp; Photoshop<br>Premiere Pro &nbsp;·&nbsp; After Effects<br>Lightroom &nbsp;·&nbsp; InDesign</div>
+                  </div>
+                  <div class="resume-skill-group">
+                    <div class="resume-skill-cat">Programming</div>
+                    <div class="resume-skill-list">HTML &nbsp;·&nbsp; CSS &nbsp;·&nbsp; JavaScript<br>Node.js &nbsp;·&nbsp; Next.js<br>Arduino</div>
+                  </div>
+                  <div class="resume-skill-group">
+                    <div class="resume-skill-cat">Maker Skills</div>
+                    <div class="resume-skill-list">CAD (Fusion 360, AutoCAD)<br>3D Printing &amp; Prototyping<br>Prusa 3D Printer</div>
+                  </div>
+                  <div class="resume-skill-group">
+                    <div class="resume-skill-cat">Databases / Tools</div>
+                    <div class="resume-skill-list">Vercel &nbsp;·&nbsp; Sanity &nbsp;·&nbsp; Git<br>GitHub &nbsp;·&nbsp; Google Analytics<br>Google Tags</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- end .resume-scroll -->
+      </div>
+      <!-- ── End Resume Content ─────────────────────────────────────────────── -->
 
           <!-- Two-column body -->
           <div class="resume-body">
