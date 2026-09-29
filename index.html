@@ -380,6 +380,10 @@
       height: 100%;
     }
 
+    .contact-scroll-hint {
+      display: none;
+    }
+
     .contact-bar svg {
       width: 100%;
       height: 100%;
@@ -772,6 +776,11 @@
        zero extra words, perfectly proportioned for smartphones.
        ========================================================================= */
     @media (max-width: 768px), (orientation: portrait) {
+      html, body, .stage {
+        height: 100dvh !important;
+        overflow: hidden !important;
+      }
+
       :root {
         --m-col-w: 29vw;
         --m-gap: 3vw;
@@ -779,6 +788,17 @@
         --m-top: 16px;
         --m-bottom: 24px;
         --m-menu-h: 36px;
+      }
+
+      /* On mobile at landing page: hide boxes completely so they NEVER peek up */
+      .stage .box {
+        opacity: calc(min(1, var(--p1) * 15) * max(0, 1 - var(--p2) * 5)) !important;
+        pointer-events: auto !important;
+      }
+
+      /* When p1 < 0.05 (landing page), prevent accidental taps on invisible boxes */
+      body:not(.in-phase-1):not(.in-phase-2) .stage .box {
+        pointer-events: none !important;
       }
 
       /* Logo at p=0: scales down smoothly in width when color drawer opens (--px) */
@@ -827,22 +847,25 @@
       .box-1 {
         left: var(--m-margin) !important;
         width: var(--m-col-w) !important;
-        top: calc(var(--m-top) + (100dvh - var(--m-top)) * (1 - var(--p1))) !important;
-        bottom: calc(var(--m-bottom) + (100dvh - var(--m-bottom) - var(--m-top)) * var(--p2)) !important;
+        top: calc(var(--m-top) + (100dvh - var(--m-top)) * (1 - var(--p1)) - 100dvh * var(--p2)) !important;
+        height: calc(100dvh - var(--m-top) - var(--m-bottom)) !important;
+        bottom: auto !important;
       }
 
       .box-2 {
         left: calc(var(--m-margin) + var(--m-col-w) + var(--m-gap)) !important;
         width: var(--m-col-w) !important;
-        top: calc(var(--m-top) + (100dvh - var(--m-top)) * (1 - var(--p1))) !important;
-        bottom: calc(var(--m-bottom) + (100dvh - var(--m-bottom) - var(--m-top)) * var(--p2)) !important;
+        top: calc(var(--m-top) + (100dvh - var(--m-top)) * (1 - var(--p1)) - 100dvh * var(--p2)) !important;
+        height: calc(100dvh - var(--m-top) - var(--m-bottom)) !important;
+        bottom: auto !important;
       }
 
       .box-3 {
         left: calc(var(--m-margin) + 2 * (var(--m-col-w) + var(--m-gap))) !important;
         width: var(--m-col-w) !important;
-        top: calc(var(--m-top) + (100dvh - var(--m-top)) * (1 - var(--p1))) !important;
-        bottom: calc(var(--m-bottom) + var(--m-menu-h) + 10px + (100dvh - var(--m-bottom) - var(--m-top)) * var(--p2)) !important;
+        top: calc(var(--m-top) + (100dvh - var(--m-top)) * (1 - var(--p1)) - 100dvh * var(--p2)) !important;
+        height: calc(100dvh - var(--m-top) - var(--m-bottom) - var(--m-menu-h) - 10px) !important;
+        bottom: auto !important;
       }
 
       /* Contact Bar & Menu Bar at bottom (p2=0) rising to top (p2=1) */
@@ -851,6 +874,39 @@
         width: calc(2 * var(--m-col-w) + var(--m-gap)) !important;
         height: var(--m-menu-h) !important;
         bottom: calc(var(--m-bottom) + (100dvh - var(--m-bottom) - var(--m-top) - var(--m-menu-h)) * var(--p2)) !important;
+        top: auto !important;
+        opacity: calc(min(1, var(--p1) * 10)) !important;
+        pointer-events: auto !important;
+        transform: translateY(0) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        z-index: 55 !important;
+      }
+
+      .contact-text-wrap {
+        flex: 1 !important;
+        height: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+      }
+
+      .contact-scroll-hint {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding-right: 6px !important;
+        opacity: calc(var(--p1) * max(0, 1 - var(--p2) * 5)) !important;
+        animation: contactHintBounce 1.8s infinite ease-in-out !important;
+      }
+
+      .contact-scroll-hint svg {
+        stroke: var(--dark-red) !important;
+      }
+
+      @keyframes contactHintBounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(3.5px); }
       }
 
       .menu-btn {
@@ -858,9 +914,12 @@
         width: var(--m-col-w) !important;
         height: var(--m-menu-h) !important;
         bottom: calc(var(--m-bottom) + (100dvh - var(--m-bottom) - var(--m-top) - var(--m-menu-h)) * var(--p2)) !important;
+        top: auto !important;
         padding: 0 !important; /* Zero padding ensures pixel-perfect alignment with Box 3 */
         margin: 0 !important;
         box-sizing: border-box !important;
+        opacity: calc(min(1, var(--p1) * 10)) !important;
+        z-index: 55 !important;
       }
 
       .menu-bar {
@@ -987,19 +1046,22 @@
         left: var(--m-margin) !important;
         width: calc(100vw - 2 * var(--m-margin) - 28px) !important;
         top: var(--m-top) !important;
-        bottom: var(--m-bottom) !important;
+        height: calc(100dvh - var(--m-top) - var(--m-bottom)) !important;
+        bottom: auto !important;
       }
       body.box-1-open .box-2 {
         left: calc(100vw - var(--m-margin) - 22px) !important;
         width: 10px !important;
         top: var(--m-top) !important;
-        bottom: var(--m-bottom) !important;
+        height: calc(100dvh - var(--m-top) - var(--m-bottom)) !important;
+        bottom: auto !important;
       }
       body.box-1-open .box-3 {
         left: calc(100vw - var(--m-margin) - 10px) !important;
         width: 10px !important;
         top: var(--m-top) !important;
-        bottom: var(--m-bottom) !important;
+        height: calc(100dvh - var(--m-top) - var(--m-bottom)) !important;
+        bottom: auto !important;
       }
 
       /* Box 2 Open */
@@ -1007,19 +1069,22 @@
         left: var(--m-margin) !important;
         width: 10px !important;
         top: var(--m-top) !important;
-        bottom: var(--m-bottom) !important;
+        height: calc(100dvh - var(--m-top) - var(--m-bottom)) !important;
+        bottom: auto !important;
       }
       body.box-2-open .box-2 {
         left: calc(var(--m-margin) + 14px) !important;
         width: calc(100vw - 2 * var(--m-margin) - 28px) !important;
         top: var(--m-top) !important;
-        bottom: var(--m-bottom) !important;
+        height: calc(100dvh - var(--m-top) - var(--m-bottom)) !important;
+        bottom: auto !important;
       }
       body.box-2-open .box-3 {
         left: calc(100vw - var(--m-margin) - 10px) !important;
         width: 10px !important;
         top: var(--m-top) !important;
-        bottom: var(--m-bottom) !important;
+        height: calc(100dvh - var(--m-top) - var(--m-bottom)) !important;
+        bottom: auto !important;
       }
 
       /* Box 3 Open */
@@ -1027,29 +1092,48 @@
         left: var(--m-margin) !important;
         width: 10px !important;
         top: var(--m-top) !important;
-        bottom: var(--m-bottom) !important;
+        height: calc(100dvh - var(--m-top) - var(--m-bottom)) !important;
+        bottom: auto !important;
       }
       body.box-3-open .box-2 {
         left: calc(var(--m-margin) + 14px) !important;
         width: 10px !important;
         top: var(--m-top) !important;
-        bottom: var(--m-bottom) !important;
+        height: calc(100dvh - var(--m-top) - var(--m-bottom)) !important;
+        bottom: auto !important;
       }
       body.box-3-open .box-3 {
         left: calc(var(--m-margin) + 28px) !important;
         width: calc(100vw - 2 * var(--m-margin) - 28px) !important;
         top: var(--m-top) !important;
-        bottom: var(--m-bottom) !important;
+        height: calc(100dvh - var(--m-top) - var(--m-bottom)) !important;
+        bottom: auto !important;
+      }
+
+      /* When boxes are open on mobile: tuck animal into top-left corner as a compact icon */
+      body.box-1-open .box-1 .animal,
+      body.box-2-open .box-2 .animal,
+      body.box-3-open .box-3 .animal {
+        top: 20px !important;
+        left: 20px !important;
+        right: auto !important;
+        bottom: auto !important;
+        transform: none !important;
+        width: 44px !important;
+        height: 44px !important;
+        opacity: 0.8 !important;
       }
 
       /* Contact Section on Mobile */
       .contact-modal {
         left: var(--m-margin) !important;
         width: calc(100vw - 2 * var(--m-margin)) !important;
-        top: calc(var(--m-top) + var(--m-menu-h) + 12px + (100dvh - var(--m-top) - var(--m-menu-h) - 12px) * (1 - var(--p2))) !important;
-        height: calc(100dvh - var(--m-top) - var(--m-menu-h) - var(--m-bottom) - 24px) !important;
-        bottom: var(--m-bottom) !important;
-        opacity: var(--p2) !important;
+        top: calc(100dvh - (100dvh - var(--m-top) - var(--m-menu-h) - 12px) * var(--p2)) !important;
+        height: calc(100dvh - var(--m-top) - var(--m-menu-h) - 12px - var(--m-bottom)) !important;
+        bottom: auto !important;
+        opacity: calc(min(1, var(--p2) * 5)) !important;
+        z-index: 50 !important;
+        pointer-events: auto !important;
       }
 
       .contact-modal-content {
@@ -1202,6 +1286,11 @@
           <path class="contact-path" d="M68.68,112.12C75.91,112.12 81.78,110.70 86.30,107.87C90.82,105.04 93.98,100.43 95.79,94.04L97.60,92.24L119.29,92.24L121.10,94.04C119.29,106.70 113.72,116.49 104.38,123.41C95.04,130.34 83.14,133.81 68.68,133.81C58.68,133.81 49.88,132.21 42.29,129.02C34.70,125.82 28.29,121.34 23.04,115.55C17.80,109.77 13.86,102.90 11.21,94.95C8.56,87.00 7.23,78.26 7.23,68.74C7.23,59.22 8.56,50.49 11.21,42.53C13.86,34.58 17.80,27.71 23.04,21.93C28.29,16.15 34.70,11.66 42.29,8.46C49.88,5.27 58.68,3.67 68.68,3.67C75.91,3.67 82.54,4.55 88.56,6.30C94.59,8.04 99.86,10.54 104.38,13.80C108.90,17.05 112.57,21.03 115.40,25.72C118.23,30.42 120.13,35.73 121.10,41.63L119.29,43.44L97.60,43.44L95.79,41.63C92.18,30.79 83.14,25.36 68.68,25.36C62.30,25.36 56.84,26.45 52.32,28.62C47.81,30.79 44.07,33.77 41.12,37.56C38.17,41.36 36.00,45.94 34.61,51.30C33.23,56.66 32.53,62.48 32.53,68.74C32.53,75.13 33.23,80.97 34.61,86.27C36.00,91.57 38.17,96.12 41.12,99.92C44.07,103.71 47.81,106.70 52.32,108.87C56.84,111.03 62.30,112.12 68.68,112.12ZM233.15,68.74C233.15,62.48 232.37,56.66 230.80,51.30C229.23,45.94 226.91,41.36 223.84,37.56C220.77,33.77 217.00,30.79 212.54,28.62C208.09,26.45 202.91,25.36 197.00,25.36C191.10,25.36 185.92,26.45 181.46,28.62C177.00,30.79 173.23,33.77 170.16,37.56C167.09,41.36 164.77,45.94 163.20,51.30C161.64,56.66 160.85,62.48 160.85,68.74C160.85,75.13 161.64,80.97 163.20,86.27C164.77,91.57 167.09,96.12 170.16,99.92C173.23,103.71 177.00,106.70 181.46,108.87C185.92,111.03 191.10,112.12 197.00,112.12C202.91,112.12 208.09,111.03 212.54,108.87C217.00,106.70 220.77,103.71 223.84,99.92C226.91,96.12 229.23,91.57 230.80,86.27C232.37,80.97 233.15,75.13 233.15,68.74ZM258.45,68.74C258.45,78.26 257.04,87.00 254.21,94.95C251.37,102.90 247.31,109.77 242.01,115.55C236.70,121.34 230.26,125.82 222.67,129.02C215.08,132.21 206.52,133.81 197.00,133.81C187.48,133.81 178.93,132.21 171.34,129.02C163.75,125.82 157.30,121.34 152.00,115.55C146.70,109.77 142.63,102.90 139.80,94.95C136.97,87.00 135.55,78.26 135.55,68.74C135.55,59.22 136.97,50.49 139.80,42.53C142.63,34.58 146.70,27.71 152.00,21.93C157.30,16.15 163.75,11.66 171.34,8.46C178.93,5.27 187.48,3.67 197.00,3.67C206.52,3.67 215.08,5.27 222.67,8.46C230.26,11.66 236.70,16.15 242.01,21.93C247.31,27.71 251.37,34.58 254.21,42.53C257.04,50.49 258.45,59.22 258.45,68.74ZM281.95,5.48L307.25,5.48L310.87,7.29L359.66,90.43L361.47,90.43L361.47,7.29L363.28,5.48L384.97,5.48L386.78,7.29L386.78,130.19L384.97,132.00L359.66,132.00L356.05,130.19L307.25,47.05L305.44,47.05L305.44,130.19L303.64,132.00L281.95,132.00L280.14,130.19L280.14,7.29ZM507.89,27.17L471.74,27.17L469.93,28.98L469.93,130.19L468.12,132.00L446.44,132.00L444.63,130.19L444.63,28.98L442.82,27.17L406.67,27.17L404.86,25.36L404.86,7.29L406.67,5.48L507.89,5.48L509.69,7.29L509.69,25.36ZM614.52,132.00L598.25,132.00L596.44,130.19L587.41,106.70L583.79,104.89L538.61,104.89L534.99,106.70L525.96,130.19L524.15,132.00L507.88,132.00L506.07,130.19L506.07,112.12L547.64,7.29L549.45,5.48L572.95,5.48L574.76,7.29L616.33,112.12L616.33,130.19ZM562.10,38.02L560.30,38.02L544.03,81.39L545.84,83.20L576.56,83.20L578.37,81.39ZM681.39,112.12C688.62,112.12 694.49,110.70 699.01,107.87C703.53,105.04 706.69,100.43 708.50,94.04L710.31,92.24L732.00,92.24L733.81,94.04C732.00,106.70 726.43,116.49 717.09,123.41C707.75,130.34 695.85,133.81 681.39,133.81C671.39,133.81 662.59,132.21 655.00,129.02C647.41,125.82 641.00,121.34 635.75,115.55C630.51,109.77 626.57,102.90 623.92,94.95C621.27,87.00 619.94,78.26 619.94,68.74C619.94,59.22 621.27,50.49 623.92,42.53C626.57,34.58 630.51,27.71 635.75,21.93C641.00,16.15 647.41,11.66 655.00,8.46C662.59,5.27 671.39,3.67 681.39,3.67C688.62,3.67 695.25,4.55 701.27,6.30C707.30,8.04 712.57,10.54 717.09,13.80C721.61,17.05 725.28,21.03 728.11,25.72C730.94,30.42 732.84,35.73 733.81,41.63L732.00,43.44L710.31,43.44L708.50,41.63C704.89,30.79 695.85,25.36 681.39,25.36C675.01,25.36 669.55,26.45 665.03,28.62C660.52,30.79 656.78,33.77 653.83,37.56C650.88,41.36 648.71,45.94 647.32,51.30C645.94,56.66 645.24,62.48 645.24,68.74C645.24,75.13 645.94,80.97 647.32,86.27C648.71,91.57 650.88,96.12 653.83,99.92C656.78,103.71 660.52,106.70 665.03,108.87C669.55,111.03 675.01,112.12 681.39,112.12ZM847.69,27.17L811.54,27.17L809.73,28.98L809.73,130.19L807.92,132.00L786.23,132.00L784.43,130.19L784.43,28.98L782.62,27.17L746.47,27.17L744.66,25.36L744.66,7.29L746.47,5.48L847.69,5.48L849.49,7.29L849.49,25.36ZM1046.49,132.00L1024.80,132.00L1022.99,130.19L1022.99,59.70L1021.18,59.70L992.26,130.19L990.46,132.00L970.58,132.00L968.77,130.19L939.85,59.70L938.04,59.70L938.04,130.19L936.24,132.00L914.55,132.00L912.74,130.19L912.74,7.29L914.55,5.48L941.66,5.48L943.46,7.29L979.61,95.85L981.42,95.85L1017.57,7.29L1019.38,5.48L1046.49,5.48L1048.29,7.29L1048.29,130.19ZM1163.96,132.00L1079.02,132.00L1077.21,130.19L1077.21,7.29L1079.02,5.48L1163.96,5.48L1165.77,7.29L1165.77,25.36L1163.96,27.17L1104.32,27.17L1102.51,28.98L1102.51,54.28L1104.32,56.09L1160.35,56.09L1162.16,57.90L1162.16,75.97L1160.35,77.78L1104.32,77.78L1102.51,79.59L1102.51,108.50L1104.32,110.31L1163.96,110.31L1165.77,112.12L1165.77,130.19Z"/>
         </svg>
       </div>
+      <div class="contact-scroll-hint" id="contactScrollHint" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </div>
     </a>
 
     <!-- Interactive Hamburger Menu (Bottom Right under Box 3) -->
@@ -1316,12 +1405,27 @@
       let targetP = 0;
       let lastReturnedFromContact = 0;
       let lastClosedBoxTime = 0;
+      window.setMobileState = function(p, boxNum) {
+        currentP = targetP = p;
+        if (p > 1.0) openMenu();
+        if (boxNum === 1) openBox1();
+        else if (boxNum === 2) openBox2();
+        else if (boxNum === 3) openBox3();
+      };
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.has("p")) {
         currentP = targetP = Math.max(0, Math.min(2, parseFloat(urlParams.get("p"))));
         if (currentP > 1.0) {
           openMenu();
         }
+      }
+      if (urlParams.has("box")) {
+        const b = urlParams.get("box");
+        setTimeout(() => {
+          if (b === "1") openBox1();
+          else if (b === "2") openBox2();
+          else if (b === "3") openBox3();
+        }, 100);
       }
       const initP1 = Math.max(0, Math.min(1, currentP));
       const initP2 = Math.max(0, Math.min(1, currentP - 1));
@@ -1667,6 +1771,20 @@
         });
       }
 
+      let wheelSnapTimer = null;
+      function scheduleWheelSnap() {
+        clearTimeout(wheelSnapTimer);
+        wheelSnapTimer = setTimeout(function() {
+          if (targetP < 0.45) {
+            targetP = 0.0;
+          } else if (targetP < 1.45) {
+            targetP = 1.0;
+          } else {
+            targetP = 2.0;
+          }
+        }, 220);
+      }
+
       // Mouse Wheel / Trackpad Scroll (Vertical & Horizontal)
       window.addEventListener('wheel', function(e) {
         e.preventDefault();
@@ -1696,6 +1814,7 @@
             targetP += e.deltaY * SENSITIVITY;
             targetP = Math.min(2.0, targetP);
           }
+          scheduleWheelSnap();
           return;
         }
 
@@ -1710,14 +1829,10 @@
             return;
           }
           if (e.deltaY > 0) {
-            // Scrolling down into contact page is ONLY allowed when 3 bars are open!
-            const isMenuOpen = document.body.classList.contains('menu-open') || (menuBtn && menuBtn.classList.contains('open'));
-            if (!isMenuOpen) {
-              targetP = 1.0;
-              return;
-            }
+            // Direct scroll down into contact page allowed
             targetP += e.deltaY * SENSITIVITY;
             targetP = Math.min(2.0, targetP);
+            scheduleWheelSnap();
             return;
           } else {
             // If any box is open, smoothly close it and stay resting at the 3 boxes page
@@ -1733,6 +1848,7 @@
             closeBoxes();
             targetP += e.deltaY * SENSITIVITY;
             targetP = Math.max(0, targetP);
+            scheduleWheelSnap();
             return;
           }
         }
@@ -1751,6 +1867,7 @@
         }
         targetP += e.deltaY * SENSITIVITY;
         targetP = Math.max(0, Math.min(1.0, targetP));
+        scheduleWheelSnap();
       }, { passive: false });
 
       // Touch / Mobile Swipe (Vertical & Horizontal Swipe Left/Right)
@@ -1818,12 +1935,7 @@
             return;
           }
           if (deltaY > 0) {
-            const isMenuOpen = document.body.classList.contains('menu-open') || (menuBtn && menuBtn.classList.contains('open'));
-            if (!isMenuOpen) {
-              targetP = 1.0;
-              e.preventDefault();
-              return;
-            }
+            // Direct scroll into contact page allowed
             targetP += deltaY * 0.0035;
             targetP = Math.min(2.0, targetP);
             e.preventDefault();
@@ -1865,6 +1977,18 @@
         targetP = Math.max(0, Math.min(1.0, targetP));
         e.preventDefault();
       }, { passive: false });
+
+      window.addEventListener('touchend', function() {
+        isHorizontalGesture = null;
+        // Sticky Magnetic Snapping on touch release
+        if (targetP < 0.45) {
+          targetP = 0.0;
+        } else if (targetP < 1.45) {
+          targetP = 1.0;
+        } else {
+          targetP = 2.0;
+        }
+      }, { passive: true });
 
       // Mouse drag swipe on first page
       let mouseStartX = 0;
