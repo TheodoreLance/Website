@@ -798,7 +798,7 @@
         pointer-events: auto !important;
       }
 
-      /* When p1 < 0.05 (landing page), prevent accidental taps on invisible boxes */
+      /* When genuinely on the hero/landing page (p1 < 0.07), prevent accidental taps */
       body:not(.in-phase-1):not(.in-phase-2) .stage .box {
         pointer-events: none !important;
       }
@@ -2095,6 +2095,13 @@
           document.body.classList.add('in-phase-2');
         } else {
           document.body.classList.remove('in-phase-2');
+        }
+
+        // in-phase-1: boxes are visible — p1 has moved past the hero threshold
+        if (p1 > 0.07) {
+          document.body.classList.add('in-phase-1');
+        } else {
+          document.body.classList.remove('in-phase-1');
         }
 
         if (p2 > 0.5) {
