@@ -595,31 +595,208 @@
     }
   }
 
-  // ─── Connect Resume PDF Download ──────────────────────────────────────────
+  // ─── Connect Resume Data & Sections ───────────────────────────────────────
   function applyResumeData(resume) {
-    if (!resume || !resume.resumePdfUrl) return;
+    const resumeWrap = document.getElementById('resumeWrap');
+    if (!resumeWrap) return;
 
-    if (document.getElementById('sanityResumeDl')) return;
+    const resumeName = document.getElementById('resumeName');
+    const resumeHeadline = document.getElementById('resumeHeadline');
+    const resumeLocation = document.getElementById('resumeLocation');
+    const resumePdfSlot = document.getElementById('resumePdfSlot');
+    const resumeScroll = document.getElementById('resumeScroll');
 
-    const resumeHeader = document.querySelector('.resume-header');
-    if (resumeHeader) {
-      const dlLink = document.createElement('a');
-      dlLink.id = 'sanityResumeDl';
-      dlLink.className = 'sanity-resume-dl';
-      dlLink.href = resume.resumePdfUrl;
-      dlLink.target = '_blank';
-      dlLink.rel = 'noopener noreferrer';
-      dlLink.title = 'Download Resume PDF';
-      dlLink.innerHTML = `
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-          <polyline points="7 10 12 15 17 10"></polyline>
-          <line x1="12" y1="15" x2="12" y2="3"></line>
-        </svg>
-        Download PDF
-      `;
-      resumeHeader.appendChild(dlLink);
+    if (resumeName) {
+      resumeName.textContent = (resume && resume.name) ? resume.name : 'THEODORE LANCE';
     }
+    if (resumeHeadline) {
+      resumeHeadline.textContent = (resume && resume.headline) ? resume.headline : '';
+    }
+    if (resumeLocation) {
+      resumeLocation.textContent = (resume && resume.location) ? resume.location : '';
+    }
+
+    if (resumePdfSlot) {
+      resumePdfSlot.innerHTML = '';
+      if (resume && resume.resumePdfUrl) {
+        const dlLink = document.createElement('a');
+        dlLink.id = 'sanityResumeDl';
+        dlLink.className = 'sanity-resume-dl';
+        dlLink.href = resume.resumePdfUrl;
+        dlLink.target = '_blank';
+        dlLink.rel = 'noopener noreferrer';
+        dlLink.title = 'Download Resume PDF';
+        dlLink.innerHTML = `
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Download PDF
+        `;
+        resumePdfSlot.appendChild(dlLink);
+      }
+    }
+
+    if (!resumeScroll) return;
+
+    // Determine if any content has been uploaded
+    const expItems    = (resume && Array.isArray(resume.experience)) ? resume.experience.filter(j => j && (j.role || j.company)) : [];
+    const eduItems    = (resume && Array.isArray(resume.education)) ? resume.education.filter(e => e && (e.degree || e.institution)) : [];
+    const projItems   = (resume && Array.isArray(resume.projects)) ? resume.projects.filter(p => p && p.title) : [];
+    const skillCats   = (resume && Array.isArray(resume.skillCategories)) ? resume.skillCategories.filter(s => s && s.name) : [];
+
+    const hasAnyContent = expItems.length > 0 || eduItems.length > 0 || projItems.length > 0 || skillCats.length > 0;
+
+    if (!hasAnyContent) {
+      resumeScroll.innerHTML = `
+        <div class="resume-empty-state" id="resumeEmptyState">
+          <div class="resume-empty-icon">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+          </div>
+          <div class="resume-empty-title">RESUME &amp; CAREER</div>
+          <p class="resume-empty-desc">
+            Upload your resume PDF and customize your career milestones in Sanity Studio under <strong>🐐 Resume &amp; Career</strong>.
+          </p>
+          ${resume && resume.resumePdfUrl ? `
+            <a href="${resume.resumePdfUrl}" target="_blank" rel="noopener noreferrer" class="resume-empty-pdf-btn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              View Uploaded PDF
+            </a>
+          ` : ''}
+        </div>
+      `;
+      return;
+    }
+
+    let html = '';
+
+    // Experience Section
+    if (expItems.length > 0) {
+      html += `
+        <div class="resume-section is-open">
+          <button class="resume-section-toggle" aria-expanded="true">
+            <span class="resume-section-label">Experience</span>
+            <span class="resume-section-icon" aria-hidden="true">+</span>
+          </button>
+          <div class="resume-section-body">
+            <div class="resume-section-inner">
+              ${expItems.map(j => `
+                <div class="resume-job">
+                  <div class="resume-job-header">
+                    <span class="resume-job-company">${j.company || ''}</span>
+                    <span class="resume-job-date">${j.period || ''}</span>
+                  </div>
+                  ${j.role ? `<div class="resume-job-title">${j.role}</div>` : ''}
+                  ${Array.isArray(j.bullets) && j.bullets.length > 0 ? `
+                    <div class="resume-bullets">
+                      ${j.bullets.filter(Boolean).map(b => `<div class="resume-bullet">${b}</div>`).join('')}
+                    </div>
+                  ` : ''}
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Education Section
+    if (eduItems.length > 0) {
+      html += `
+        <div class="resume-section">
+          <button class="resume-section-toggle" aria-expanded="false">
+            <span class="resume-section-label">Education</span>
+            <span class="resume-section-icon" aria-hidden="true">+</span>
+          </button>
+          <div class="resume-section-body">
+            <div class="resume-section-inner">
+              ${eduItems.map(e => `
+                <div class="resume-edu-row">
+                  <span class="resume-edu-school">${e.institution || ''}</span>
+                  <span class="resume-edu-year">${e.period || ''}</span>
+                </div>
+                ${e.degree ? `<div class="resume-edu-detail">${e.degree}</div>` : ''}
+                ${e.details ? `<div class="resume-edu-badge">${e.details}</div>` : ''}
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Projects Section
+    if (projItems.length > 0) {
+      html += `
+        <div class="resume-section">
+          <button class="resume-section-toggle" aria-expanded="false">
+            <span class="resume-section-label">Key Projects</span>
+            <span class="resume-section-icon" aria-hidden="true">+</span>
+          </button>
+          <div class="resume-section-body">
+            <div class="resume-section-inner">
+              ${projItems.map(p => `
+                <div class="resume-job">
+                  <div class="resume-job-header">
+                    <span class="resume-job-company">${p.title || ''}</span>
+                    ${p.role ? `<span class="resume-job-date">${p.role}</span>` : ''}
+                  </div>
+                  ${p.description ? `<div class="resume-bullet">${p.description}</div>` : ''}
+                  ${p.url ? `<div style="margin-top:4px;"><a href="${p.url}" target="_blank" rel="noopener noreferrer" style="color:rgba(255,255,255,0.8);font-size:11px;text-decoration:underline;">Visit</a></div>` : ''}
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Skills Section
+    if (skillCats.length > 0) {
+      html += `
+        <div class="resume-section">
+          <button class="resume-section-toggle" aria-expanded="false">
+            <span class="resume-section-label">Skills & Capabilities</span>
+            <span class="resume-section-icon" aria-hidden="true">+</span>
+          </button>
+          <div class="resume-section-body">
+            <div class="resume-section-inner">
+              <div class="resume-skills-grid">
+                ${skillCats.map(c => `
+                  <div class="resume-skill-group">
+                    <div class="resume-skill-cat">${c.name || ''}</div>
+                    <div class="resume-skill-list">${Array.isArray(c.skills) ? c.skills.filter(Boolean).join('  ·  ') : ''}</div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    resumeScroll.innerHTML = html;
+
+    // Attach accordion toggles
+    resumeScroll.querySelectorAll('.resume-section-toggle').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const section = btn.closest('.resume-section');
+        const isOpen = section.classList.contains('is-open');
+        section.classList.toggle('is-open', !isOpen);
+        btn.setAttribute('aria-expanded', !isOpen);
+      });
+    });
   }
 
   // ─── Fetch + Init ─────────────────────────────────────────────────────────
