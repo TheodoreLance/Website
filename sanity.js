@@ -135,28 +135,29 @@
         pointer-events: auto;
       }
 
-      /* ── Individual Card ────────────────────────────────────────────────── */
+      /* ── Individual Card — 100% Kiltura Theme System ───────────────────── */
       .portfolio-card {
         flex: 1;
         min-height: 0;
         position: relative;
-        background-color: rgba(0, 0, 0, 0.4);
+        background-color: rgba(0, 0, 0, 0.12);
         cursor: pointer;
         overflow: hidden;
         display: flex;
         align-items: flex-end;
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        transition: background-color 0.2s ease, transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1), border-color 0.2s ease;
+        border: 1.5px solid rgba(0, 0, 0, 0.18);
+        border-radius: 0;
+        transition: background-color 0.25s ease, border-color 0.25s ease, transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1);
       }
 
       .portfolio-card:hover {
-        background-color: rgba(0, 0, 0, 0.55);
+        background-color: rgba(0, 0, 0, 0.25);
+        border-color: var(--bg);
         transform: scale(1.012);
-        border-color: rgba(255, 255, 255, 0.35);
       }
 
       .portfolio-card:active {
-        transform: scale(0.985);
+        transform: scale(0.988);
       }
 
       .portfolio-card-bg {
@@ -164,19 +165,19 @@
         inset: 0;
         background-size: cover;
         background-position: center;
-        opacity: 0.65;
+        opacity: 0.35;
         transition: opacity 0.3s ease, transform 0.3s ease;
       }
 
       .portfolio-card:hover .portfolio-card-bg {
-        opacity: 0.85;
-        transform: scale(1.03);
+        opacity: 0.55;
+        transform: scale(1.02);
       }
 
       .portfolio-card-overlay {
         position: absolute;
         inset: 0;
-        background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0.1) 100%);
+        background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 60%);
         pointer-events: none;
       }
 
@@ -185,7 +186,7 @@
         z-index: 2;
         display: flex;
         flex-direction: column;
-        gap: 3px;
+        gap: 2px;
         padding: clamp(10px, 1.4vh, 18px) clamp(12px, 1.6vw, 22px);
         flex: 1;
         min-width: 0;
@@ -193,10 +194,10 @@
 
       .portfolio-card-tag {
         font-family: 'ReplicaLLTT-Bold', sans-serif;
-        font-size: clamp(9px, 0.95vw, 13px);
-        letter-spacing: 0.14em;
-        color: #FFFFFF;
-        opacity: 0.85;
+        font-size: clamp(8.5px, 0.9vw, 11.5px);
+        letter-spacing: 0.16em;
+        color: var(--bg);
+        opacity: 0.8;
         text-transform: uppercase;
         white-space: nowrap;
         overflow: hidden;
@@ -205,22 +206,22 @@
 
       .portfolio-card-title {
         font-family: 'ReplicaLLTT-Bold', sans-serif;
-        font-size: clamp(14px, 1.8vw, 24px);
-        letter-spacing: 0.06em;
-        color: #FFFFFF;
+        font-size: clamp(14px, 1.7vw, 22px);
+        letter-spacing: 0.05em;
+        color: var(--bg);
         text-transform: uppercase;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        line-height: 1.2;
-        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+        line-height: 1.15;
       }
 
       .portfolio-card-meta {
         font-family: 'ReplicaLLTT-Bold', sans-serif;
-        font-size: clamp(8px, 0.85vw, 12px);
-        letter-spacing: 0.1em;
-        color: rgba(255, 255, 255, 0.7);
+        font-size: clamp(8px, 0.8vw, 11px);
+        letter-spacing: 0.12em;
+        color: var(--bg);
+        opacity: 0.65;
         text-transform: uppercase;
         white-space: nowrap;
         overflow: hidden;
@@ -232,10 +233,10 @@
         right: clamp(12px, 1.4vw, 22px);
         bottom: clamp(12px, 1.4vh, 20px);
         z-index: 2;
-        width: clamp(16px, 1.5vw, 22px);
-        height: clamp(16px, 1.5vw, 22px);
-        color: #FFFFFF;
-        opacity: 0.7;
+        width: clamp(15px, 1.5vw, 20px);
+        height: clamp(15px, 1.5vw, 20px);
+        color: var(--bg);
+        opacity: 0.6;
         transform: translateX(-4px);
         transition: opacity 0.2s ease, transform 0.2s ease;
       }
@@ -251,12 +252,13 @@
         display: block;
       }
 
-      /* ── Empty / Placeholder Slots ──────────────────────────────────────── */
+      /* ── Empty / Placeholder Slots (Matching .contact-dog-btn styling) ─── */
       .portfolio-card-placeholder {
         flex: 1;
         min-height: 0;
-        background-color: rgba(0, 0, 0, 0.18);
-        border: 1px dashed rgba(255, 255, 255, 0.15);
+        background-color: rgba(0, 0, 0, 0.06);
+        border: 1.5px dashed rgba(0, 0, 0, 0.2);
+        border-radius: 0;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -265,25 +267,25 @@
       .portfolio-card-placeholder-dot {
         width: 6px;
         height: 6px;
-        border-radius: 50%;
-        background: #FFFFFF;
-        opacity: 0.3;
+        border-radius: 0;
+        background: var(--bg);
+        opacity: 0.35;
         animation: portfolioCardPulse 1.4s ease-in-out infinite;
       }
 
       @keyframes portfolioCardPulse {
         0%, 100% { opacity: 0.15; }
-        50%       { opacity: 0.45; }
+        50%       { opacity: 0.5; }
       }
 
-      /* ── Project Showcase Modal ─────────────────────────────────────────── */
+      /* ── Project Showcase Modal: Native Kiltura Panel ──────────────────── */
       .project-modal {
         position: fixed;
         inset: 0;
         z-index: 9999;
-        background: rgba(10, 10, 10, 0.92);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        background: rgba(0, 0, 0, 0.88);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -301,34 +303,37 @@
       .project-modal-container {
         position: relative;
         width: 100%;
-        max-width: 1080px;
+        max-width: 1040px;
         max-height: 90vh;
-        background: #141414;
-        border: 1px solid rgba(255, 255, 255, 0.12);
+        background-color: var(--dark-red);
+        border: 2px solid var(--bg);
+        border-radius: 0;
         overflow-y: auto;
         display: flex;
         flex-direction: column;
-        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8);
+        box-shadow: none;
       }
 
       .project-modal-close {
         position: absolute;
-        top: 16px;
-        right: 16px;
+        top: 14px;
+        right: 14px;
         z-index: 10;
-        width: 36px;
-        height: 36px;
-        background: rgba(0, 0, 0, 0.6);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: #FFFFFF;
+        width: 34px;
+        height: 34px;
+        background: var(--dark-red);
+        border: 1.5px solid var(--bg);
+        color: var(--bg);
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: background 0.2s, transform 0.2s;
+        border-radius: 0;
+        transition: background 0.2s, color 0.2s, transform 0.2s;
       }
       .project-modal-close:hover {
         background: var(--bg);
+        color: var(--dark-red);
         transform: scale(1.05);
       }
 
@@ -342,6 +347,7 @@
         align-items: center;
         justify-content: center;
         overflow: hidden;
+        border-bottom: 1.5px solid var(--bg);
       }
 
       .project-modal-media-wrap img,
@@ -354,62 +360,50 @@
       }
 
       .project-modal-body {
-        padding: clamp(20px, 3.5vw, 36px);
+        padding: clamp(20px, 3vw, 36px);
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: 10px;
+        background-color: var(--dark-red);
       }
 
       .project-modal-tag {
         font-family: 'ReplicaLLTT-Bold', sans-serif;
         font-size: 11px;
-        letter-spacing: 0.15em;
+        letter-spacing: 0.18em;
         text-transform: uppercase;
         color: var(--bg);
+        opacity: 0.8;
       }
 
       .project-modal-title {
         font-family: 'ReplicaLLTT-Bold', sans-serif;
-        font-size: clamp(20px, 3.5vw, 34px);
+        font-size: clamp(22px, 3.2vw, 36px);
         letter-spacing: 0.04em;
-        color: #FFFFFF;
+        color: var(--bg);
         text-transform: uppercase;
         margin: 0;
-        line-height: 1.15;
+        line-height: 1.1;
       }
 
       .project-modal-meta {
         font-family: 'ReplicaLLTT-Bold', sans-serif;
         font-size: 12px;
-        letter-spacing: 0.08em;
-        color: rgba(255, 255, 255, 0.5);
+        letter-spacing: 0.12em;
+        color: var(--bg);
+        opacity: 0.65;
         text-transform: uppercase;
       }
 
       .project-modal-desc {
-        font-size: 15px;
-        line-height: 1.6;
-        color: rgba(255, 255, 255, 0.85);
-        margin-top: 8px;
-      }
-
-      /* ── Resume Download Link ───────────────────────────────────────────── */
-      .sanity-resume-dl {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        margin-top: 6px;
         font-family: 'ReplicaLLTT-Bold', sans-serif;
-        font-size: 11px;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        color: #FFFFFF;
-        text-decoration: underline;
+        font-size: 13px;
+        line-height: 1.6;
+        letter-spacing: 0.04em;
+        color: var(--bg);
         opacity: 0.9;
-        transition: opacity 0.2s ease;
-      }
-      .sanity-resume-dl:hover {
-        opacity: 1;
+        text-transform: uppercase;
+        margin-top: 6px;
       }
     `;
     document.head.appendChild(style);
@@ -626,14 +620,7 @@
         dlLink.target = '_blank';
         dlLink.rel = 'noopener noreferrer';
         dlLink.title = 'Download Resume PDF';
-        dlLink.innerHTML = `
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="7 10 12 15 17 10"></polyline>
-            <line x1="12" y1="15" x2="12" y2="3"></line>
-          </svg>
-          Download PDF
-        `;
+        dlLink.textContent = '[ DOWNLOAD RESUME (PDF) ]';
         resumePdfSlot.appendChild(dlLink);
       }
     }
@@ -651,28 +638,15 @@
     if (!hasAnyContent) {
       resumeScroll.innerHTML = `
         <div class="resume-empty-state" id="resumeEmptyState">
-          <div class="resume-empty-icon">
-            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <polyline points="14 2 14 8 20 8"></polyline>
-              <line x1="16" y1="13" x2="8" y2="13"></line>
-              <line x1="16" y1="17" x2="8" y2="17"></line>
-              <polyline points="10 9 9 9 8 9"></polyline>
-            </svg>
-          </div>
-          <div class="resume-empty-title">RESUME &amp; CAREER</div>
-          <p class="resume-empty-desc">
-            Upload your resume PDF and customize your career milestones in Sanity Studio under <strong>🐐 Resume &amp; Career</strong>.
-          </p>
+          <div class="resume-empty-title">RESUME &amp; ARCHIVE</div>
+          <div class="resume-empty-sub">DIRECT INQUIRIES &amp; BOOKINGS</div>
+          <a href="mailto:theodore@kiltura.com" class="resume-empty-contact">THEODORE@KILTURA.COM</a>
           ${resume && resume.resumePdfUrl ? `
-            <a href="${resume.resumePdfUrl}" target="_blank" rel="noopener noreferrer" class="resume-empty-pdf-btn">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="7 10 12 15 17 10"></polyline>
-                <line x1="12" y1="15" x2="12" y2="3"></line>
-              </svg>
-              View Uploaded PDF
-            </a>
+            <div style="margin-top: 18px;">
+              <a href="${resume.resumePdfUrl}" target="_blank" rel="noopener noreferrer" class="sanity-resume-dl">
+                [ DOWNLOAD RESUME (PDF) ]
+              </a>
+            </div>
           ` : ''}
         </div>
       `;
@@ -752,7 +726,7 @@
                     ${p.role ? `<span class="resume-job-date">${p.role}</span>` : ''}
                   </div>
                   ${p.description ? `<div class="resume-bullet">${p.description}</div>` : ''}
-                  ${p.url ? `<div style="margin-top:4px;"><a href="${p.url}" target="_blank" rel="noopener noreferrer" style="color:rgba(255,255,255,0.8);font-size:11px;text-decoration:underline;">Visit</a></div>` : ''}
+                  ${p.url ? `<div style="margin-top:6px;"><a href="${p.url}" target="_blank" rel="noopener noreferrer" style="color:var(--bg);font-family:'ReplicaLLTT-Bold',sans-serif;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;text-decoration:underline;opacity:0.85;">[ Visit Project &rarr; ]</a></div>` : ''}
                 </div>
               `).join('')}
             </div>

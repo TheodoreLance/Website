@@ -1227,211 +1227,23 @@
 
     /* ==========================================================================
        RESUME CONTENT — Box 3 (Goat Panel)
-       ========================================================================== */
-    .resume-wrap {
-      position: absolute;
-      inset: 0;
-      /* Leave right margin for the goat SVG on desktop */
-      padding: clamp(18px, 3.2vh, 36px) calc(180 / 1024 * 100vw) clamp(18px, 3vh, 30px) clamp(20px, 3.2vw, 42px);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.4s ease 0.12s;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      gap: clamp(10px, 1.6vh, 20px);
-    }
-
-    body.box-3-open .resume-wrap {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    /* Scrollable inner */
-    .resume-scroll {
-      overflow-y: auto;
-      overflow-x: hidden;
-      flex: 1;
-      min-height: 0;
-      display: flex;
-      flex-direction: column;
-      gap: clamp(10px, 1.8vh, 22px);
-      scrollbar-width: none;
-    }
-    .resume-scroll::-webkit-scrollbar { display: none; }
-
-    /* Name / header */
-    .resume-name {
-      font-family: 'ReplicaLLTT-Bold', sans-serif;
-      font-size: clamp(16px, 2.4vw, 28px);
-      letter-spacing: 0.1em;
-      color: var(--bg);
-      text-transform: uppercase;
-      line-height: 1;
-    }
-    .resume-tagline {
-      font-family: 'ReplicaLLTT-Bold', sans-serif;
-      font-size: clamp(8px, 0.95vw, 12px);
-      letter-spacing: 0.2em;
-      color: var(--bg);
-      opacity: 0.5;
-      text-transform: uppercase;
-      margin-top: 3px;
-    }
-
-    /* Two-column body */
-    .resume-body {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: clamp(14px, 2.2vw, 36px);
-      flex: 1;
-      min-height: 0;
-    }
-    .resume-col-side {
-      width: clamp(120px, 18vw, 200px);
-      flex-shrink: 0;
-    }
-
-    /* Section headers */
-    .resume-section-title {
-      font-family: 'ReplicaLLTT-Bold', sans-serif;
-      font-size: clamp(7px, 0.78vw, 10px);
-      letter-spacing: 0.22em;
-      color: var(--bg);
-      opacity: 0.45;
-      text-transform: uppercase;
-      border-bottom: 1px solid rgba(255,255,255,0.12);
-      padding-bottom: 4px;
-      margin-bottom: clamp(6px, 1vh, 12px);
-    }
-
-    /* Job entries */
-    .resume-job {
-      margin-bottom: clamp(8px, 1.3vh, 16px);
-    }
-    .resume-job-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 8px;
-    }
-    .resume-job-company {
-      font-family: 'ReplicaLLTT-Bold', sans-serif;
-      font-size: clamp(9px, 1.1vw, 14px);
-      letter-spacing: 0.1em;
-      color: var(--bg);
-      text-transform: uppercase;
-    }
-    .resume-job-date {
-      font-family: 'ReplicaLLTT-Bold', sans-serif;
-      font-size: clamp(7px, 0.75vw, 9px);
-      letter-spacing: 0.12em;
-      color: var(--bg);
-      opacity: 0.4;
-      text-transform: uppercase;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-    .resume-job-title {
-      font-family: 'ReplicaLLTT-Bold', sans-serif;
-      font-size: clamp(7px, 0.82vw, 10px);
-      letter-spacing: 0.14em;
-      color: var(--bg);
-      opacity: 0.6;
-      text-transform: uppercase;
-      margin-top: 1px;
-    }
-    .resume-job-desc {
-      font-family: 'ReplicaLLTT-Bold', sans-serif;
-      font-size: clamp(7px, 0.78vw, 9.5px);
-      letter-spacing: 0.08em;
-      color: var(--bg);
-      opacity: 0.35;
-      text-transform: uppercase;
-      margin-top: 3px;
-      line-height: 1.5;
-    }
-
-    /* Education / skill entries */
-    .resume-edu {
-      margin-bottom: clamp(8px, 1.2vh, 14px);
-    }
-    .resume-edu-school {
-      font-family: 'ReplicaLLTT-Bold', sans-serif;
-      font-size: clamp(8px, 0.95vw, 12px);
-      letter-spacing: 0.1em;
-      color: var(--bg);
-      text-transform: uppercase;
-    }
-    .resume-edu-detail {
-      font-family: 'ReplicaLLTT-Bold', sans-serif;
-      font-size: clamp(7px, 0.72vw, 9px);
-      letter-spacing: 0.12em;
-      color: var(--bg);
-      opacity: 0.4;
-      text-transform: uppercase;
-      margin-top: 2px;
-      line-height: 1.5;
-    }
-
-    .resume-skill-group {
-      margin-bottom: clamp(6px, 1vh, 12px);
-    }
-    .resume-skill-label {
-      font-family: 'ReplicaLLTT-Bold', sans-serif;
-      font-size: clamp(7px, 0.72vw, 9px);
-      letter-spacing: 0.18em;
-      color: var(--bg);
-      opacity: 0.3;
-      text-transform: uppercase;
-      margin-bottom: 3px;
-    }
-    .resume-skill-items {
-      font-family: 'ReplicaLLTT-Bold', sans-serif;
-      font-size: clamp(7px, 0.82vw, 10px);
-      letter-spacing: 0.1em;
-      color: var(--bg);
-      opacity: 0.6;
-      text-transform: uppercase;
-      line-height: 1.7;
-    }
-
-    /* Footer contact line */
-    .resume-footer-bar {
-      display: flex;
-      gap: clamp(12px, 2vw, 28px);
-      padding-top: clamp(6px, 0.9vh, 10px);
-      border-top: 1px solid rgba(255,255,255,0.1);
-      flex-shrink: 0;
-    }
-    .resume-footer-bar a,
-    .resume-footer-bar span {
-      font-family: 'ReplicaLLTT-Bold', sans-serif;
-      font-size: clamp(7px, 0.75vw, 9px);
-      letter-spacing: 0.15em;
-      color: var(--bg);
-      opacity: 0.4;
-      text-transform: uppercase;
-      text-decoration: none;
-    }
-    .resume-footer-bar a:hover { opacity: 0.8; }
-
-    /* ==========================================================================
-       RESUME CONTENT — Box 3 (Goat Panel) — Accordion Layout
+       Strict Swiss Graphic System: 100% Theme-Wired (var(--bg), var(--dark-red))
        ========================================================================== */
     .resume-wrap {
       position: absolute;
       inset: 0;
       /* Right padding leaves room for the goat SVG */
-      padding: clamp(16px, 2.8vh, 32px) calc(170 / 1024 * 100vw) clamp(14px, 2.4vh, 28px) clamp(18px, 2.8vw, 38px);
+      padding: clamp(18px, 3vh, 34px) calc(180 / 1024 * 100vw) clamp(16px, 2.6vh, 30px) clamp(20px, 3vw, 40px);
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.4s ease 0.1s;
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      gap: clamp(8px, 1.2vh, 16px);
+      gap: clamp(10px, 1.5vh, 18px);
+      color: var(--bg);
     }
+
     body.box-3-open .resume-wrap {
       opacity: 1;
       pointer-events: auto;
@@ -1446,7 +1258,7 @@
       scrollbar-width: none;
       display: flex;
       flex-direction: column;
-      gap: 0;
+      gap: clamp(10px, 1.6vh, 20px);
     }
     .resume-scroll::-webkit-scrollbar { display: none; }
 
@@ -1454,36 +1266,70 @@
     .resume-header {
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 4px;
       flex-shrink: 0;
     }
     .resume-name {
       font-family: 'ReplicaLLTT-Bold', sans-serif;
-      font-size: clamp(17px, 2.6vw, 30px);
-      letter-spacing: 0.09em;
-      color: #FFFFFF;
+      font-size: clamp(18px, 2.5vw, 32px);
+      letter-spacing: 0.08em;
+      color: var(--bg);
       text-transform: uppercase;
-      line-height: 1.1;
+      line-height: 1.05;
       flex-shrink: 0;
     }
     .resume-contact-line {
       font-family: 'ReplicaLLTT-Bold', sans-serif;
-      font-size: clamp(8px, 0.95vw, 11px);
+      font-size: clamp(8px, 0.9vw, 11px);
       letter-spacing: 0.14em;
-      color: rgba(255, 255, 255, 0.7);
+      color: var(--bg);
+      opacity: 0.75;
       text-transform: uppercase;
-      margin-top: 3px;
+      margin-top: 2px;
       flex-shrink: 0;
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
     }
     .resume-contact-line a { color: inherit; text-decoration: none; }
-    .resume-contact-line a:hover { color: #FFFFFF; opacity: 1; }
+    .resume-contact-line a:hover { opacity: 1; text-decoration: underline; }
+
+    /* Download PDF Button: Stark Brutalist Border Button */
+    .sanity-resume-dl,
+    .resume-empty-pdf-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+      padding: 7px 14px;
+      background: transparent;
+      border: 1.5px solid var(--bg);
+      color: var(--bg);
+      font-family: 'ReplicaLLTT-Bold', sans-serif;
+      font-size: clamp(8.5px, 0.85vw, 11px);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 0;
+      align-self: flex-start;
+      cursor: pointer;
+      transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+    .sanity-resume-dl:hover,
+    .resume-empty-pdf-btn:hover {
+      background-color: var(--bg);
+      color: var(--dark-red);
+      transform: scale(1.02);
+    }
+    .sanity-resume-dl svg,
+    .resume-empty-pdf-btn svg {
+      width: 12px;
+      height: 12px;
+    }
 
     /* Accordion section */
     .resume-section {
-      border-bottom: 1px solid rgba(255,255,255,0.15);
+      border-bottom: 1.5px solid rgba(0, 0, 0, 0.12);
     }
 
     /* Clickable header row */
@@ -1498,22 +1344,24 @@
       cursor: pointer;
       gap: 10px;
       outline: none;
-      color: #FFFFFF;
+      color: var(--bg);
     }
-    .resume-section-toggle:hover .resume-section-label { opacity: 1; color: #FFFFFF; }
+    .resume-section-toggle:hover .resume-section-label { opacity: 1; }
 
     .resume-section-label {
       font-family: 'ReplicaLLTT-Bold', sans-serif;
-      font-size: clamp(9px, 1.05vw, 13px);
+      font-size: clamp(9px, 1.0vw, 13px);
       letter-spacing: 0.2em;
-      color: rgba(255, 255, 255, 0.9);
+      color: var(--bg);
+      opacity: 0.85;
       text-transform: uppercase;
-      transition: opacity 0.2s ease, color 0.2s ease;
+      transition: opacity 0.2s ease;
     }
     .resume-section-icon {
       font-family: 'ReplicaLLTT-Bold', sans-serif;
-      font-size: clamp(12px, 1.3vw, 17px);
-      color: rgba(255, 255, 255, 0.6);
+      font-size: clamp(12px, 1.3vw, 16px);
+      color: var(--bg);
+      opacity: 0.6;
       line-height: 1;
       transition: transform 0.3s ease, opacity 0.2s ease;
       flex-shrink: 0;
@@ -1521,11 +1369,10 @@
     }
     .resume-section.is-open .resume-section-icon {
       transform: rotate(45deg);
-      opacity: 0.95;
+      opacity: 1;
     }
     .resume-section.is-open .resume-section-label {
       opacity: 1;
-      color: #FFFFFF;
     }
 
     /* Accordion body */
@@ -1561,39 +1408,42 @@
     }
     .resume-job-company {
       font-family: 'ReplicaLLTT-Bold', sans-serif;
-      font-size: clamp(10px, 1.3vw, 15px);
-      letter-spacing: 0.09em;
-      color: #FFFFFF;
+      font-size: clamp(10px, 1.25vw, 15px);
+      letter-spacing: 0.08em;
+      color: var(--bg);
       text-transform: uppercase;
     }
     .resume-job-date {
       font-family: 'ReplicaLLTT-Bold', sans-serif;
-      font-size: clamp(8px, 0.85vw, 11px);
+      font-size: clamp(7.5px, 0.8vw, 10.5px);
       letter-spacing: 0.12em;
-      color: rgba(255, 255, 255, 0.55);
+      color: var(--bg);
+      opacity: 0.6;
       text-transform: uppercase;
       white-space: nowrap;
       flex-shrink: 0;
     }
     .resume-job-title {
       font-family: 'ReplicaLLTT-Bold', sans-serif;
-      font-size: clamp(8px, 0.95vw, 12px);
+      font-size: clamp(8px, 0.9vw, 11.5px);
       letter-spacing: 0.12em;
-      color: rgba(255, 255, 255, 0.85);
+      color: var(--bg);
+      opacity: 0.85;
       text-transform: uppercase;
       margin-top: 3px;
     }
     .resume-bullets {
-      margin-top: clamp(5px, 0.7vh, 9px);
+      margin-top: clamp(4px, 0.6vh, 8px);
       display: flex;
       flex-direction: column;
-      gap: clamp(3px, 0.5vh, 6px);
+      gap: clamp(3px, 0.4vh, 6px);
     }
     .resume-bullet {
       font-family: 'ReplicaLLTT-Bold', sans-serif;
-      font-size: clamp(8px, 0.9vw, 11.5px);
+      font-size: clamp(8px, 0.85vw, 11px);
       letter-spacing: 0.06em;
-      color: rgba(255, 255, 255, 0.75);
+      color: var(--bg);
+      opacity: 0.75;
       text-transform: uppercase;
       line-height: 1.55;
       padding-left: 14px;
@@ -1613,36 +1463,39 @@
       align-items: baseline;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: clamp(4px, 0.7vh, 8px);
+      margin-bottom: clamp(4px, 0.6vh, 8px);
     }
     .resume-edu-school {
       font-family: 'ReplicaLLTT-Bold', sans-serif;
-      font-size: clamp(10px, 1.3vw, 15px);
-      letter-spacing: 0.09em;
-      color: #FFFFFF;
+      font-size: clamp(10px, 1.25vw, 15px);
+      letter-spacing: 0.08em;
+      color: var(--bg);
       text-transform: uppercase;
     }
     .resume-edu-year {
       font-family: 'ReplicaLLTT-Bold', sans-serif;
-      font-size: clamp(8px, 0.85vw, 11px);
+      font-size: clamp(7.5px, 0.8vw, 10.5px);
       letter-spacing: 0.12em;
-      color: rgba(255, 255, 255, 0.55);
+      color: var(--bg);
+      opacity: 0.6;
       text-transform: uppercase;
     }
     .resume-edu-detail {
       font-family: 'ReplicaLLTT-Bold', sans-serif;
-      font-size: clamp(8px, 0.9vw, 11.5px);
+      font-size: clamp(8px, 0.88vw, 11.5px);
       letter-spacing: 0.08em;
-      color: rgba(255, 255, 255, 0.8);
+      color: var(--bg);
+      opacity: 0.8;
       text-transform: uppercase;
       line-height: 1.6;
       margin-top: 2px;
     }
     .resume-edu-badge {
       font-family: 'ReplicaLLTT-Bold', sans-serif;
-      font-size: clamp(7.5px, 0.82vw, 10px);
-      letter-spacing: 0.14em;
-      color: rgba(255, 255, 255, 0.5);
+      font-size: clamp(7.5px, 0.8vw, 10px);
+      letter-spacing: 0.12em;
+      color: var(--bg);
+      opacity: 0.6;
       text-transform: uppercase;
       margin-top: 4px;
     }
@@ -1651,88 +1504,76 @@
     .resume-skills-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: clamp(10px, 1.4vh, 18px) clamp(16px, 2.2vw, 30px);
+      gap: clamp(8px, 1.2vh, 16px) clamp(16px, 2vw, 28px);
     }
-    .resume-skill-group {}
     .resume-skill-cat {
       font-family: 'ReplicaLLTT-Bold', sans-serif;
-      font-size: clamp(8px, 0.88vw, 11px);
+      font-size: clamp(8px, 0.85vw, 10.5px);
       letter-spacing: 0.18em;
-      color: rgba(255, 255, 255, 0.55);
+      color: var(--bg);
+      opacity: 0.6;
       text-transform: uppercase;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
     .resume-skill-list {
       font-family: 'ReplicaLLTT-Bold', sans-serif;
-      font-size: clamp(8.5px, 0.98vw, 12.5px);
+      font-size: clamp(8.5px, 0.95vw, 12px);
       letter-spacing: 0.08em;
-      color: rgba(255, 255, 255, 0.85);
+      color: var(--bg);
+      opacity: 0.85;
       text-transform: uppercase;
       line-height: 1.65;
     }
 
-    /* Empty state */
+    /* Editorial Empty State (No emojis, no document icons, pure Swiss typography) */
     .resume-empty-state {
       display: flex;
       flex-direction: column;
-      align-items: center;
       justify-content: center;
       height: 100%;
-      min-height: 200px;
-      text-align: center;
-      padding: clamp(20px, 3vh, 40px) clamp(16px, 2vw, 32px);
-      color: #FFFFFF;
-    }
-    .resume-empty-icon {
-      opacity: 0.45;
-      margin-bottom: 12px;
+      min-height: 220px;
+      color: var(--bg);
+      padding: clamp(10px, 2vh, 20px) 0;
     }
     .resume-empty-title {
       font-family: 'ReplicaLLTT-Bold', sans-serif;
-      font-size: clamp(13px, 1.8vw, 17px);
+      font-size: clamp(14px, 1.8vw, 22px);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--bg);
+      margin-bottom: 6px;
+    }
+    .resume-empty-sub {
+      font-family: 'ReplicaLLTT-Bold', sans-serif;
+      font-size: clamp(8.5px, 0.95vw, 11.5px);
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      margin-bottom: 8px;
-      color: #FFFFFF;
+      color: var(--bg);
+      opacity: 0.7;
+      margin-bottom: 14px;
     }
-    .resume-empty-desc {
-      font-size: clamp(11px, 1.2vw, 13px);
-      line-height: 1.6;
-      max-width: 440px;
-      color: rgba(255, 255, 255, 0.65);
-      margin: 0 auto;
-    }
-    .resume-empty-desc strong {
-      color: #FFFFFF;
-    }
-    .resume-empty-pdf-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 18px;
-      padding: 10px 18px;
-      background: rgba(255, 255, 255, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      color: #FFFFFF;
+    .resume-empty-contact {
       font-family: 'ReplicaLLTT-Bold', sans-serif;
-      font-size: 11px;
-      letter-spacing: 0.12em;
+      font-size: clamp(11px, 1.15vw, 14px);
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      text-decoration: none;
-      transition: background 0.2s ease, border-color 0.2s ease;
+      color: var(--bg);
+      text-decoration: underline;
+      opacity: 0.85;
+      transition: opacity 0.2s ease;
+      align-self: flex-start;
     }
-    .resume-empty-pdf-btn:hover {
-      background: rgba(255, 255, 255, 0.25);
-      border-color: #FFFFFF;
+    .resume-empty-contact:hover {
+      opacity: 1;
     }
 
     /* Mobile resume */
     @media (max-width: 768px), (orientation: portrait) {
       .resume-wrap {
-        padding: 72px 12px 16px 12px !important;
+        padding: 72px 14px 18px 14px !important;
       }
       .resume-name {
-        font-size: clamp(16px, 5.5vw, 24px) !important;
+        font-size: clamp(16px, 5.2vw, 24px) !important;
       }
       .resume-skills-grid {
         grid-template-columns: 1fr !important;
@@ -1812,19 +1653,9 @@
 
         <div class="resume-scroll" id="resumeScroll">
           <div class="resume-empty-state" id="resumeEmptyState">
-            <div class="resume-empty-icon">
-              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                <polyline points="14 2 14 8 20 8"></polyline>
-                <line x1="16" y1="13" x2="8" y2="13"></line>
-                <line x1="16" y1="17" x2="8" y2="17"></line>
-                <polyline points="10 9 9 9 8 9"></polyline>
-              </svg>
-            </div>
-            <div class="resume-empty-title">RESUME &amp; CAREER</div>
-            <p class="resume-empty-desc">
-              Upload your resume PDF and customize your career milestones in Sanity Studio under <strong>🐐 Resume &amp; Career</strong>.
-            </p>
+            <div class="resume-empty-title">RESUME &amp; ARCHIVE</div>
+            <div class="resume-empty-sub">DIRECT INQUIRIES &amp; BOOKINGS</div>
+            <a href="mailto:theodore@kiltura.com" class="resume-empty-contact">THEODORE@KILTURA.COM</a>
           </div>
         </div>
       </div>
