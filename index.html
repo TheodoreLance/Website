@@ -1132,7 +1132,13 @@
         height: calc(100dvh - var(--m-top) - var(--m-menu-h) - 12px - var(--m-bottom)) !important;
         bottom: auto !important;
         opacity: calc(min(1, var(--p2) * 5)) !important;
-        z-index: 50 !important;
+        z-index: 48 !important;
+        overflow: hidden !important;
+        /* Only allow pointer events when the contact section is actually visible */
+        pointer-events: none !important;
+      }
+
+      body.contact-active .contact-modal {
         pointer-events: auto !important;
       }
 
@@ -1782,7 +1788,7 @@
           } else {
             targetP = 2.0;
           }
-        }, 220);
+        }, 180);
       }
 
       // Mouse Wheel / Trackpad Scroll (Vertical & Horizontal)
@@ -1791,51 +1797,40 @@
 
         // On the first page (p is at or near 0), horizontal trackpad scrolling controls the color selection
         if (currentP <= 0.05 && Math.abs(e.deltaX) > Math.abs(e.deltaY) * 0.7) {
-          // Swiping left on trackpad has e.deltaX > 0
           targetPx += e.deltaX * 0.002;
           targetPx = Math.max(0, Math.min(1, targetPx));
           return;
         }
 
-        // If color selection is open on first page and user scrolls vertically down, close color selection first
         if (targetPx > 0 && e.deltaY > 0) {
           targetPx = 0;
         }
 
-        // When in contact page (currentP > 1.02 or targetP > 1.02)
-        if (currentP > 1.02 || targetP > 1.02) {
-          if (e.deltaY < 0) {
-            // Scrolling up returns to 3 boxes and clamps strictly at 1.0 (no overshoot past 3 boxes)
-            targetP += e.deltaY * SENSITIVITY;
-            targetP = Math.max(1.0, targetP);
-            lastReturnedFromContact = Date.now();
-            closeBoxes();
-          } else {
-            targetP += e.deltaY * SENSITIVITY;
-            targetP = Math.min(2.0, targetP);
-          }
-          scheduleWheelSnap();
-          return;
-        }
+        const wheelPage = currentP < 0.5 ? 0 : (currentP < 1.5 ? 1 : 2);
+        const isMobile = window.innerWidth <= 768 || window.innerHeight > window.innerWidth;
 
-        // When around 3 boxes page (currentP >= 0.95 && currentP <= 1.05)
-        if (currentP >= 0.95 && currentP <= 1.05) {
-          if (Date.now() - lastReturnedFromContact < 500) {
+        if (wheelPage === 0) {
+          if (e.deltaY > 0) {
+            targetPx = 0;
             targetP = 1.0;
+            scheduleWheelSnap();
             return;
           }
-          if (Date.now() - lastClosedBoxTime < 450) {
+        } else if (wheelPage === 1) {
+          if (Date.now() - lastReturnedFromContact < 350 || Date.now() - lastClosedBoxTime < 350) {
             targetP = 1.0;
             return;
           }
           if (e.deltaY > 0) {
-            // Direct scroll down into contact page allowed
-            targetP += e.deltaY * SENSITIVITY;
-            targetP = Math.min(2.0, targetP);
-            scheduleWheelSnap();
+            // On desktop, only scroll to contact if the menu/contact bar is open
+            // On mobile, contact section is always accessible via scroll
+            const menuIsOpen = document.body.classList.contains('menu-open') || (menuBtn && menuBtn.classList.contains('open'));
+            if (isMobile || menuIsOpen) {
+              targetP = 2.0;
+              scheduleWheelSnap();
+            }
             return;
-          } else {
-            // If any box is open, smoothly close it and stay resting at the 3 boxes page
+          } else if (e.deltaY < 0) {
             if (hasOpenBox()) {
               closeBoxes();
               closeMenu();
@@ -1843,49 +1838,44 @@
               lastClosedBoxTime = Date.now();
               return;
             }
-            // Scrolling up goes back towards logo
             closeMenu();
             closeBoxes();
-            targetP += e.deltaY * SENSITIVITY;
-            targetP = Math.max(0, targetP);
+            targetP = 0.0;
+            scheduleWheelSnap();
+            return;
+          }
+        } else if (wheelPage === 2) {
+          if (e.deltaY < 0) {
+            targetP = 1.0;
+            closeBoxes();
             scheduleWheelSnap();
             return;
           }
         }
-
-        // When on pages 0 -> 1:
-        if (e.deltaY < 0) {
-          if (hasOpenBox()) {
-            closeBoxes();
-            closeMenu();
-            targetP = 1.0;
-            lastClosedBoxTime = Date.now();
-            return;
-          }
-          closeMenu();
-          closeBoxes();
-        }
-        targetP += e.deltaY * SENSITIVITY;
-        targetP = Math.max(0, Math.min(1.0, targetP));
-        scheduleWheelSnap();
       }, { passive: false });
 
       // Touch / Mobile Swipe (Vertical & Horizontal Swipe Left/Right)
       let touchStartX = 0;
       let touchStartY = 0;
+      let touchStartTime = 0;
+      let lastTouchY = 0;
+      let touchStartPage = 0;
       let isHorizontalGesture = null;
 
       window.addEventListener('touchstart', function(e) {
         touchStartX = e.touches[0].clientX;
-        touchStartY = e.touches[0].clientY;
+        touchStartY = lastTouchY = e.touches[0].clientY;
+        touchStartTime = Date.now();
+        touchStartPage = currentP < 0.5 ? 0 : (currentP < 1.5 ? 1 : 2);
         isHorizontalGesture = null;
       }, { passive: true });
 
       window.addEventListener('touchmove', function(e) {
         const touchX = e.touches[0].clientX;
         const touchY = e.touches[0].clientY;
-        const deltaX = touchStartX - touchX; // Swiping left has deltaX > 0
-        const deltaY = touchStartY - touchY; // Swiping up has deltaY > 0
+        lastTouchY = touchY;
+        const deltaX = touchStartX - touchX;
+        const deltaY = touchStartY - touchY; // Swiping up (scrolling down) has deltaY > 0
 
         // When on first page (currentP < 0.1), determine gesture direction
         if (currentP < 0.1 && isHorizontalGesture === null) {
@@ -1904,43 +1894,26 @@
           return;
         }
 
-        touchStartY = touchY;
-
-        // When in contact page (currentP > 1.02 or targetP > 1.02)
-        if (currentP > 1.02 || targetP > 1.02) {
-          if (deltaY < 0) {
-            // Swiping down returns to boxes page and stops strictly at 1.0
-            targetP += deltaY * 0.0035;
-            targetP = Math.max(1.0, targetP);
-            lastReturnedFromContact = Date.now();
-            closeBoxes();
-          } else {
-            targetP += deltaY * 0.0035;
-            targetP = Math.min(2.0, targetP);
-          }
-          e.preventDefault();
-          return;
-        }
-
-        // When resting at boxes page (currentP >= 0.95 && currentP <= 1.05)
-        if (currentP >= 0.95 && currentP <= 1.05) {
-          if (Date.now() - lastReturnedFromContact < 500) {
+        // On landing page (touchStartPage=0), an intentional upward swipe auto-scrolls to the 3 boxes
+        if (touchStartPage === 0) {
+          if (deltaY > 16) {
+            targetPx = 0;
             targetP = 1.0;
             e.preventDefault();
             return;
           }
-          if (Date.now() - lastClosedBoxTime < 450) {
+        } else if (touchStartPage === 1) {
+          if (Date.now() - lastReturnedFromContact < 350 || Date.now() - lastClosedBoxTime < 350) {
             targetP = 1.0;
             e.preventDefault();
             return;
           }
-          if (deltaY > 0) {
-            // Direct scroll into contact page allowed
-            targetP += deltaY * 0.0035;
-            targetP = Math.min(2.0, targetP);
+          if (deltaY > 30) {
+            // Only swipe to contact if a meaningful downward swipe is detected
+            targetP = 2.0;
             e.preventDefault();
             return;
-          } else {
+          } else if (deltaY < -30) {
             if (hasOpenBox()) {
               closeBoxes();
               closeMenu();
@@ -1951,42 +1924,64 @@
             }
             closeMenu();
             closeBoxes();
-            targetP += deltaY * 0.0035;
-            targetP = Math.max(0, targetP);
+            targetP = 0.0;
             e.preventDefault();
             return;
           }
+          // Small movements on the boxes page: keep at page 1 (no drift)
+          e.preventDefault();
+          return;
+        } else if (touchStartPage === 2) {
+          if (deltaY < -16) {
+            targetP = 1.0;
+            lastReturnedFromContact = Date.now();
+            closeBoxes();
+            e.preventDefault();
+            return;
+          }
+          e.preventDefault();
+          return;
         }
 
-        if (deltaY < 0) {
-          if (hasOpenBox()) {
-            closeBoxes();
-            closeMenu();
-            targetP = 1.0;
-            lastClosedBoxTime = Date.now();
-            e.preventDefault();
-            return;
-          }
-          closeMenu();
-          closeBoxes();
-        }
-        if (deltaY > 0 && targetPx > 0) {
-          targetPx = 0;
-        }
-        targetP += deltaY * 0.0035;
-        targetP = Math.max(0, Math.min(1.0, targetP));
+        // Landing page fallback: only minor tracking
         e.preventDefault();
       }, { passive: false });
 
       window.addEventListener('touchend', function() {
         isHorizontalGesture = null;
-        // Sticky Magnetic Snapping on touch release
-        if (targetP < 0.45) {
-          targetP = 0.0;
-        } else if (targetP < 1.45) {
-          targetP = 1.0;
-        } else {
-          targetP = 2.0;
+        const totalDy = touchStartY - lastTouchY;
+        const elapsed = Math.max(1, Date.now() - touchStartTime);
+        const velocity = totalDy / elapsed;
+
+        if (touchStartPage === 0) {
+          if (totalDy > 16 || velocity > 0.15 || targetP > 0.15) {
+            targetP = 1.0;
+          } else {
+            targetP = 0.0;
+          }
+        } else if (touchStartPage === 1) {
+          // Use stricter thresholds: require more displacement AND velocity to transition
+          // Do NOT use targetP as a threshold since we no longer drift it in touchmove
+          if (totalDy > 30 && velocity > 0.12) {
+            targetP = 2.0;
+          } else if (totalDy < -30 && velocity < -0.12) {
+            if (!hasOpenBox()) {
+              targetP = 0.0;
+            } else {
+              targetP = 1.0;
+              closeBoxes();
+            }
+          } else {
+            // Snap back to boxes page
+            targetP = 1.0;
+          }
+        } else if (touchStartPage === 2) {
+          if (totalDy < -30 || velocity < -0.15) {
+            targetP = 1.0;
+            lastReturnedFromContact = Date.now();
+          } else {
+            targetP = 2.0;
+          }
         }
       }, { passive: true });
 
@@ -2079,7 +2074,7 @@
         // Vertical lerp
         const diffP = targetP - currentP;
         if (Math.abs(diffP) > 0.0001) {
-          currentP += diffP * 0.15;
+          currentP += diffP * 0.18;
         } else {
           currentP = targetP;
         }
