@@ -275,43 +275,6 @@
       width: calc(351.27 / 1920 * 100vw);
     }
 
-    /* Case Study Open States: Full frame experience within the box, hiding the other 2 boxes */
-    body.case-study-open.box-1-open .box-1,
-    body.case-study-open .box-1.is-case-study-active {
-      left: calc(35.26 / 1920 * 100vw) !important;
-      width: calc((1537.46 + 351.27 - 35.26) / 1920 * 100vw) !important;
-      z-index: 60 !important;
-      overflow: hidden !important;
-      transition: width 0.45s cubic-bezier(0.2, 0.9, 0.3, 1), left 0.45s cubic-bezier(0.2, 0.9, 0.3, 1) !important;
-    }
-    body.case-study-open.box-1-open .box-2,
-    body.case-study-open.box-1-open .box-3,
-    body.case-study-open.box-1-open .menu-btn,
-    body.case-study-open.box-1-open .contact-bar,
-    body.case-study-open.box-1-open .box-1 .animal-chicken {
-      opacity: 0 !important;
-      pointer-events: none !important;
-      transition: opacity 0.3s ease !important;
-    }
-
-    body.case-study-open.box-2-open .box-2,
-    body.case-study-open .box-2.is-case-study-active {
-      left: calc(35.26 / 1920 * 100vw) !important;
-      width: calc((1537.46 + 351.27 - 35.26) / 1920 * 100vw) !important;
-      z-index: 60 !important;
-      overflow: hidden !important;
-      transition: width 0.45s cubic-bezier(0.2, 0.9, 0.3, 1), left 0.45s cubic-bezier(0.2, 0.9, 0.3, 1) !important;
-    }
-    body.case-study-open.box-2-open .box-1,
-    body.case-study-open.box-2-open .box-3,
-    body.case-study-open.box-2-open .menu-btn,
-    body.case-study-open.box-2-open .contact-bar,
-    body.case-study-open.box-2-open .box-2 .animal-tiger {
-      opacity: 0 !important;
-      pointer-events: none !important;
-      transition: opacity 0.3s ease !important;
-    }
-
     /* Box 3 Open State (Screenshot 3 reference):
        Box 1 collapses to 40px strip at left 17px. Chicken is hidden.
        Box 2 collapses to 40px strip at left 71px. Tiger is hidden.
@@ -1227,25 +1190,6 @@
         bottom: auto !important;
       }
 
-      /* Case Study Open on Mobile: Full frame experience within the box, hiding other 2 boxes */
-      body.case-study-open .box.is-case-study-active,
-      body.case-study-open.box-1-open .box-1,
-      body.case-study-open.box-2-open .box-2 {
-        left: var(--m-margin) !important;
-        width: calc(100vw - 2 * var(--m-margin)) !important;
-        top: var(--m-top) !important;
-        height: calc(100dvh - var(--m-top) - var(--m-bottom)) !important;
-        z-index: 70 !important;
-        overflow: hidden !important;
-      }
-      body.case-study-open .box:not(.is-case-study-active),
-      body.case-study-open .menu-btn,
-      body.case-study-open .contact-bar,
-      body.case-study-open .animal {
-        opacity: 0 !important;
-        pointer-events: none !important;
-      }
-
       /* When boxes are open on mobile: tuck animal into top-left corner as a compact icon */
       body.box-1-open .box-1 .animal,
       body.box-2-open .box-2 .animal,
@@ -1920,15 +1864,11 @@
       function hasOpenBox() {
         return document.body.classList.contains('box-1-open') ||
                document.body.classList.contains('box-2-open') ||
-               document.body.classList.contains('box-3-open') ||
-               document.body.classList.contains('case-study-open');
+               document.body.classList.contains('box-3-open');
       }
 
       function closeBoxes() {
         document.body.classList.remove('box-1-open', 'box-2-open', 'box-3-open');
-        if (typeof window.closeCaseStudy === 'function') {
-          window.closeCaseStudy();
-        }
       }
 
       function openBox1() {
@@ -2044,19 +1984,11 @@
           const isOpen = document.body.classList.contains('box-1-open');
           document.body.classList.remove('box-2-open', 'box-3-open');
           if (isOpen) {
-            if (!e.target.closest('.portfolio-cards-wrap') && !e.target.closest('.case-study-view')) {
+            if (!e.target.closest('.portfolio-cards-wrap')) {
               document.body.classList.remove('box-1-open');
-              if (typeof window.closeCaseStudy === 'function') window.closeCaseStudy(box1);
             }
           } else {
             document.body.classList.add('box-1-open');
-            if (window.innerWidth <= 768) {
-              setTimeout(() => {
-                if (typeof window.openFirstProjectInBox === 'function') {
-                  window.openFirstProjectInBox(1);
-                }
-              }, 80);
-            }
           }
         });
       }
@@ -2072,19 +2004,11 @@
           const isOpen = document.body.classList.contains('box-2-open');
           document.body.classList.remove('box-1-open', 'box-3-open');
           if (isOpen) {
-            if (!e.target.closest('.portfolio-cards-wrap') && !e.target.closest('.case-study-view')) {
+            if (!e.target.closest('.portfolio-cards-wrap')) {
               document.body.classList.remove('box-2-open');
-              if (typeof window.closeCaseStudy === 'function') window.closeCaseStudy(box2);
             }
           } else {
             document.body.classList.add('box-2-open');
-            if (window.innerWidth <= 768) {
-              setTimeout(() => {
-                if (typeof window.openFirstProjectInBox === 'function') {
-                  window.openFirstProjectInBox(2);
-                }
-              }, 80);
-            }
           }
         });
       }
@@ -2442,8 +2366,8 @@
       }, { passive: true });
 
       window.addEventListener('touchmove', function(e) {
-        // If touching inside an open Case Study, allow native vertical scroll
-        if (document.body.classList.contains('case-study-open') || (e.target && e.target.closest && e.target.closest('.case-study-view'))) {
+        // If touching inside an expanded section, allow native vertical scroll of the case study
+        if (e.target && e.target.closest && (e.target.closest('.portfolio-section.is-expanded') || e.target.closest('.portfolio-cards-wrap'))) {
           return;
         }
 
@@ -2539,7 +2463,7 @@
             targetP = 0.0;
           }
         } else if (touchStartPage === 1) {
-          if (hasOpenBox() || document.body.classList.contains('case-study-open')) {
+          if (hasOpenBox()) {
             targetP = 1.0;
             return;
           }

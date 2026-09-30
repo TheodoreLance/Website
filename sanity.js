@@ -176,7 +176,7 @@
         filter: brightness(0.97);
       }
 
-      /* Expanded state fills available space */
+      /* Expanded state fills available space & allows smooth vertical scrolling of the case study */
       .portfolio-section.is-expanded {
         flex-grow: 1;
         flex-shrink: 1;
@@ -185,6 +185,23 @@
         min-height: 0;
         cursor: default;
         background-color: var(--bg);
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+        scrollbar-width: thin;
+        scrollbar-color: var(--dark-red) transparent;
+      }
+
+      .portfolio-section.is-expanded::-webkit-scrollbar {
+        width: 4px;
+      }
+      .portfolio-section.is-expanded::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .portfolio-section.is-expanded::-webkit-scrollbar-thumb {
+        background: var(--dark-red);
+        border-radius: 2px;
       }
 
       .portfolio-section-bar {
@@ -218,23 +235,36 @@
         display: none !important;
       }
 
-      /* Collapsed section hides expanded view completely (never intercept clicks) */
+      /* Collapsed section hides expanded view completely */
       .portfolio-section.is-collapsed .portfolio-section-expanded {
         display: none !important;
         pointer-events: none !important;
         visibility: hidden !important;
       }
 
-      /* Expanded Section View: Clean, pure, matching Untitled-1.svg */
+      /* Expanded Section View: Vertical flow inside section */
       .portfolio-section-expanded {
-        position: absolute;
-        inset: 0;
-        overflow: hidden;
+        position: relative;
+        width: 100%;
+        min-height: 100%;
         display: flex;
-        background-color: var(--bg); /* Flat light red */
+        flex-direction: column;
+        background-color: var(--bg);
+        box-sizing: border-box;
         opacity: 1;
         pointer-events: auto;
         visibility: visible;
+      }
+
+      /* Top Hero Media Frame */
+      .project-hero-frame {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        min-height: clamp(300px, calc(520 / 1080 * 100vh), 750px);
+        flex-shrink: 0;
+        overflow: hidden;
+        background-color: var(--bg);
       }
 
       .project-carousel-media {
@@ -246,12 +276,7 @@
         transition: opacity 0.3s ease;
       }
 
-      /* No dark vignettes or gradient overlays */
-      .project-carousel-overlay {
-        display: none !important;
-      }
-
-      /* Top-Left Project Title (EXACT MATCH FOR reference.svg cls-2 text) */
+      /* Top-Left Project Title */
       .project-title-overlay {
         position: absolute;
         top: calc(32 / 1080 * 100vh);
@@ -268,7 +293,7 @@
         text-shadow: none;
       }
 
-      /* Bottom-Left Short Description (EXACT MATCH FOR reference.svg cls-3 text) */
+      /* Bottom-Left Short Description */
       .project-desc-overlay {
         position: absolute;
         bottom: calc(18 / 1080 * 100vh);
@@ -286,7 +311,7 @@
         text-shadow: none;
       }
 
-      /* Carousel Navigation Chevrons (EXACT MATCH FOR reference.svg cls-8 chevrons) */
+      /* Carousel Navigation Chevrons */
       .project-carousel-arrow {
         position: absolute;
         top: 50%;
@@ -327,240 +352,99 @@
         display: block;
       }
 
-      /* Case Study Card Prompt Badge */
-      .project-case-study-prompt {
+      /* Scroll Hint Button inside Hero Frame */
+      .project-scroll-hint {
         position: absolute;
         bottom: calc(18 / 1080 * 100vh);
         right: calc(31.27 / 1920 * 100vw);
-        z-index: 15;
+        z-index: 25;
         display: flex;
         align-items: center;
         gap: 6px;
         background-color: var(--dark-red);
         color: var(--bg);
+        border: none;
         font-family: 'ReplicaLLTT-Bold', 'Replica LL TT', sans-serif;
         font-weight: 700;
         font-size: clamp(9px, 0.85vw, 13px);
         letter-spacing: 0.08em;
         text-transform: uppercase;
-        padding: 6px 12px;
-        pointer-events: none;
+        padding: 6px 14px;
+        cursor: pointer;
         transition: transform 0.2s ease, opacity 0.2s ease;
       }
-      .portfolio-section.is-expanded:hover .project-case-study-prompt {
-        transform: scale(1.06);
+      .project-scroll-hint:hover {
+        transform: translateY(2px) scale(1.05);
       }
 
-      /* ── Full Frame Case Study View (Smooth Slide-In from the Right) ──────── */
-      .case-study-view {
-        position: absolute;
-        inset: 0;
-        background-color: var(--bg);
-        color: var(--dark-red);
-        z-index: 100;
-        overflow-y: auto;
-        overflow-x: hidden;
-        transform: translateX(100%);
-        transition: transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1);
-        display: flex;
-        flex-direction: column;
-        box-sizing: border-box;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: thin;
-        scrollbar-color: var(--dark-red) var(--bg);
-      }
-
-      .case-study-view::-webkit-scrollbar {
-        width: 6px;
-      }
-      .case-study-view::-webkit-scrollbar-track {
-        background: var(--bg);
-      }
-      .case-study-view::-webkit-scrollbar-thumb {
-        background: var(--dark-red);
-        border-radius: 3px;
-      }
-
-      .case-study-view.is-visible {
-        transform: translateX(0);
-      }
-
-      .cs-header {
-        position: sticky;
-        top: 0;
-        z-index: 110;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: clamp(14px, 2.2vh, 26px) clamp(16px, 2.5vw, 40px);
-        background-color: var(--bg);
-        border-bottom: 2px solid var(--dark-red);
-      }
-
-      .cs-header-left {
-        display: flex;
-        align-items: center;
-        gap: clamp(12px, 1.5vw, 24px);
-      }
-
-      .cs-back-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        background: transparent;
-        border: 2px solid var(--dark-red);
-        color: var(--dark-red);
-        font-family: 'ReplicaLLTT-Bold', 'Replica LL TT', sans-serif;
-        font-weight: 700;
-        font-size: clamp(10px, 0.95vw, 14px);
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-        padding: 7px 14px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-      }
-
-      .cs-back-btn:hover {
-        background-color: var(--dark-red);
-        color: var(--bg);
-      }
-
-      .cs-header-title {
-        font-family: 'ReplicaLLTT-Bold', 'Replica LL TT', sans-serif;
-        font-weight: 700;
-        font-size: clamp(13px, 1.3vw, 22px);
-        text-transform: uppercase;
-        letter-spacing: 0.02em;
-        color: var(--dark-red);
-      }
-
-      .cs-header-right {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-
-      .cs-meta-tag {
-        font-family: 'ReplicaLLTT-Bold', 'Replica LL TT', sans-serif;
-        font-size: clamp(9px, 0.8vw, 12px);
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        padding: 4px 8px;
-        background-color: color-mix(in srgb, var(--dark-red) 12%, transparent);
-        color: var(--dark-red);
-      }
-
-      .cs-close-btn {
-        width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: transparent;
-        border: none;
-        color: var(--dark-red);
-        cursor: pointer;
-        transition: transform 0.2s ease;
-        padding: 0;
-      }
-      .cs-close-btn:hover {
-        transform: scale(1.15);
-      }
-
-      .cs-content-body {
-        padding: clamp(24px, 4vh, 48px) clamp(16px, 3.5vw, 64px) clamp(40px, 6vh, 80px);
-        max-width: 1400px;
-        margin: 0 auto;
+      /* ── In-Section Case Study Body (Scrollable below Hero) ──────────────── */
+      .project-case-study-body {
         width: 100%;
         box-sizing: border-box;
+        padding: clamp(24px, 4vh, 44px) calc(31.27 / 1920 * 100vw) clamp(36px, 5vh, 60px);
         display: flex;
         flex-direction: column;
-        gap: clamp(32px, 4.5vh, 56px);
+        gap: clamp(24px, 3.5vh, 40px);
+        color: var(--dark-red);
+        background-color: var(--bg);
+        border-top: 1.5px solid color-mix(in srgb, var(--dark-red) 25%, transparent);
       }
 
-      /* Hero Case Study Media */
-      .cs-hero-container {
-        width: 100%;
-        max-height: 75vh;
-        overflow: hidden;
-        background-color: color-mix(in srgb, var(--dark-red) 8%, transparent);
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .cs-hero-container img {
-        width: 100%;
-        height: auto;
-        max-height: 75vh;
-        object-fit: cover;
-        display: block;
-        border: none;
-      }
-      .cs-hero-container video,
-      .cs-hero-container iframe {
-        width: 100%;
-        min-height: 420px;
-        object-fit: cover;
-        display: block;
-        border: none;
-      }
-
-      /* Overview & Metadata Grid */
-      .cs-project-intro {
+      .sec-cs-intro {
         display: grid;
         grid-template-columns: 2fr 1fr;
-        gap: clamp(20px, 3vw, 48px);
-        padding-bottom: 28px;
+        gap: clamp(20px, 3vw, 40px);
+        padding-bottom: 24px;
         border-bottom: 1.5px solid color-mix(in srgb, var(--dark-red) 25%, transparent);
       }
       @media (max-width: 900px) {
-        .cs-project-intro {
+        .sec-cs-intro {
           grid-template-columns: 1fr;
-          gap: 20px;
+          gap: 16px;
         }
       }
 
-      .cs-intro-title {
+      .sec-cs-title {
         font-family: 'ReplicaLLTT-Bold', 'Replica LL TT', sans-serif;
         font-weight: 700;
-        font-size: clamp(26px, 3.8vw, 58px);
-        line-height: 1.05;
+        font-size: clamp(22px, 2.8vw, 44px);
+        line-height: 1.1;
         text-transform: uppercase;
         color: var(--dark-red);
-        margin: 0 0 14px 0;
+        margin: 0 0 12px 0;
       }
 
-      .cs-intro-desc {
+      .sec-cs-desc {
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        font-size: clamp(14px, 1.15vw, 19px);
+        font-size: clamp(14px, 1.1vw, 17px);
         line-height: 1.6;
         color: var(--dark-red);
         opacity: 0.92;
         margin: 0;
       }
 
-      .cs-metadata-list {
+      .sec-cs-meta-list {
         display: flex;
         flex-direction: column;
-        gap: 14px;
+        gap: 12px;
       }
-      .cs-metadata-item {
+      .sec-cs-meta-item {
         border-top: 1px solid color-mix(in srgb, var(--dark-red) 20%, transparent);
-        padding-top: 8px;
+        padding-top: 6px;
       }
-      .cs-meta-label {
+      .sec-cs-meta-label {
         font-family: 'ReplicaLLTT-Bold', 'Replica LL TT', sans-serif;
         font-size: 10px;
         letter-spacing: 0.1em;
         text-transform: uppercase;
         opacity: 0.65;
-        margin-bottom: 3px;
+        margin-bottom: 2px;
       }
-      .cs-meta-value {
-        font-family: 'ReplicaLLTT-Bold', 'Replica LL TT', sans-serif;
-        font-size: clamp(12px, 1vw, 16px);
-        text-transform: uppercase;
+      .sec-cs-meta-value {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-size: clamp(12px, 0.9vw, 14px);
+        font-weight: 600;
+        color: var(--dark-red);
       }
 
       /* Modular Layout Sections */
@@ -570,34 +454,37 @@
 
       .cs-sec-heading {
         font-family: 'ReplicaLLTT-Bold', 'Replica LL TT', sans-serif;
-        font-size: clamp(20px, 2.4vw, 38px);
+        font-size: clamp(18px, 2.2vw, 34px);
         text-transform: uppercase;
-        margin: 0 0 14px 0;
-        line-height: 1.1;
+        margin: 0 0 12px 0;
+        line-height: 1.15;
+        color: var(--dark-red);
       }
 
       .cs-subheading {
         font-family: 'ReplicaLLTT-Bold', 'Replica LL TT', sans-serif;
-        font-size: clamp(12px, 1.1vw, 16px);
+        font-size: clamp(12px, 1vw, 15px);
         letter-spacing: 0.05em;
         text-transform: uppercase;
         opacity: 0.75;
-        margin: 0 0 12px 0;
+        margin: 0 0 10px 0;
+        color: var(--dark-red);
       }
 
       .cs-paragraph {
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        font-size: clamp(14px, 1.1vw, 18px);
-        line-height: 1.65;
-        opacity: 0.9;
+        font-size: clamp(14px, 1.1vw, 17px);
+        line-height: 1.6;
+        opacity: 0.92;
         margin: 0 0 14px 0;
+        color: var(--dark-red);
       }
 
       /* Layout: Text with Image */
       .cs-layout-text-image {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: clamp(24px, 3.5vw, 48px);
+        gap: clamp(20px, 3vw, 40px);
         align-items: center;
       }
       .cs-layout-text-image.image-left {
@@ -610,7 +497,7 @@
         .cs-layout-text-image {
           grid-template-columns: 1fr !important;
           direction: ltr !important;
-          gap: 20px;
+          gap: 16px;
         }
       }
       .cs-layout-text-image .cs-sec-img img {
@@ -628,7 +515,7 @@
         width: 100%;
         height: auto;
         display: block;
-        max-height: 85vh;
+        max-height: 80vh;
         object-fit: cover;
       }
       .cs-image-caption {
@@ -638,12 +525,13 @@
         text-transform: uppercase;
         opacity: 0.65;
         margin-top: 8px;
+        color: var(--dark-red);
       }
 
       /* Layout: Grid */
       .cs-grid-section {
         display: grid;
-        gap: clamp(14px, 2vw, 24px);
+        gap: clamp(12px, 1.8vw, 20px);
       }
       .cs-grid-section.cols-2 { grid-template-columns: repeat(2, 1fr); }
       .cs-grid-section.cols-3 { grid-template-columns: repeat(3, 1fr); }
@@ -661,7 +549,6 @@
       /* Layout: Text Block */
       .cs-text-block {
         max-width: 860px;
-        margin: 0 auto;
       }
 
       /* Layout: Media Container (Video embed) */
@@ -679,396 +566,39 @@
         display: block;
       }
 
-      /* Case Study Footer Navigation */
-      .cs-footer-nav {
+      /* Section Footer Navigation */
+      .sec-cs-footer {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding-top: 36px;
-        border-top: 2px solid var(--dark-red);
-        margin-top: 24px;
+        padding-top: 24px;
+        border-top: 1.5px solid color-mix(in srgb, var(--dark-red) 25%, transparent);
+        margin-top: 16px;
         gap: 16px;
         flex-wrap: wrap;
       }
-      .cs-footer-btn {
+      .sec-cs-top-btn,
+      .sec-cs-next-btn {
         background: transparent;
-        border: 2px solid var(--dark-red);
+        border: 1.5px solid var(--dark-red);
         color: var(--dark-red);
         font-family: 'ReplicaLLTT-Bold', 'Replica LL TT', sans-serif;
         font-weight: 700;
-        font-size: clamp(11px, 1.1vw, 15px);
-        padding: 10px 20px;
+        font-size: clamp(10px, 0.9vw, 13px);
+        letter-spacing: 0.05em;
+        padding: 8px 16px;
         text-transform: uppercase;
         cursor: pointer;
         transition: all 0.2s ease;
       }
-      .cs-footer-btn:hover {
+      .sec-cs-top-btn:hover,
+      .sec-cs-next-btn:hover {
         background-color: var(--dark-red);
         color: var(--bg);
       }
     `;
     document.head.appendChild(style);
   }
-
-  // ─── Render Expanding Sections (Interactive Accordion Matching Frames) ─────
-  function renderExpandingSections(boxEl, projects) {
-    const existing = boxEl.querySelector('.portfolio-cards-wrap');
-    if (existing) existing.remove();
-
-    const wrap = document.createElement('div');
-    wrap.className = 'portfolio-cards-wrap';
-
-    // Map projects into 3 ordered slots
-    const slots = [null, null, null];
-    if (Array.isArray(projects)) {
-      projects.forEach(p => {
-        const idx = Math.max(0, Math.min(2, (p.order || 1) - 1));
-        if (!slots[idx]) slots[idx] = p;
-      });
-      projects.forEach(p => {
-        if (!slots.includes(p)) {
-          const emptyIdx = slots.indexOf(null);
-          if (emptyIdx !== -1) slots[emptyIdx] = p;
-        }
-      });
-    }
-
-    let currentExpandedIdx = 1; // Middle expanded by default matching user image media_1790728681365.png!
-    wrap.dataset.active = currentExpandedIdx;
-    const sectionElements = [];
-
-    slots.forEach((project, i) => {
-      const isExpanded = (i === currentExpandedIdx);
-      const sec = document.createElement('div');
-      sec.className = `portfolio-section ${isExpanded ? 'is-expanded' : 'is-collapsed'}`;
-      sec.dataset.index = i;
-      sec.setAttribute('role', 'region');
-      sec.setAttribute('aria-label', `Section 0${i + 1}`);
-
-      // Media items for carousel
-      const mediaList = [];
-      if (project) {
-        if (project.coverImageUrl) mediaList.push({ type: 'image', url: project.coverImageUrl });
-        if (Array.isArray(project.galleryUrls)) {
-          project.galleryUrls.forEach(url => {
-            if (url && !mediaList.some(m => m.url === url)) {
-              mediaList.push({ type: 'image', url });
-            }
-          });
-        }
-        const vid = project.videoUrl || project.videoFileUrl;
-        if (vid) {
-          mediaList.push({ type: 'video', url: vid });
-        }
-      }
-
-      let currentMediaIdx = 0;
-      const title = project ? project.title : 'PROJECT TITLE';
-      const desc  = project ? (project.description || project.tagline || 'SHORT DESCRIPTION') : 'SHORT DESCRIPTION';
-
-      sec.innerHTML = `
-        <button class="portfolio-section-bar" type="button" aria-expanded="${isExpanded}" title="Expand ${title}">
-          <span class="portfolio-bar-title">${title}</span>
-        </button>
-
-        <div class="portfolio-section-expanded">
-          <div class="project-carousel-media" id="mediaLayer-${boxEl.id}-${i}"></div>
-
-          ${mediaList.length > 1 ? `
-          <button class="project-carousel-arrow prev" type="button" aria-label="Previous photo">
-            <svg viewBox="0 0 35 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <polyline points="29,5 5,28 29,51" stroke="currentColor" stroke-width="7" stroke-linecap="square" stroke-linejoin="miter"/>
-            </svg>
-          </button>
-          <button class="project-carousel-arrow next" type="button" aria-label="Next photo">
-            <svg viewBox="0 0 35 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <polyline points="6,5 30,28 6,51" stroke="currentColor" stroke-width="7" stroke-linecap="square" stroke-linejoin="miter"/>
-            </svg>
-          </button>
-          ` : ''}
-
-          <div class="project-title-overlay">${title}</div>
-          <div class="project-desc-overlay">${desc}</div>
-
-          <div class="project-case-study-prompt">
-            <span>CASE STUDY</span>
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="9 18 15 12 9 6"></polyline>
-            </svg>
-          </div>
-        </div>
-      `;
-
-      const mediaLayer = sec.querySelector(`#mediaLayer-${boxEl.id}-${i}`);
-      function updateMedia() {
-        if (!mediaLayer) return;
-        if (mediaList.length === 0) {
-          mediaLayer.style.backgroundImage = 'none';
-          mediaLayer.innerHTML = '';
-          return;
-        }
-        const item = mediaList[currentMediaIdx];
-        if (item.type === 'video') {
-          mediaLayer.style.backgroundImage = 'none';
-          if (item.url.includes('vimeo.com')) {
-            const vimeoId = item.url.split('/').pop().split('?')[0];
-            mediaLayer.innerHTML = `<iframe src="https://player.vimeo.com/video/${vimeoId}?autoplay=0&title=0&byline=0" frameborder="0" allow="autoplay; fullscreen" style="width:100%;height:100%;object-fit:cover;"></iframe>`;
-          } else if (item.url.includes('youtube.com') || item.url.includes('youtu.be')) {
-            const ytId = item.url.includes('youtu.be') ? item.url.split('/').pop() : new URL(item.url).searchParams.get('v');
-            mediaLayer.innerHTML = `<iframe src="https://www.youtube.com/embed/${ytId}" frameborder="0" allow="fullscreen" style="width:100%;height:100%;"></iframe>`;
-          } else {
-            mediaLayer.innerHTML = `<video src="${item.url}" controls playsinline style="width:100%;height:100%;object-fit:cover;"></video>`;
-          }
-        } else {
-          mediaLayer.innerHTML = '';
-          mediaLayer.style.backgroundImage = `url('${buildImageUrl(item.url, 1400)}')`;
-        }
-      }
-      updateMedia();
-
-      // Navigation arrows (only present if mediaList.length > 1)
-      const prevBtn = sec.querySelector('.project-carousel-arrow.prev');
-      const nextBtn = sec.querySelector('.project-carousel-arrow.next');
-
-      if (prevBtn) {
-        prevBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          currentMediaIdx = (currentMediaIdx - 1 + mediaList.length) % mediaList.length;
-          updateMedia();
-        });
-      }
-      if (nextBtn) {
-        nextBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          currentMediaIdx = (currentMediaIdx + 1) % mediaList.length;
-          updateMedia();
-        });
-      }
-
-      // Clicking collapsed section expands it; clicking expanded section opens Case Study!
-      sec.addEventListener('click', (e) => {
-        if (e.target.closest('.project-carousel-arrow')) return;
-        if (!sec.classList.contains('is-expanded')) {
-          e.stopPropagation();
-          setExpandedSection(i);
-        } else {
-          // Section is expanded: open Case Study to the right!
-          e.stopPropagation();
-          if (project) {
-            openCaseStudy(project, boxEl, slots);
-          }
-        }
-      });
-
-      sectionElements.push(sec);
-      wrap.appendChild(sec);
-    });
-
-    function setExpandedSection(targetIdx) {
-      currentExpandedIdx = targetIdx;
-      wrap.dataset.active = targetIdx;
-      sectionElements.forEach((s, idx) => {
-        const isExp = (idx === targetIdx);
-        s.classList.toggle('is-expanded', isExp);
-        s.classList.toggle('is-collapsed', !isExp);
-        const bar = s.querySelector('.portfolio-section-bar');
-        if (bar) bar.setAttribute('aria-expanded', isExp);
-      });
-    }
-
-    // Mobile touch swipe listener on wrap
-    let touchStartX = 0;
-    let touchStartY = 0;
-    wrap.addEventListener('touchstart', (e) => {
-      touchStartX = e.touches[0].clientX;
-      touchStartY = e.touches[0].clientY;
-    }, { passive: true });
-
-    wrap.addEventListener('touchend', (e) => {
-      const touchEndX = e.changedTouches[0].clientX;
-      const touchEndY = e.changedTouches[0].clientY;
-      const diffX = touchEndX - touchStartX;
-      const diffY = touchEndY - touchStartY;
-      if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY)) {
-        const activeSec = wrap.querySelector('.portfolio-section.is-expanded');
-        if (diffX < 0) {
-          // Swipe Left
-          const nextArrow = activeSec ? activeSec.querySelector('.project-carousel-arrow.next') : null;
-          if (nextArrow) {
-            nextArrow.click();
-          } else {
-            const nextIdx = (currentExpandedIdx + 1) % 3;
-            setExpandedSection(nextIdx);
-          }
-        } else {
-          // Swipe Right
-          const prevArrow = activeSec ? activeSec.querySelector('.project-carousel-arrow.prev') : null;
-          if (prevArrow) {
-            prevArrow.click();
-          } else {
-            const prevIdx = (currentExpandedIdx - 1 + 3) % 3;
-            setExpandedSection(prevIdx);
-          }
-        }
-      }
-    }, { passive: true });
-
-    // Keyboard navigation for carousel when box is open
-    window.addEventListener('keydown', (e) => {
-      if (document.body.classList.contains('case-study-open')) return;
-      const isBox1Open = document.body.classList.contains('box-1-open');
-      const isBox2Open = document.body.classList.contains('box-2-open');
-      if (!isBox1Open && !isBox2Open) return;
-      const activeBox = isBox1Open ? document.getElementById('box1') : document.getElementById('box2');
-      if (!activeBox || !activeBox.contains(wrap)) return;
-
-      const activeSec = wrap.querySelector('.portfolio-section.is-expanded');
-      if (!activeSec) return;
-
-      if (e.key === 'ArrowLeft') {
-        const prev = activeSec.querySelector('.project-carousel-arrow.prev');
-        if (prev) {
-          e.preventDefault();
-          prev.click();
-        }
-      } else if (e.key === 'ArrowRight') {
-        const next = activeSec.querySelector('.project-carousel-arrow.next');
-        if (next) {
-          e.preventDefault();
-          next.click();
-        }
-      }
-    });
-
-    boxEl.appendChild(wrap);
-  }
-
-  // ─── Case Study Functions ──────────────────────────────────────────────────
-  let currentCaseStudyBox = null;
-
-  function openCaseStudy(project, boxEl, allProjects) {
-    if (!project) return;
-    currentCaseStudyBox = boxEl;
-
-    // Activate full-frame styling
-    document.body.classList.add('case-study-open');
-    boxEl.classList.add('is-case-study-active');
-
-    // Create or find case study view container
-    let csView = boxEl.querySelector('.case-study-view');
-    if (!csView) {
-      csView = document.createElement('div');
-      csView.className = 'case-study-view';
-      boxEl.appendChild(csView);
-    }
-
-    csView.innerHTML = buildCaseStudyMarkup(project, allProjects);
-
-    // Bind interaction events
-    const backBtn = csView.querySelector('.cs-back-btn');
-    const closeBtn = csView.querySelector('.cs-close-btn');
-    const bottomBackBtn = csView.querySelector('.cs-footer-back-btn');
-    const nextBtn = csView.querySelector('.cs-footer-next-btn');
-
-    function close() {
-      closeCaseStudy(boxEl);
-    }
-
-    if (backBtn) backBtn.addEventListener('click', (e) => { e.stopPropagation(); close(); });
-    if (closeBtn) closeBtn.addEventListener('click', (e) => { e.stopPropagation(); close(); });
-    if (bottomBackBtn) bottomBackBtn.addEventListener('click', (e) => { e.stopPropagation(); close(); });
-
-    if (nextBtn) {
-      nextBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const validProjects = (allProjects || []).filter(Boolean);
-        const currentIdx = validProjects.findIndex(p => p._id === project._id);
-        const nextProject = validProjects[(currentIdx + 1) % validProjects.length];
-        if (nextProject) {
-          openCaseStudy(nextProject, boxEl, allProjects);
-        }
-      });
-    }
-
-    // Touch swipe left/right to move between projects in case study view
-    let csTouchStartX = 0;
-    let csTouchStartY = 0;
-    csView.addEventListener('touchstart', (e) => {
-      csTouchStartX = e.touches[0].clientX;
-      csTouchStartY = e.touches[0].clientY;
-    }, { passive: true });
-
-    csView.addEventListener('touchend', (e) => {
-      const diffX = e.changedTouches[0].clientX - csTouchStartX;
-      const diffY = e.changedTouches[0].clientY - csTouchStartY;
-      if (Math.abs(diffX) > 50 && Math.abs(diffX) > Math.abs(diffY) * 1.3) {
-        const validProjects = (allProjects || []).filter(Boolean);
-        if (validProjects.length > 1) {
-          const currentIdx = validProjects.findIndex(p => p._id === project._id);
-          if (diffX < 0) {
-            // Swipe Left -> Next Project
-            const nextProject = validProjects[(currentIdx + 1) % validProjects.length];
-            if (nextProject) openCaseStudy(nextProject, boxEl, allProjects);
-          } else {
-            // Swipe Right -> Prev Project
-            const prevProject = validProjects[(currentIdx - 1 + validProjects.length) % validProjects.length];
-            if (prevProject) openCaseStudy(prevProject, boxEl, allProjects);
-          }
-        }
-      }
-    }, { passive: true });
-
-    // Slide in from right smoothly
-    requestAnimationFrame(() => {
-      csView.classList.add('is-visible');
-    });
-
-    // Update browser URL query without reload
-    const slug = project.slug?.current || (project.title ? project.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'project');
-    const newUrl = new URL(window.location.href);
-    newUrl.searchParams.set('project', slug);
-    window.history.replaceState(null, '', newUrl.toString());
-  }
-
-  function closeCaseStudy(boxEl) {
-    const el = boxEl || currentCaseStudyBox || document.querySelector('.box.is-case-study-active');
-    const csView = el ? el.querySelector('.case-study-view') : document.querySelector('.case-study-view.is-visible');
-    if (csView) {
-      csView.classList.remove('is-visible');
-      setTimeout(() => {
-        if (csView.parentNode) csView.parentNode.removeChild(csView);
-        document.body.classList.remove('case-study-open');
-        if (el) el.classList.remove('is-case-study-active');
-        currentCaseStudyBox = null;
-        const newUrl = new URL(window.location.href);
-        newUrl.searchParams.delete('project');
-        window.history.replaceState(null, '', newUrl.toString());
-      }, 450);
-    } else {
-      document.body.classList.remove('case-study-open');
-    }
-  }
-
-  // Global escape key listener to close case study
-  window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && document.body.classList.contains('case-study-open')) {
-      closeCaseStudy();
-    }
-  });
-
-  // Expose global methods for mobile 1-click navigation & modal handling
-  window.closeCaseStudy = closeCaseStudy;
-  window.openCaseStudy = openCaseStudy;
-  window.openFirstProjectInBox = function(boxNum) {
-    const boxEl = document.getElementById(`box${boxNum}`);
-    if (!boxEl) return;
-    const expSec = boxEl.querySelector('.portfolio-section.is-expanded') || boxEl.querySelector('.portfolio-section');
-    if (expSec) {
-      expSec.click();
-    }
-  };
 
   // ─── Portable Text to HTML Helper ──────────────────────────────────────────
   function renderPortableText(blocks) {
@@ -1090,8 +620,8 @@
       }).join('');
 
       if (style === 'h1') return `<h2 class="cs-sec-heading">${textHtml}</h2>`;
-      if (style === 'h2') return `<h3 class="cs-sec-heading" style="font-size:clamp(18px,2vw,30px);">${textHtml}</h3>`;
-      if (style === 'h3') return `<h4 class="cs-sec-heading" style="font-size:clamp(16px,1.6vw,24px);">${textHtml}</h4>`;
+      if (style === 'h2') return `<h3 class="cs-sec-heading" style="font-size:clamp(16px,1.8vw,26px);">${textHtml}</h3>`;
+      if (style === 'h3') return `<h4 class="cs-sec-heading" style="font-size:clamp(14px,1.4vw,22px);">${textHtml}</h4>`;
       if (style === 'blockquote') return `<blockquote style="border-left:3px solid var(--dark-red);padding-left:16px;margin:16px 0;opacity:0.9;">${textHtml}</blockquote>`;
       return `<p class="cs-paragraph">${textHtml}</p>`;
     }).join('');
@@ -1107,29 +637,16 @@
       .replace(/'/g, '&#039;');
   }
 
-  function buildCaseStudyMarkup(project, allProjects) {
+  // ─── Case Study Markup Generator for In-Section Viewing ────────────────────
+  function buildSectionCaseStudyHtml(project, allProjects, sectionIndex, boxEl) {
+    if (!project) return '';
+
     const title = escapeHtml(project.title || 'Untitled Project');
     const client = escapeHtml(project.client || '');
     const year = escapeHtml(project.year || '');
     const tagline = escapeHtml(project.tagline || '');
     const descHtml = renderPortableText(project.description);
-
-    // Hero media HTML
-    let heroMediaHtml = '';
     const vidUrl = project.videoUrl || project.videoFileUrl;
-    if (vidUrl) {
-      if (vidUrl.includes('vimeo.com')) {
-        const vId = vidUrl.split('/').pop().split('?')[0];
-        heroMediaHtml = `<div class="cs-hero-container"><iframe src="https://player.vimeo.com/video/${vId}?autoplay=1&title=0&byline=0" frameborder="0" allow="autoplay; fullscreen" style="width:100%;height:100%;object-fit:cover;"></iframe></div>`;
-      } else if (vidUrl.includes('youtube.com') || vidUrl.includes('youtu.be')) {
-        const ytId = vidUrl.includes('youtu.be') ? vidUrl.split('/').pop() : new URL(vidUrl).searchParams.get('v');
-        heroMediaHtml = `<div class="cs-hero-container"><iframe src="https://www.youtube.com/embed/${ytId}?autoplay=1" frameborder="0" allow="autoplay; fullscreen" style="width:100%;height:100%;"></iframe></div>`;
-      } else {
-        heroMediaHtml = `<div class="cs-hero-container"><video src="${vidUrl}" controls autoplay playsinline style="width:100%;height:100%;object-fit:cover;"></video></div>`;
-      }
-    } else if (project.coverImageUrl) {
-      heroMediaHtml = `<div class="cs-hero-container"><img src="${buildImageUrl(project.coverImageUrl, 1800)}" alt="${title}" /></div>`;
-    }
 
     // Modular sections from Sanity Studio caseStudySections
     let sectionsHtml = '';
@@ -1219,7 +736,6 @@
         return '';
       }).join('');
     } else if (Array.isArray(project.galleryUrls) && project.galleryUrls.length > 0) {
-      // Default fallback gallery grid
       sectionsHtml = `
         <div class="cs-section">
           <div class="cs-grid-section cols-2">
@@ -1233,48 +749,279 @@
       `;
     }
 
+    const hasContent = Boolean(sectionsHtml || descHtml || client || year);
+    if (!hasContent) return '';
+
     return `
-      <div class="cs-header">
-        <div class="cs-header-left">
-          <button class="cs-back-btn" type="button" aria-label="Back to projects">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="square"><polyline points="15 18 9 12 15 6"/></svg>
-            <span>BACK</span>
-          </button>
-          <span class="cs-header-title">${title}</span>
-        </div>
-        <div class="cs-header-right">
-          ${tagline ? `<span class="cs-meta-tag">${tagline}</span>` : ''}
-          ${year ? `<span class="cs-meta-tag">${year}</span>` : ''}
-          <button class="cs-close-btn" type="button" aria-label="Close case study">
-            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
-          </button>
-        </div>
-      </div>
-
-      <div class="cs-content-body">
-        ${heroMediaHtml}
-
-        <div class="cs-project-intro">
+      <div class="project-case-study-body">
+        <div class="sec-cs-intro">
           <div>
-            <h1 class="cs-intro-title">${title}</h1>
-            ${descHtml || (tagline ? `<p class="cs-intro-desc">${tagline}</p>` : '')}
+            <h2 class="sec-cs-title">${title}</h2>
+            ${descHtml || (tagline ? `<p class="sec-cs-desc">${tagline}</p>` : '')}
           </div>
-          <div class="cs-metadata-list">
-            ${client ? `<div class="cs-metadata-item"><div class="cs-meta-label">Client</div><div class="cs-meta-value">${client}</div></div>` : ''}
-            ${year ? `<div class="cs-metadata-item"><div class="cs-meta-label">Year</div><div class="cs-meta-value">${year}</div></div>` : ''}
-            ${tagline ? `<div class="cs-metadata-item"><div class="cs-meta-label">Category</div><div class="cs-meta-value">${tagline}</div></div>` : ''}
-            ${vidUrl ? `<div class="cs-metadata-item"><div class="cs-meta-label">Media</div><div class="cs-meta-value"><a href="${vidUrl}" target="_blank" rel="noopener noreferrer" style="color:var(--dark-red);text-decoration:underline;">Watch Direct ↗</a></div></div>` : ''}
+          <div class="sec-cs-meta-list">
+            ${client ? `<div class="sec-cs-meta-item"><div class="sec-cs-meta-label">Client</div><div class="sec-cs-meta-value">${client}</div></div>` : ''}
+            ${year ? `<div class="sec-cs-meta-item"><div class="sec-cs-meta-label">Year</div><div class="sec-cs-meta-value">${year}</div></div>` : ''}
+            ${tagline ? `<div class="sec-cs-meta-item"><div class="sec-cs-meta-label">Category</div><div class="sec-cs-meta-value">${tagline}</div></div>` : ''}
+            ${vidUrl ? `<div class="sec-cs-meta-item"><div class="sec-cs-meta-label">Direct Media</div><div class="sec-cs-meta-value"><a href="${vidUrl}" target="_blank" rel="noopener noreferrer" style="color:var(--dark-red);text-decoration:underline;">Watch Direct ↗</a></div></div>` : ''}
           </div>
         </div>
 
         ${sectionsHtml}
 
-        <div class="cs-footer-nav">
-          <button class="cs-footer-btn cs-footer-back-btn" type="button">← BACK TO ALL PROJECTS</button>
-          <button class="cs-footer-btn cs-footer-next-btn" type="button">NEXT PROJECT →</button>
+        <div class="sec-cs-footer">
+          <button class="sec-cs-top-btn" type="button" aria-label="Scroll back to top">↑ TOP OF PROJECT</button>
+          <button class="sec-cs-next-btn" type="button" aria-label="Go to next section">NEXT SECTION (${((sectionIndex + 1) % 3) + 1}) ↓</button>
         </div>
       </div>
     `;
+  }
+
+  // ─── Render Expanding Sections (Interactive Accordion Matching Frames) ─────
+  function renderExpandingSections(boxEl, projects) {
+    const existing = boxEl.querySelector('.portfolio-cards-wrap');
+    if (existing) existing.remove();
+
+    const wrap = document.createElement('div');
+    wrap.className = 'portfolio-cards-wrap';
+
+    // Map projects into 3 ordered slots
+    const slots = [null, null, null];
+    if (Array.isArray(projects)) {
+      projects.forEach(p => {
+        const idx = Math.max(0, Math.min(2, (p.order || 1) - 1));
+        if (!slots[idx]) slots[idx] = p;
+      });
+      projects.forEach(p => {
+        if (!slots.includes(p)) {
+          const emptyIdx = slots.indexOf(null);
+          if (emptyIdx !== -1) slots[emptyIdx] = p;
+        }
+      });
+    }
+
+    let currentExpandedIdx = 1; // Middle expanded by default matching user image media_1790728681365.png!
+    wrap.dataset.active = currentExpandedIdx;
+    const sectionElements = [];
+
+    slots.forEach((project, i) => {
+      const isExpanded = (i === currentExpandedIdx);
+      const sec = document.createElement('div');
+      sec.className = `portfolio-section ${isExpanded ? 'is-expanded' : 'is-collapsed'}`;
+      sec.dataset.index = i;
+      sec.setAttribute('role', 'region');
+      sec.setAttribute('aria-label', `Section 0${i + 1}`);
+
+      // Media items for carousel
+      const mediaList = [];
+      if (project) {
+        if (project.coverImageUrl) mediaList.push({ type: 'image', url: project.coverImageUrl });
+        if (Array.isArray(project.galleryUrls)) {
+          project.galleryUrls.forEach(url => {
+            if (url && !mediaList.some(m => m.url === url)) {
+              mediaList.push({ type: 'image', url });
+            }
+          });
+        }
+        const vid = project.videoUrl || project.videoFileUrl;
+        if (vid) {
+          mediaList.push({ type: 'video', url: vid });
+        }
+      }
+
+      let currentMediaIdx = 0;
+      const title = project ? project.title : 'PROJECT TITLE';
+      const desc  = project ? (project.description || project.tagline || 'SHORT DESCRIPTION') : 'SHORT DESCRIPTION';
+      const caseStudyBodyHtml = buildSectionCaseStudyHtml(project, slots, i, boxEl);
+      const hasCaseStudy = Boolean(caseStudyBodyHtml);
+
+      sec.innerHTML = `
+        <button class="portfolio-section-bar" type="button" aria-expanded="${isExpanded}" title="Expand ${title}">
+          <span class="portfolio-bar-title">${title}</span>
+        </button>
+
+        <div class="portfolio-section-expanded">
+          <div class="project-hero-frame">
+            <div class="project-carousel-media" id="mediaLayer-${boxEl.id}-${i}"></div>
+
+            ${mediaList.length > 1 ? `
+            <button class="project-carousel-arrow prev" type="button" aria-label="Previous photo">
+              <svg viewBox="0 0 35 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <polyline points="29,5 5,28 29,51" stroke="currentColor" stroke-width="7" stroke-linecap="square" stroke-linejoin="miter"/>
+              </svg>
+            </button>
+            <button class="project-carousel-arrow next" type="button" aria-label="Next photo">
+              <svg viewBox="0 0 35 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <polyline points="6,5 30,28 6,51" stroke="currentColor" stroke-width="7" stroke-linecap="square" stroke-linejoin="miter"/>
+              </svg>
+            </button>
+            ` : ''}
+
+            <div class="project-title-overlay">${title}</div>
+            <div class="project-desc-overlay">${desc}</div>
+
+            ${hasCaseStudy ? `
+            <button class="project-scroll-hint" type="button" aria-label="Scroll down to case study">
+              <span>CASE STUDY</span>
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            ` : ''}
+          </div>
+
+          ${caseStudyBodyHtml}
+        </div>
+      `;
+
+      const mediaLayer = sec.querySelector(`#mediaLayer-${boxEl.id}-${i}`);
+      function updateMedia() {
+        if (!mediaLayer) return;
+        if (mediaList.length === 0) {
+          mediaLayer.style.backgroundImage = 'none';
+          mediaLayer.innerHTML = '';
+          return;
+        }
+        const item = mediaList[currentMediaIdx];
+        if (item.type === 'video') {
+          mediaLayer.style.backgroundImage = 'none';
+          if (item.url.includes('vimeo.com')) {
+            const vimeoId = item.url.split('/').pop().split('?')[0];
+            mediaLayer.innerHTML = `<iframe src="https://player.vimeo.com/video/${vimeoId}?autoplay=0&title=0&byline=0" frameborder="0" allow="autoplay; fullscreen" style="width:100%;height:100%;object-fit:cover;"></iframe>`;
+          } else if (item.url.includes('youtube.com') || item.url.includes('youtu.be')) {
+            const ytId = item.url.includes('youtu.be') ? item.url.split('/').pop() : new URL(item.url).searchParams.get('v');
+            mediaLayer.innerHTML = `<iframe src="https://www.youtube.com/embed/${ytId}" frameborder="0" allow="fullscreen" style="width:100%;height:100%;"></iframe>`;
+          } else {
+            mediaLayer.innerHTML = `<video src="${item.url}" controls playsinline style="width:100%;height:100%;object-fit:cover;"></video>`;
+          }
+        } else {
+          mediaLayer.innerHTML = '';
+          mediaLayer.style.backgroundImage = `url('${buildImageUrl(item.url, 1400)}')`;
+        }
+      }
+      updateMedia();
+
+      // Navigation arrows (only present if mediaList.length > 1)
+      const prevBtn = sec.querySelector('.project-carousel-arrow.prev');
+      const nextBtn = sec.querySelector('.project-carousel-arrow.next');
+
+      if (prevBtn) {
+        prevBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          currentMediaIdx = (currentMediaIdx - 1 + mediaList.length) % mediaList.length;
+          updateMedia();
+        });
+      }
+      if (nextBtn) {
+        nextBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          currentMediaIdx = (currentMediaIdx + 1) % mediaList.length;
+          updateMedia();
+        });
+      }
+
+      // Case study scroll hint button
+      const scrollHint = sec.querySelector('.project-scroll-hint');
+      if (scrollHint) {
+        scrollHint.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const heroFrame = sec.querySelector('.project-hero-frame');
+          if (heroFrame) {
+            sec.scrollTo({ top: heroFrame.clientHeight, behavior: 'smooth' });
+          }
+        });
+      }
+
+      // Case study footer buttons
+      const topBtn = sec.querySelector('.sec-cs-top-btn');
+      if (topBtn) {
+        topBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          sec.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
+
+      const nextSecBtn = sec.querySelector('.sec-cs-next-btn');
+      if (nextSecBtn) {
+        nextSecBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setExpandedSection((i + 1) % 3);
+        });
+      }
+
+      // Clicking collapsed section expands it
+      sec.addEventListener('click', (e) => {
+        if (
+          e.target.closest('.project-carousel-arrow') ||
+          e.target.closest('.project-scroll-hint') ||
+          e.target.closest('.sec-cs-top-btn') ||
+          e.target.closest('.sec-cs-next-btn') ||
+          e.target.closest('a') ||
+          e.target.closest('video') ||
+          e.target.closest('iframe')
+        ) {
+          return;
+        }
+        if (!sec.classList.contains('is-expanded')) {
+          e.stopPropagation();
+          setExpandedSection(i);
+        }
+      });
+
+      sectionElements.push(sec);
+      wrap.appendChild(sec);
+    });
+
+    function setExpandedSection(targetIdx) {
+      currentExpandedIdx = targetIdx;
+      wrap.dataset.active = targetIdx;
+      sectionElements.forEach((s, idx) => {
+        const isExp = (idx === targetIdx);
+        s.classList.toggle('is-expanded', isExp);
+        s.classList.toggle('is-collapsed', !isExp);
+        const bar = s.querySelector('.portfolio-section-bar');
+        if (bar) bar.setAttribute('aria-expanded', isExp);
+        if (isExp) {
+          s.scrollTo({ top: 0, behavior: 'auto' });
+        }
+      });
+    }
+
+    // Attach method on box element for external control / URL linking
+    boxEl._setExpandedSection = setExpandedSection;
+
+    // Keyboard navigation for carousel when box is open
+    window.addEventListener('keydown', (e) => {
+      const isBox1Open = document.body.classList.contains('box-1-open');
+      const isBox2Open = document.body.classList.contains('box-2-open');
+      if (!isBox1Open && !isBox2Open) return;
+      const activeBox = isBox1Open ? document.getElementById('box1') : document.getElementById('box2');
+      if (!activeBox || !activeBox.contains(wrap)) return;
+
+      const activeSec = wrap.querySelector('.portfolio-section.is-expanded');
+      if (!activeSec) return;
+
+      if (e.key === 'ArrowLeft') {
+        const prev = activeSec.querySelector('.project-carousel-arrow.prev');
+        if (prev) {
+          e.preventDefault();
+          prev.click();
+        }
+      } else if (e.key === 'ArrowRight') {
+        const next = activeSec.querySelector('.project-carousel-arrow.next');
+        if (next) {
+          e.preventDefault();
+          next.click();
+        }
+      }
+    });
+
+    boxEl.appendChild(wrap);
   }
 
   // ─── Apply Dynamic Site Settings ──────────────────────────────────────────
@@ -1530,9 +1277,11 @@
           const targetBoxClass = isPhoto ? 'box-2-open' : 'box-1-open';
           document.body.classList.remove('box-1-open', 'box-2-open', 'box-3-open');
           document.body.classList.add(targetBoxClass);
-          setTimeout(() => {
-            openCaseStudy(found, targetBox, isPhoto ? photoProjects : videoProjects);
-          }, 250);
+          const targetProjects = isPhoto ? photoProjects : videoProjects;
+          const targetIdx = targetProjects.findIndex(p => p._id === found._id);
+          if (targetIdx !== -1 && targetBox && typeof targetBox._setExpandedSection === 'function') {
+            targetBox._setExpandedSection(targetIdx);
+          }
         }
       }
 
