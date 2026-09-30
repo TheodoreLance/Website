@@ -67,543 +67,234 @@
     const style = document.createElement('style');
     style.id = 'portfolio-cards-style';
     style.textContent = `
-      /* ── Expanding Sections Accordion Container ────────────────────────── */
-      .portfolio-cards-wrap {
+      /* ── Expanding Project Boxes Container (Smooth Flex Accordion) ─────── */
+      .box-1 .portfolio-cards-wrap {
         position: absolute;
-        inset: 0;
+        left: calc(56 / 1024 * 100vw);
+        right: calc(10 / 1024 * 100vw);
+        top: calc(10 / 576 * 100vh);
+        bottom: calc(10 / 576 * 100vh);
         display: flex;
         flex-direction: column;
         gap: clamp(8px, 1.4vh, 12px);
-        padding: clamp(14px, 2.2vh, 26px) clamp(16px, 2vw, 28px);
         opacity: 0;
         pointer-events: none;
-        transition: opacity 0.35s ease 0.1s;
         overflow: hidden;
-        z-index: 60;
+        z-index: 12;
         box-sizing: border-box;
+        transition: opacity 0.35s cubic-bezier(0.2, 0.9, 0.3, 1),
+                    transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1);
+        transform: scale(0.98);
       }
 
-      /* Desktop: Leave space for animal SVGs */
-      @media (min-width: 769px) and (orientation: landscape) {
-        body.box-1-open .box-1 .portfolio-cards-wrap {
-          padding-left: clamp(140px, 17vw, 200px);
-        }
-        body.box-2-open .box-2 .portfolio-cards-wrap {
-          padding-right: clamp(140px, 17vw, 200px);
-        }
+      .box-2 .portfolio-cards-wrap {
+        position: absolute;
+        left: calc(10 / 1024 * 100vw);
+        right: calc(56 / 1024 * 100vw);
+        top: calc(10 / 576 * 100vh);
+        bottom: calc(10 / 576 * 100vh);
+        display: flex;
+        flex-direction: column;
+        gap: clamp(8px, 1.4vh, 12px);
+        opacity: 0;
+        pointer-events: none;
+        overflow: hidden;
+        z-index: 12;
+        box-sizing: border-box;
+        transition: opacity 0.35s cubic-bezier(0.2, 0.9, 0.3, 1),
+                    transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1);
+        transform: scale(0.98);
       }
 
-      /* Mobile: Leave top space for animal icon */
+      /* Mobile: Position below the top animal icon */
       @media (max-width: 768px), (orientation: portrait) {
-        body.box-1-open .box-1 .portfolio-cards-wrap,
-        body.box-2-open .box-2 .portfolio-cards-wrap {
-          padding: 12px;
-          gap: 8px;
-          padding-top: 76px;
+        .box-1 .portfolio-cards-wrap,
+        .box-2 .portfolio-cards-wrap {
+          left: 10px !important;
+          right: 10px !important;
+          top: 72px !important;
+          bottom: 10px !important;
         }
       }
 
-      /* Show when box is open */
+      /* Smooth entrance when parent box is opened */
       body.box-1-open .box-1 .portfolio-cards-wrap,
       body.box-2-open .box-2 .portfolio-cards-wrap {
         opacity: 1;
         pointer-events: auto;
+        transform: scale(1);
+        transition: opacity 0.35s cubic-bezier(0.2, 0.9, 0.3, 1) 0.1s,
+                    transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1);
       }
 
-      /* ── Expanding Section Item (Accordion Panel) ──────────────────────── */
+      /* ── Individual Project Section (Accordion Row) ─────────────────────── */
       .portfolio-section {
         position: relative;
-        border-radius: 0;
+        width: 100%;
         overflow: hidden;
-        display: flex;
-        flex-direction: column;
+        background-color: var(--dark-red);
         box-sizing: border-box;
+        border-radius: 0;
         transition: flex 0.45s cubic-bezier(0.2, 0.9, 0.3, 1),
-                    background-color 0.25s ease,
-                    border-color 0.25s ease;
+                    height 0.45s cubic-bezier(0.2, 0.9, 0.3, 1);
       }
 
-      /* Collapsed State: A razor-sharp brutalist bar (Frame 1, 2, 3) */
+      /* Collapsed bar state: clean minimal strip matching user mockup */
       .portfolio-section.is-collapsed {
-        flex: 0 0 clamp(30px, 4.8vh, 38px);
-        min-height: clamp(30px, 4.8vh, 38px);
-        max-height: clamp(30px, 4.8vh, 38px);
-        background-color: rgba(0, 0, 0, 0.16);
-        border: 1.5px solid rgba(0, 0, 0, 0.22);
+        flex: 0 0 clamp(20px, 3.6vh, 26px);
+        height: clamp(20px, 3.6vh, 26px);
         cursor: pointer;
       }
 
-      .portfolio-section.is-collapsed:hover {
-        background-color: rgba(0, 0, 0, 0.3);
-        border-color: var(--bg);
-      }
-
-      /* Expanded State: Fills all remaining space (Frame 1, 2, 3) */
+      /* Expanded state fills available space */
       .portfolio-section.is-expanded {
-        flex: 1 1 auto;
+        flex: 1 1 0%;
         min-height: 0;
-        background-color: rgba(0, 0, 0, 0.22);
-        border: 1.5px solid var(--bg);
+        cursor: default;
       }
 
-      /* ── Collapsed Bar Header ───────────────────────────────────────────── */
       .portfolio-section-bar {
         width: 100%;
-        height: clamp(30px, 4.8vh, 38px);
-        min-height: clamp(30px, 4.8vh, 38px);
-        background: transparent;
-        border: none;
-        outline: none;
-        padding: 0 clamp(12px, 1.5vw, 20px);
+        height: 100%;
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        padding: 0 clamp(10px, 1.4vw, 18px);
+        background-color: rgba(0, 0, 0, 0.18);
+        border: none;
+        outline: none;
         cursor: pointer;
         font-family: 'ReplicaLLTT-Bold', sans-serif;
-        color: var(--bg);
+        font-size: clamp(8.5px, 0.9vw, 11px);
+        letter-spacing: 0.12em;
         text-transform: uppercase;
+        color: var(--bg);
+        opacity: 0.75;
+        transition: background-color 0.2s ease, opacity 0.2s ease;
         user-select: none;
         box-sizing: border-box;
-        z-index: 5;
-        transition: background-color 0.2s ease;
+      }
+
+      .portfolio-section-bar:hover {
+        background-color: rgba(0, 0, 0, 0.32);
+        opacity: 1;
       }
 
       .portfolio-section.is-expanded .portfolio-section-bar {
-        border-bottom: 1.5px solid rgba(0, 0, 0, 0.25);
-        background: rgba(0, 0, 0, 0.25);
-      }
-
-      .portfolio-bar-left {
-        display: flex;
-        align-items: center;
-        gap: clamp(8px, 1vw, 14px);
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-      }
-
-      .portfolio-bar-idx {
-        font-size: clamp(9px, 0.95vw, 12px);
-        letter-spacing: 0.16em;
-        opacity: 0.75;
-        flex-shrink: 0;
-      }
-
-      .portfolio-bar-title {
-        font-size: clamp(11px, 1.15vw, 14px);
-        letter-spacing: 0.08em;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      .portfolio-bar-tag {
-        font-size: clamp(8px, 0.85vw, 11px);
-        letter-spacing: 0.12em;
-        opacity: 0.6;
-        white-space: nowrap;
-      }
-
-      .portfolio-bar-right {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        flex-shrink: 0;
-      }
-
-      .portfolio-bar-meta {
-        font-size: clamp(8.5px, 0.85vw, 11px);
-        letter-spacing: 0.12em;
-        opacity: 0.6;
-      }
-
-      .portfolio-bar-icon {
-        font-size: 15px;
-        font-weight: bold;
-        opacity: 0.7;
-        transition: transform 0.25s ease;
-      }
-
-      .portfolio-section.is-collapsed:hover .portfolio-bar-icon {
-        opacity: 1;
-        transform: scale(1.15);
-      }
-
-      /* ── Expanded Content Area ─────────────────────────────────────────── */
-      .portfolio-section-expanded {
-        flex: 1 1 auto;
-        min-height: 0;
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-        opacity: 1;
-        transition: opacity 0.3s ease 0.1s;
-      }
-
-      .portfolio-section.is-collapsed .portfolio-section-expanded {
         display: none;
-        opacity: 0;
-        pointer-events: none;
       }
 
-      .portfolio-section-bg {
+      /* Expanded Section View: Clean, pure, matching user mockup */
+      .portfolio-section-expanded {
         position: absolute;
         inset: 0;
-        background-size: cover;
-        background-position: center;
-        opacity: 0.35;
-        transition: opacity 0.4s ease, transform 0.4s ease;
-      }
-
-      .portfolio-section.is-expanded:hover .portfolio-section-bg {
-        opacity: 0.52;
-        transform: scale(1.015);
-      }
-
-      .portfolio-section-overlay {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(to top, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0.45) 100%);
-        pointer-events: none;
-      }
-
-      .portfolio-section-content {
-        position: relative;
-        z-index: 3;
+        overflow: hidden;
         display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        height: 100%;
-        padding: clamp(14px, 2.2vh, 26px) clamp(16px, 2.2vw, 30px);
-        box-sizing: border-box;
-        color: var(--bg);
-        overflow-y: auto;
-      }
-
-      .portfolio-section-top {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        font-family: 'ReplicaLLTT-Bold', sans-serif;
-        text-transform: uppercase;
-        gap: 12px;
-      }
-
-      .portfolio-section-tag {
-        font-size: clamp(9px, 0.95vw, 12px);
-        letter-spacing: 0.18em;
-        opacity: 0.8;
-      }
-
-      .portfolio-section-meta {
-        font-size: clamp(8.5px, 0.9vw, 11.5px);
-        letter-spacing: 0.12em;
-        opacity: 0.65;
-      }
-
-      .portfolio-section-middle {
-        margin: auto 0;
-        display: flex;
-        flex-direction: column;
-        gap: clamp(4px, 0.8vh, 10px);
-      }
-
-      .portfolio-section-title {
-        font-family: 'ReplicaLLTT-Bold', sans-serif;
-        font-size: clamp(20px, 3.2vw, 38px);
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
-        margin: 0;
-        line-height: 1.08;
-        color: var(--bg);
-      }
-
-      .portfolio-section-sub {
-        font-family: 'ReplicaLLTT-Bold', sans-serif;
-        font-size: clamp(10px, 1.1vw, 14px);
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        opacity: 0.8;
-        color: var(--bg);
-      }
-
-      .portfolio-section-desc {
-        font-family: 'ReplicaLLTT-Bold', sans-serif;
-        font-size: clamp(9.5px, 0.95vw, 12px);
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-        opacity: 0.85;
-        line-height: 1.55;
-        max-width: 680px;
-        margin: 0;
-        color: var(--bg);
-      }
-
-      .portfolio-section-bottom {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding-top: clamp(8px, 1.2vh, 16px);
-      }
-
-      .portfolio-btn-showcase {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        padding: 8px 18px;
-        background: var(--dark-red);
-        border: 1.5px solid var(--bg);
-        color: var(--bg);
-        font-family: 'ReplicaLLTT-Bold', sans-serif;
-        font-size: clamp(9px, 0.95vw, 12px);
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        cursor: pointer;
-        border-radius: 0;
-        transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
-      }
-
-      .portfolio-btn-showcase:hover {
-        background-color: var(--bg);
-        color: var(--dark-red);
-        transform: scale(1.02);
-      }
-
-      .portfolio-slot-hint {
-        font-family: 'ReplicaLLTT-Bold', sans-serif;
-        font-size: 10px;
-        letter-spacing: 0.15em;
-        opacity: 0.5;
-        text-transform: uppercase;
-      }
-
-      /* ── Project Showcase Modal: Native Kiltura Panel ──────────────────── */
-      .project-modal {
-        position: fixed;
-        inset: 0;
-        z-index: 9999;
-        background: rgba(0, 0, 0, 0.88);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: clamp(16px, 4vw, 40px);
         opacity: 0;
         pointer-events: none;
-        transition: opacity 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+        transition: opacity 0.35s cubic-bezier(0.2, 0.9, 0.3, 1) 0.08s;
+        background-color: var(--dark-red);
       }
 
-      .project-modal.is-active {
+      .portfolio-section.is-expanded .portfolio-section-expanded {
         opacity: 1;
         pointer-events: auto;
       }
 
-      .project-modal-container {
-        position: relative;
-        width: 100%;
-        max-width: 1040px;
-        max-height: 90vh;
-        background-color: var(--dark-red);
-        border: 2px solid var(--bg);
-        border-radius: 0;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        box-shadow: none;
+      .project-carousel-media {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        transition: opacity 0.3s ease;
+        opacity: 0.88;
       }
 
-      .project-modal-close {
+      /* Subtle vignette so title & description stay perfectly readable */
+      .project-carousel-overlay {
         position: absolute;
-        top: 14px;
-        right: 14px;
+        inset: 0;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.38) 0%, transparent 35%, transparent 65%, rgba(0,0,0,0.48) 100%);
+        pointer-events: none;
+      }
+
+      /* Carousel Navigation Chevrons */
+      .project-carousel-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
         z-index: 10;
-        width: 34px;
-        height: 34px;
-        background: var(--dark-red);
-        border: 1.5px solid var(--bg);
+        width: clamp(28px, 3.4vw, 42px);
+        height: clamp(36px, 5.2vh, 52px);
+        background: transparent;
+        border: none;
         color: var(--bg);
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 0;
-        transition: background 0.2s, color 0.2s, transform 0.2s;
-      }
-      .project-modal-close:hover {
-        background: var(--bg);
-        color: var(--dark-red);
-        transform: scale(1.05);
-      }
-
-      .project-modal-media-wrap {
-        width: 100%;
-        background: #000;
-        position: relative;
-        min-height: 240px;
-        max-height: 60vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        border-bottom: 1.5px solid var(--bg);
-      }
-
-      .project-modal-media-wrap img,
-      .project-modal-media-wrap video,
-      .project-modal-media-wrap iframe {
-        width: 100%;
-        height: 100%;
-        max-height: 60vh;
-        object-fit: contain;
-      }
-
-      .project-modal-body {
-        padding: clamp(20px, 3vw, 36px);
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        background-color: var(--dark-red);
-      }
-
-      .project-modal-tag {
-        font-family: 'ReplicaLLTT-Bold', sans-serif;
-        font-size: 11px;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-        color: var(--bg);
-        opacity: 0.8;
-      }
-
-      .project-modal-title {
-        font-family: 'ReplicaLLTT-Bold', sans-serif;
-        font-size: clamp(22px, 3.2vw, 36px);
-        letter-spacing: 0.04em;
-        color: var(--bg);
-        text-transform: uppercase;
-        margin: 0;
-        line-height: 1.1;
-      }
-
-      .project-modal-meta {
-        font-family: 'ReplicaLLTT-Bold', sans-serif;
-        font-size: 12px;
-        letter-spacing: 0.12em;
-        color: var(--bg);
         opacity: 0.65;
-        text-transform: uppercase;
+        transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1);
+        user-select: none;
+        padding: 0;
       }
 
-      .project-modal-desc {
+      .project-carousel-arrow:hover {
+        opacity: 1;
+        transform: translateY(-50%) scale(1.22);
+      }
+
+      .project-carousel-arrow.prev {
+        left: clamp(8px, 1.2vw, 16px);
+      }
+
+      .project-carousel-arrow.next {
+        right: clamp(8px, 1.2vw, 16px);
+      }
+
+      .project-carousel-arrow svg {
+        width: clamp(20px, 2.2vw, 28px);
+        height: clamp(20px, 2.2vw, 28px);
+      }
+
+      /* Top-Left Project Title (Matching User Image) */
+      .project-title-overlay {
+        position: absolute;
+        top: clamp(14px, 2.4vh, 22px);
+        left: clamp(16px, 2.2vw, 26px);
+        z-index: 8;
         font-family: 'ReplicaLLTT-Bold', sans-serif;
-        font-size: 13px;
-        line-height: 1.6;
-        letter-spacing: 0.04em;
-        color: var(--bg);
-        opacity: 0.9;
+        font-size: clamp(15px, 2.1vw, 26px);
+        letter-spacing: 0.08em;
         text-transform: uppercase;
-        margin-top: 6px;
+        color: var(--bg);
+        line-height: 1.1;
+        pointer-events: none;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+      }
+
+      /* Bottom-Left Short Description (Matching User Image) */
+      .project-desc-overlay {
+        position: absolute;
+        bottom: clamp(14px, 2.4vh, 20px);
+        left: clamp(16px, 2.2vw, 26px);
+        max-width: 82%;
+        z-index: 8;
+        font-family: 'ReplicaLLTT-Bold', sans-serif;
+        font-size: clamp(9px, 0.95vw, 11.5px);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--bg);
+        opacity: 0.88;
+        line-height: 1.45;
+        pointer-events: none;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
       }
     `;
     document.head.appendChild(style);
   }
 
-  // ─── Project Modal Controller ─────────────────────────────────────────────
-  let modalEl = null;
-
-  function createModal() {
-    if (modalEl) return modalEl;
-
-    modalEl = document.createElement('div');
-    modalEl.className = 'project-modal';
-    modalEl.id = 'sanityProjectModal';
-    modalEl.innerHTML = `
-      <div class="project-modal-container" role="dialog" aria-modal="true">
-        <button class="project-modal-close" id="modalCloseBtn" aria-label="Close modal">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
-        <div class="project-modal-media-wrap" id="modalMedia"></div>
-        <div class="project-modal-body">
-          <div class="project-modal-tag" id="modalTag"></div>
-          <h2 class="project-modal-title" id="modalTitle"></h2>
-          <div class="project-modal-meta" id="modalMeta"></div>
-          <div class="project-modal-desc" id="modalDesc"></div>
-        </div>
-      </div>
-    `;
-
-    document.body.appendChild(modalEl);
-
-    // Close handlers
-    const closeBtn = modalEl.querySelector('#modalCloseBtn');
-    closeBtn.addEventListener('click', closeModal);
-
-    modalEl.addEventListener('click', (e) => {
-      if (e.target === modalEl) closeModal();
-    });
-
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && modalEl.classList.contains('is-active')) {
-        closeModal();
-      }
-    });
-
-    return modalEl;
-  }
-
-  function openModal(project) {
-    createModal();
-
-    const mediaWrap = modalEl.querySelector('#modalMedia');
-    const tagEl     = modalEl.querySelector('#modalTag');
-    const titleEl   = modalEl.querySelector('#modalTitle');
-    const metaEl    = modalEl.querySelector('#modalMeta');
-    const descEl    = modalEl.querySelector('#modalDesc');
-
-    tagEl.textContent   = project.tagline || (project.section === 'video' ? 'VIDEO PROJECT' : 'PHOTOGRAPHY');
-    titleEl.textContent = project.title;
-    metaEl.textContent  = [project.client, project.year].filter(Boolean).join('  ·  ');
-
-    // Build media
-    mediaWrap.innerHTML = '';
-    const videoUrl = project.videoUrl || project.videoFileUrl;
-
-    if (videoUrl) {
-      if (videoUrl.includes('vimeo.com')) {
-        const vimeoId = videoUrl.split('/').pop().split('?')[0];
-        mediaWrap.innerHTML = `<iframe src="https://player.vimeo.com/video/${vimeoId}?autoplay=1&title=0&byline=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
-      } else if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
-        const ytId = videoUrl.includes('youtu.be') ? videoUrl.split('/').pop() : new URL(videoUrl).searchParams.get('v');
-        mediaWrap.innerHTML = `<iframe src="https://www.youtube.com/embed/${ytId}?autoplay=1" frameborder="0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>`;
-      } else {
-        mediaWrap.innerHTML = `<video src="${videoUrl}" controls autoplay playsinline style="width:100%;height:100%"></video>`;
-      }
-    } else if (project.coverImageUrl) {
-      mediaWrap.innerHTML = `<img src="${project.coverImageUrl}" alt="${project.title}" />`;
-    }
-
-    // Description text
-    if (typeof project.description === 'string') {
-      descEl.textContent = project.description;
-    } else {
-      descEl.textContent = '';
-    }
-
-    modalEl.classList.add('is-active');
-  }
-
-  function closeModal() {
-    if (!modalEl) return;
-    modalEl.classList.remove('is-active');
-    const mediaWrap = modalEl.querySelector('#modalMedia');
-    if (mediaWrap) mediaWrap.innerHTML = ''; // Stop video playback
-  }
-
-  // ─── Render Expanding Sections (Interactive Accordion Matching Frames 1-3) ──
+  // ─── Render Expanding Sections (Interactive Accordion Matching Frames) ─────
   function renderExpandingSections(boxEl, projects) {
     const existing = boxEl.querySelector('.portfolio-cards-wrap');
     if (existing) existing.remove();
@@ -618,7 +309,6 @@
         const idx = Math.max(0, Math.min(2, (p.order || 1) - 1));
         if (!slots[idx]) slots[idx] = p;
       });
-      // Place any leftover projects into unassigned slots
       projects.forEach(p => {
         if (!slots.includes(p)) {
           const emptyIdx = slots.indexOf(null);
@@ -627,7 +317,8 @@
       });
     }
 
-    let currentExpandedIdx = 0; // Top expanded by default (Frame 3)
+    let currentExpandedIdx = 1; // Middle expanded by default matching user image media_1790728681365.png!
+    wrap.dataset.active = currentExpandedIdx;
     const sectionElements = [];
 
     slots.forEach((project, i) => {
@@ -638,90 +329,108 @@
       sec.setAttribute('role', 'region');
       sec.setAttribute('aria-label', `Section 0${i + 1}`);
 
-      const imgUrl   = project ? buildImageUrl(project.coverImageUrl, 1200) : null;
-      const metaLine = project ? [project.client, project.year].filter(Boolean).join('  ·  ') : '';
-      const tagline  = project ? (project.tagline || (project.section === 'video' ? 'VIDEO PROJECT' : 'PHOTOGRAPHY')) : 'OPEN SLOT';
-      const title    = project ? project.title : `SLOT 0${i + 1} / OPEN`;
-
-      sec.innerHTML = `
-        <button class="portfolio-section-bar" type="button" aria-expanded="${isExpanded}" title="Section 0${i + 1}">
-          <div class="portfolio-bar-left">
-            <span class="portfolio-bar-idx">[ 0${i + 1} ]</span>
-            <span class="portfolio-bar-title">${title}</span>
-            <span class="portfolio-bar-tag">${tagline}</span>
-          </div>
-          <div class="portfolio-bar-right">
-            ${metaLine ? `<span class="portfolio-bar-meta">${metaLine}</span>` : ''}
-            <span class="portfolio-bar-icon" aria-hidden="true">${isExpanded ? '—' : '+'}</span>
-          </div>
-        </button>
-
-        <div class="portfolio-section-expanded">
-          ${imgUrl ? `<div class="portfolio-section-bg" style="background-image:url('${imgUrl}')"></div>` : ''}
-          <div class="portfolio-section-overlay"></div>
-          <div class="portfolio-section-content">
-            <div class="portfolio-section-top">
-              <span class="portfolio-section-tag">0${i + 1} // ${tagline}</span>
-              ${metaLine ? `<span class="portfolio-section-meta">${metaLine}</span>` : ''}
-            </div>
-            <div class="portfolio-section-middle">
-              <h3 class="portfolio-section-title">${title}</h3>
-              ${project && project.tagline ? `<div class="portfolio-section-sub">${project.tagline}</div>` : ''}
-              ${project && project.description ? `<p class="portfolio-section-desc">${project.description}</p>` : ''}
-            </div>
-            <div class="portfolio-section-bottom">
-              ${project ? `
-                <button class="portfolio-btn-showcase" type="button" aria-label="Open showcase for ${title}">
-                  <span>[ VIEW SHOWCASE ]</span>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="13" height="13">
-                    <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-                  </svg>
-                </button>
-              ` : `
-                <span class="portfolio-slot-hint">CONFIGURE VIA SANITY STUDIO (ORDER: ${i + 1})</span>
-              `}
-            </div>
-          </div>
-        </div>
-      `;
-
-      // Click on collapsed bar expands this section
-      const barBtn = sec.querySelector('.portfolio-section-bar');
-      barBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (sec.classList.contains('is-collapsed')) {
-          setExpandedSection(i);
-        }
-      });
-
-      // Accessible keyboard support on the bar
-      barBtn.addEventListener('keydown', (e) => {
-        if ((e.key === 'Enter' || e.key === ' ') && sec.classList.contains('is-collapsed')) {
-          e.preventDefault();
-          setExpandedSection(i);
-        }
-      });
-
-      // Click on showcase button opens the full-screen modal
+      // Media items for carousel
+      const mediaList = [];
       if (project) {
-        const showcaseBtn = sec.querySelector('.portfolio-btn-showcase');
-        if (showcaseBtn) {
-          showcaseBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            openModal(project);
-          });
-        }
-
-        // Also clicking the expanded background or content area opens showcase
-        const expandedArea = sec.querySelector('.portfolio-section-expanded');
-        if (expandedArea) {
-          expandedArea.addEventListener('click', (e) => {
-            if (!e.target.closest('.portfolio-btn-showcase')) {
-              openModal(project);
+        if (project.coverImageUrl) mediaList.push({ type: 'image', url: project.coverImageUrl });
+        if (Array.isArray(project.galleryUrls)) {
+          project.galleryUrls.forEach(url => {
+            if (url && !mediaList.some(m => m.url === url)) {
+              mediaList.push({ type: 'image', url });
             }
           });
         }
+        const vid = project.videoUrl || project.videoFileUrl;
+        if (vid) {
+          mediaList.push({ type: 'video', url: vid });
+        }
       }
+
+      let currentMediaIdx = 0;
+      const title = project ? project.title : `PROJECT 0${i + 1}`;
+      const desc  = project ? (project.description || project.tagline || '') : '';
+
+      sec.innerHTML = `
+        <button class="portfolio-section-bar" type="button" aria-expanded="${isExpanded}" title="Expand ${title}">
+          <span class="portfolio-bar-title">${title}</span>
+        </button>
+
+        <div class="portfolio-section-expanded">
+          <div class="project-carousel-media" id="mediaLayer-${boxEl.id}-${i}"></div>
+          <div class="project-carousel-overlay"></div>
+
+          <button class="project-carousel-arrow prev" type="button" aria-label="Previous image" style="${mediaList.length > 1 ? 'opacity:0.75;pointer-events:auto;' : 'opacity:0.35;pointer-events:none;'}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          <button class="project-carousel-arrow next" type="button" aria-label="Next image" style="${mediaList.length > 1 ? 'opacity:0.75;pointer-events:auto;' : 'opacity:0.35;pointer-events:none;'}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+
+          <div class="project-title-overlay">${title}</div>
+          ${desc ? `<div class="project-desc-overlay">${desc}</div>` : ''}
+        </div>
+      `;
+
+      const mediaLayer = sec.querySelector(`#mediaLayer-${boxEl.id}-${i}`);
+      function updateMedia() {
+        if (!mediaLayer) return;
+        if (mediaList.length === 0) {
+          mediaLayer.style.backgroundImage = 'none';
+          mediaLayer.innerHTML = '';
+          return;
+        }
+        const item = mediaList[currentMediaIdx];
+        if (item.type === 'video') {
+          mediaLayer.style.backgroundImage = 'none';
+          if (item.url.includes('vimeo.com')) {
+            const vimeoId = item.url.split('/').pop().split('?')[0];
+            mediaLayer.innerHTML = `<iframe src="https://player.vimeo.com/video/${vimeoId}?autoplay=0&title=0&byline=0" frameborder="0" allow="autoplay; fullscreen" style="width:100%;height:100%;object-fit:cover;"></iframe>`;
+          } else if (item.url.includes('youtube.com') || item.url.includes('youtu.be')) {
+            const ytId = item.url.includes('youtu.be') ? item.url.split('/').pop() : new URL(item.url).searchParams.get('v');
+            mediaLayer.innerHTML = `<iframe src="https://www.youtube.com/embed/${ytId}" frameborder="0" allow="fullscreen" style="width:100%;height:100%;"></iframe>`;
+          } else {
+            mediaLayer.innerHTML = `<video src="${item.url}" controls playsinline style="width:100%;height:100%;object-fit:cover;"></video>`;
+          }
+        } else {
+          mediaLayer.innerHTML = '';
+          mediaLayer.style.backgroundImage = `url('${buildImageUrl(item.url, 1400)}')`;
+        }
+      }
+      updateMedia();
+
+      // Navigation arrows
+      const prevBtn = sec.querySelector('.project-carousel-arrow.prev');
+      const nextBtn = sec.querySelector('.project-carousel-arrow.next');
+
+      if (prevBtn) {
+        prevBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (mediaList.length > 1) {
+            currentMediaIdx = (currentMediaIdx - 1 + mediaList.length) % mediaList.length;
+            updateMedia();
+          }
+        });
+      }
+      if (nextBtn) {
+        nextBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (mediaList.length > 1) {
+            currentMediaIdx = (currentMediaIdx + 1) % mediaList.length;
+            updateMedia();
+          }
+        });
+      }
+
+      // Clicking collapsed bar expands this section
+      const barBtn = sec.querySelector('.portfolio-section-bar');
+      barBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setExpandedSection(i);
+      });
 
       sectionElements.push(sec);
       wrap.appendChild(sec);
@@ -729,18 +438,41 @@
 
     function setExpandedSection(targetIdx) {
       currentExpandedIdx = targetIdx;
+      wrap.dataset.active = targetIdx;
       sectionElements.forEach((s, idx) => {
         const isExp = (idx === targetIdx);
         s.classList.toggle('is-expanded', isExp);
         s.classList.toggle('is-collapsed', !isExp);
         const bar = s.querySelector('.portfolio-section-bar');
-        if (bar) {
-          bar.setAttribute('aria-expanded', isExp);
-          const icon = bar.querySelector('.portfolio-bar-icon');
-          if (icon) icon.textContent = isExp ? '—' : '+';
-        }
+        if (bar) bar.setAttribute('aria-expanded', isExp);
       });
     }
+
+    // Keyboard navigation for carousel when box is open
+    window.addEventListener('keydown', (e) => {
+      const isBox1Open = document.body.classList.contains('box-1-open');
+      const isBox2Open = document.body.classList.contains('box-2-open');
+      if (!isBox1Open && !isBox2Open) return;
+      const activeBox = isBox1Open ? document.getElementById('box1') : document.getElementById('box2');
+      if (!activeBox || !activeBox.contains(wrap)) return;
+
+      const activeSec = wrap.querySelector('.portfolio-section.is-expanded');
+      if (!activeSec) return;
+
+      if (e.key === 'ArrowLeft') {
+        const prev = activeSec.querySelector('.project-carousel-arrow.prev');
+        if (prev && prev.style.pointerEvents !== 'none') {
+          e.preventDefault();
+          prev.click();
+        }
+      } else if (e.key === 'ArrowRight') {
+        const next = activeSec.querySelector('.project-carousel-arrow.next');
+        if (next && next.style.pointerEvents !== 'none') {
+          e.preventDefault();
+          next.click();
+        }
+      }
+    });
 
     boxEl.appendChild(wrap);
   }

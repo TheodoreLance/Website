@@ -140,7 +140,7 @@
                   top 0.45s cubic-bezier(0.2, 0.9, 0.3, 1),
                   width 0.45s cubic-bezier(0.2, 0.9, 0.3, 1),
                   height 0.45s cubic-bezier(0.2, 0.9, 0.3, 1),
-                  transform 0.25s ease,
+                  transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1),
                   opacity 0.35s ease;
     }
 
@@ -152,7 +152,7 @@
                   top 0.45s cubic-bezier(0.2, 0.9, 0.3, 1),
                   width 0.45s cubic-bezier(0.2, 0.9, 0.3, 1),
                   height 0.45s cubic-bezier(0.2, 0.9, 0.3, 1),
-                  transform 0.25s ease,
+                  transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1),
                   opacity 0.35s ease;
     }
 
@@ -160,7 +160,7 @@
       right: calc(15 / 1024 * 100vw);
       width: calc(144 / 1024 * 100vw);
       transform-origin: center center;
-      transition: transform 0.25s ease,
+      transition: transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1),
                   opacity 0.35s ease;
     }
 
@@ -188,64 +188,86 @@
                   background-color 0.25s ease;
     }
 
-    /* Box 1 Open State (Screenshot 1 reference):
-       Box 1 expands to 742px wide (x: 17..759).
-       Chicken SVG tucks onto the left side at exact screenshot position:
-       x = 46px (left: 29px inside box 1), y = 256px, w = 92px, h = 93px.
-       Box 2 collapses to 38px strip at left 771px. Tiger is hidden.
+    /* Box 1 Open State (Matching User Design Mockup):
+       Box 1 spans left 17px to 624px (607px wide).
+       Chicken SVG sits on the left dock (left 6px, width 44px, z-index 15).
+       Box 2 (Tiger) remains visible at left 638px (168px wide), with Tiger SVG centered and visible.
+       Box 3 (Goat) remains visible at left 820px (187px wide), with Goat SVG visible.
     */
     body.box-1-open .box-1 {
       left: calc(17 / 1024 * 100vw);
-      width: calc(742 / 1024 * 100vw);
+      width: calc(607 / 1024 * 100vw);
       overflow: hidden;
     }
 
     body.box-1-open .box-1 .animal-chicken {
-      left: calc(29 / 1024 * 100vw);
+      left: calc(6 / 1024 * 100vw);
       top: calc(224.5 / 576 * 100vh);
-      width: calc(92 / 1024 * 100vw);
-      height: calc(93 / 576 * 100vh);
+      width: calc(44 / 1024 * 100vw);
+      height: calc(88 / 576 * 100vh);
+      transform: none;
       opacity: 1;
+      pointer-events: auto;
+      cursor: pointer;
+      z-index: 15;
     }
 
     body.box-1-open .box-2 {
-      left: calc(771 / 1024 * 100vw);
-      width: calc(38 / 1024 * 100vw);
+      left: calc(638 / 1024 * 100vw);
+      width: calc(168 / 1024 * 100vw);
     }
 
     body.box-1-open .box-2 .animal-tiger {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    /* Box 2 Open State (Screenshot 2 reference):
-       Box 1 collapses to 40px strip at left 17px. Chicken is hidden.
-       Box 2 expands from left 72px to 808px (736px wide).
-       Tiger SVG tucks onto the right side at exact screenshot position:
-       x = 680px (left: 608px inside box 2), y = 258px, w = 98px, h = 85px.
-    */
-    body.box-2-open .box-1 {
-      left: calc(17 / 1024 * 100vw);
-      width: calc(40 / 1024 * 100vw);
-    }
-
-    body.box-2-open .box-1 .animal-chicken {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    body.box-2-open .box-2 {
-      left: calc(72 / 1024 * 100vw);
-      width: calc(736 / 1024 * 100vw);
-      overflow: hidden;
-    }
-
-    body.box-2-open .box-2 .animal-tiger {
-      left: calc(608 / 1024 * 100vw);
+      left: 50%;
+      transform: translateX(-50%);
       top: calc(228.5 / 576 * 100vh);
       width: calc(98 / 1024 * 100vw);
       height: calc(85 / 576 * 100vh);
       opacity: 1;
+      pointer-events: auto;
+      cursor: pointer;
+      z-index: 15;
+    }
+
+    /* Box 2 Open State (Symmetric with Box 1 Open):
+       Box 1 remains visible on the left at left 17px (168px wide) with Chicken SVG centered and visible.
+       Box 2 expands from left 199px to 806px (607px wide).
+       Tiger SVG tucks cleanly onto the right inside Box 2 (left 552px, width 44px, z-index 15).
+       Box 3 (Goat) remains visible on the right at left 820px (187px wide) with Goat SVG visible.
+    */
+    body.box-2-open .box-1 {
+      left: calc(17 / 1024 * 100vw);
+      width: calc(168 / 1024 * 100vw);
+    }
+
+    body.box-2-open .box-1 .animal-chicken {
+      left: 50%;
+      transform: translateX(-50%);
+      top: calc(224.5 / 576 * 100vh);
+      width: calc(92 / 1024 * 100vw);
+      height: calc(93 / 576 * 100vh);
+      opacity: 1;
+      pointer-events: auto;
+      cursor: pointer;
+      z-index: 15;
+    }
+
+    body.box-2-open .box-2 {
+      left: calc(199 / 1024 * 100vw);
+      width: calc(607 / 1024 * 100vw);
+      overflow: hidden;
+    }
+
+    body.box-2-open .box-2 .animal-tiger {
+      left: calc(552 / 1024 * 100vw);
+      top: calc(228.5 / 576 * 100vh);
+      width: calc(44 / 1024 * 100vw);
+      height: calc(85 / 576 * 100vh);
+      transform: none;
+      opacity: 1;
+      pointer-events: auto;
+      cursor: pointer;
+      z-index: 15;
     }
 
     /* Box 3 Open State (Screenshot 3 reference):
@@ -1871,7 +1893,9 @@
           const isOpen = document.body.classList.contains('box-1-open');
           document.body.classList.remove('box-2-open', 'box-3-open');
           if (isOpen) {
-            document.body.classList.remove('box-1-open');
+            if (!e.target.closest('.portfolio-cards-wrap')) {
+              document.body.classList.remove('box-1-open');
+            }
           } else {
             document.body.classList.add('box-1-open');
           }
@@ -1889,7 +1913,9 @@
           const isOpen = document.body.classList.contains('box-2-open');
           document.body.classList.remove('box-1-open', 'box-3-open');
           if (isOpen) {
-            document.body.classList.remove('box-2-open');
+            if (!e.target.closest('.portfolio-cards-wrap')) {
+              document.body.classList.remove('box-2-open');
+            }
           } else {
             document.body.classList.add('box-2-open');
           }
