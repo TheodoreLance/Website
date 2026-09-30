@@ -277,6 +277,26 @@
         transition: opacity 0.3s ease;
       }
 
+      /* Auto Black Gradient Scrim over Cover Images */
+      .project-media-gradient {
+        position: absolute;
+        inset: 0;
+        z-index: 4;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.35s ease;
+        background: linear-gradient(
+          to bottom,
+          rgba(0, 0, 0, 0.75) 0%,
+          rgba(0, 0, 0, 0.48) 20%,
+          rgba(0, 0, 0, 0.16) 35%,
+          rgba(0, 0, 0, 0) 50%,
+          rgba(0, 0, 0, 0.16) 65%,
+          rgba(0, 0, 0, 0.5) 82%,
+          rgba(0, 0, 0, 0.8) 100%
+        );
+      }
+
       /* Top-Left Project Title */
       .project-title-overlay {
         position: absolute;
@@ -292,6 +312,7 @@
         line-height: 1.05;
         pointer-events: none;
         text-shadow: none;
+        transition: color 0.3s ease, text-shadow 0.3s ease;
       }
 
       /* Bottom-Left Short Description */
@@ -310,6 +331,41 @@
         line-height: 1.25;
         pointer-events: none;
         text-shadow: none;
+        transition: color 0.3s ease, text-shadow 0.3s ease;
+      }
+
+      /* High-contrast typography & controls when cover image is active */
+      .portfolio-section.has-cover-image .project-media-gradient {
+        opacity: 1;
+      }
+
+      .portfolio-section.has-cover-image .project-title-overlay {
+        color: #ffffff;
+        text-shadow: 0 1px 6px rgba(0, 0, 0, 0.75), 0 2px 14px rgba(0, 0, 0, 0.55);
+      }
+
+      .portfolio-section.has-cover-image .project-desc-overlay {
+        color: #ffffff;
+        text-shadow: 0 1px 5px rgba(0, 0, 0, 0.75), 0 2px 12px rgba(0, 0, 0, 0.55);
+      }
+
+      .portfolio-section.has-cover-image .project-carousel-arrow {
+        color: #ffffff;
+        filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.75));
+      }
+
+      .portfolio-section.has-cover-image .project-scroll-hint {
+        background-color: rgba(0, 0, 0, 0.72);
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+      }
+      .portfolio-section.has-cover-image .project-scroll-hint:hover {
+        background-color: #ffffff;
+        color: #000000;
+        border-color: #ffffff;
       }
 
       /* Carousel Navigation Chevrons */
@@ -814,11 +870,6 @@
 
     slots.forEach((project, i) => {
       const isExpanded = (i === currentExpandedIdx);
-      const sec = document.createElement('div');
-      sec.className = `portfolio-section ${isExpanded ? 'is-expanded' : 'is-collapsed'}`;
-      sec.dataset.index = i;
-      sec.setAttribute('role', 'region');
-      sec.setAttribute('aria-label', `Section 0${i + 1}`);
 
       // Media items for carousel
       const mediaList = [];
@@ -837,6 +888,13 @@
         }
       }
 
+      const hasMedia = mediaList.length > 0;
+      const sec = document.createElement('div');
+      sec.className = `portfolio-section ${isExpanded ? 'is-expanded' : 'is-collapsed'}${hasMedia ? ' has-cover-image' : ''}`;
+      sec.dataset.index = i;
+      sec.setAttribute('role', 'region');
+      sec.setAttribute('aria-label', `Section 0${i + 1}`);
+
       let currentMediaIdx = 0;
       const title = project ? project.title : 'PROJECT TITLE';
       const desc  = project ? (project.description || project.tagline || 'SHORT DESCRIPTION') : 'SHORT DESCRIPTION';
@@ -851,6 +909,7 @@
         <div class="portfolio-section-expanded">
           <div class="project-hero-frame">
             <div class="project-carousel-media" id="mediaLayer-${boxEl.id}-${i}"></div>
+            <div class="project-media-gradient"></div>
 
             ${mediaList.length > 1 ? `
             <button class="project-carousel-arrow prev" type="button" aria-label="Previous photo">
@@ -883,13 +942,18 @@
       `;
 
       const mediaLayer = sec.querySelector(`#mediaLayer-${boxEl.id}-${i}`);
+      const gradientLayer = sec.querySelector('.project-media-gradient');
       function updateMedia() {
         if (!mediaLayer) return;
         if (mediaList.length === 0) {
           mediaLayer.style.backgroundImage = 'none';
           mediaLayer.innerHTML = '';
+          sec.classList.remove('has-cover-image');
+          if (gradientLayer) gradientLayer.style.opacity = '0';
           return;
         }
+        sec.classList.add('has-cover-image');
+        if (gradientLayer) gradientLayer.style.opacity = '1';
         const item = mediaList[currentMediaIdx];
         if (item.type === 'video') {
           mediaLayer.style.backgroundImage = 'none';
