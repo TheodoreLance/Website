@@ -67,35 +67,17 @@
     const style = document.createElement('style');
     style.id = 'portfolio-cards-style';
     style.textContent = `
-      /* ── Expanding Project Boxes Container (Smooth Flex Accordion) ─────── */
-      .box-1 .portfolio-cards-wrap {
-        position: absolute;
-        left: calc(56 / 1024 * 100vw);
-        right: calc(10 / 1024 * 100vw);
-        top: calc(10 / 576 * 100vh);
-        bottom: calc(10 / 576 * 100vh);
-        display: flex;
-        flex-direction: column;
-        gap: clamp(8px, 1.4vh, 12px);
-        opacity: 0;
-        pointer-events: none;
-        overflow: hidden;
-        z-index: 12;
-        box-sizing: border-box;
-        transition: opacity 0.35s cubic-bezier(0.2, 0.9, 0.3, 1),
-                    transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1);
-        transform: scale(0.98);
-      }
-
+      /* ── Expanding Project Boxes Container (Smooth Flex Accordion Matching Untitled-1.svg) ─────── */
+      .box-1 .portfolio-cards-wrap,
       .box-2 .portfolio-cards-wrap {
         position: absolute;
-        left: calc(10 / 1024 * 100vw);
-        right: calc(56 / 1024 * 100vw);
-        top: calc(10 / 576 * 100vh);
-        bottom: calc(10 / 576 * 100vh);
+        left: calc(33.57 / 1920 * 100vw);
+        width: calc(1023.67 / 1920 * 100vw);
+        top: calc(36.80 / 1080 * 100vh);
+        bottom: calc(34.07 / 1080 * 100vh);
         display: flex;
         flex-direction: column;
-        gap: clamp(8px, 1.4vh, 12px);
+        gap: calc(22.51 / 1080 * 100vh);
         opacity: 0;
         pointer-events: none;
         overflow: hidden;
@@ -103,7 +85,7 @@
         box-sizing: border-box;
         transition: opacity 0.35s cubic-bezier(0.2, 0.9, 0.3, 1),
                     transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1);
-        transform: scale(0.98);
+        transform: scale(0.99);
       }
 
       /* Mobile: Position below the top animal icon */
@@ -112,8 +94,10 @@
         .box-2 .portfolio-cards-wrap {
           left: 10px !important;
           right: 10px !important;
+          width: auto !important;
           top: 72px !important;
           bottom: 10px !important;
+          gap: 10px !important;
         }
       }
 
@@ -123,7 +107,7 @@
         opacity: 1;
         pointer-events: auto;
         transform: scale(1);
-        transition: opacity 0.35s cubic-bezier(0.2, 0.9, 0.3, 1) 0.1s,
+        transition: opacity 0.35s cubic-bezier(0.2, 0.9, 0.3, 1) 0.08s,
                     transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1);
       }
 
@@ -132,18 +116,21 @@
         position: relative;
         width: 100%;
         overflow: hidden;
-        background-color: var(--dark-red);
+        background-color: var(--bg); /* Pure flat light red matching reference.svg cls-1 */
         box-sizing: border-box;
+        border: none;
+        outline: none;
         border-radius: 0;
         transition: flex 0.45s cubic-bezier(0.2, 0.9, 0.3, 1),
                     height 0.45s cubic-bezier(0.2, 0.9, 0.3, 1);
       }
 
-      /* Collapsed bar state: clean minimal strip matching user mockup */
+      /* Collapsed bar state: exact 36.53px height on 1080 scale, flat var(--bg) */
       .portfolio-section.is-collapsed {
-        flex: 0 0 clamp(20px, 3.6vh, 26px);
-        height: clamp(20px, 3.6vh, 26px);
+        flex: 0 0 calc(36.53 / 1080 * 100vh);
+        height: calc(36.53 / 1080 * 100vh);
         cursor: pointer;
+        background-color: var(--bg);
       }
 
       /* Expanded state fills available space */
@@ -151,6 +138,7 @@
         flex: 1 1 0%;
         min-height: 0;
         cursor: default;
+        background-color: var(--bg);
       }
 
       .portfolio-section-bar {
@@ -158,41 +146,41 @@
         height: 100%;
         display: flex;
         align-items: center;
-        padding: 0 clamp(10px, 1.4vw, 18px);
-        background-color: rgba(0, 0, 0, 0.18);
+        padding: 0 calc(31.27 / 1920 * 100vw);
+        background: transparent;
         border: none;
         outline: none;
         cursor: pointer;
-        font-family: 'ReplicaLLTT-Bold', sans-serif;
-        font-size: clamp(8.5px, 0.9vw, 11px);
-        letter-spacing: 0.12em;
+        font-family: 'ReplicaLLTT-Bold', 'Replica LL TT', sans-serif;
+        font-weight: 700;
+        font-size: clamp(9px, 1.1vw, 16px);
+        letter-spacing: 0.02em;
         text-transform: uppercase;
-        color: var(--bg);
-        opacity: 0.75;
-        transition: background-color 0.2s ease, opacity 0.2s ease;
+        color: var(--dark-red);
+        opacity: 0;
+        transition: opacity 0.2s ease;
         user-select: none;
         box-sizing: border-box;
       }
 
-      .portfolio-section-bar:hover {
-        background-color: rgba(0, 0, 0, 0.32);
-        opacity: 1;
+      .portfolio-section.is-collapsed:hover .portfolio-section-bar {
+        opacity: 0.85;
       }
 
       .portfolio-section.is-expanded .portfolio-section-bar {
         display: none;
       }
 
-      /* Expanded Section View: Clean, pure, matching user mockup */
+      /* Expanded Section View: Clean, pure, matching Untitled-1.svg */
       .portfolio-section-expanded {
         position: absolute;
         inset: 0;
         overflow: hidden;
         display: flex;
+        background-color: var(--bg); /* Flat light red */
         opacity: 0;
         pointer-events: none;
-        transition: opacity 0.35s cubic-bezier(0.2, 0.9, 0.3, 1) 0.08s;
-        background-color: var(--dark-red);
+        transition: opacity 0.35s cubic-bezier(0.2, 0.9, 0.3, 1) 0.05s;
       }
 
       .portfolio-section.is-expanded .portfolio-section-expanded {
@@ -207,33 +195,64 @@
         background-position: center;
         background-repeat: no-repeat;
         transition: opacity 0.3s ease;
-        opacity: 0.88;
       }
 
-      /* Subtle vignette so title & description stay perfectly readable */
+      /* No dark vignettes or gradient overlays */
       .project-carousel-overlay {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(to bottom, rgba(0,0,0,0.38) 0%, transparent 35%, transparent 65%, rgba(0,0,0,0.48) 100%);
-        pointer-events: none;
+        display: none !important;
       }
 
-      /* Carousel Navigation Chevrons */
+      /* Top-Left Project Title (EXACT MATCH FOR reference.svg cls-2 text) */
+      .project-title-overlay {
+        position: absolute;
+        top: calc(32 / 1080 * 100vh);
+        left: calc(31.27 / 1920 * 100vw);
+        z-index: 8;
+        font-family: 'ReplicaLLTT-Bold', 'Replica LL TT', sans-serif;
+        font-weight: 700;
+        font-size: clamp(16px, 2.758vw, 53px);
+        letter-spacing: 0em;
+        text-transform: uppercase;
+        color: var(--dark-red);
+        line-height: 1.05;
+        pointer-events: none;
+        text-shadow: none;
+      }
+
+      /* Bottom-Left Short Description (EXACT MATCH FOR reference.svg cls-3 text) */
+      .project-desc-overlay {
+        position: absolute;
+        bottom: calc(18 / 1080 * 100vh);
+        left: calc(31.27 / 1920 * 100vw);
+        max-width: 80%;
+        z-index: 8;
+        font-family: 'ReplicaLLTT-Bold', 'Replica LL TT', sans-serif;
+        font-weight: 700;
+        font-size: clamp(10px, 1.379vw, 26.5px);
+        letter-spacing: 0em;
+        text-transform: uppercase;
+        color: var(--dark-red);
+        line-height: 1.25;
+        pointer-events: none;
+        text-shadow: none;
+      }
+
+      /* Carousel Navigation Chevrons (EXACT MATCH FOR reference.svg cls-8 chevrons) */
       .project-carousel-arrow {
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
         z-index: 10;
-        width: clamp(28px, 3.4vw, 42px);
-        height: clamp(36px, 5.2vh, 52px);
+        width: clamp(20px, 1.82vw, 35px);
+        height: clamp(32px, 4.8vh, 56px);
         background: transparent;
         border: none;
-        color: var(--bg);
+        color: var(--dark-red);
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        opacity: 0.65;
+        opacity: 1;
         transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1);
         user-select: none;
         padding: 0;
@@ -241,54 +260,21 @@
 
       .project-carousel-arrow:hover {
         opacity: 1;
-        transform: translateY(-50%) scale(1.22);
+        transform: translateY(-50%) scale(1.15);
       }
 
       .project-carousel-arrow.prev {
-        left: clamp(8px, 1.2vw, 16px);
+        left: calc(31.27 / 1920 * 100vw);
       }
 
       .project-carousel-arrow.next {
-        right: clamp(8px, 1.2vw, 16px);
+        right: calc(38.39 / 1920 * 100vw);
       }
 
       .project-carousel-arrow svg {
-        width: clamp(20px, 2.2vw, 28px);
-        height: clamp(20px, 2.2vw, 28px);
-      }
-
-      /* Top-Left Project Title (Matching User Image) */
-      .project-title-overlay {
-        position: absolute;
-        top: clamp(14px, 2.4vh, 22px);
-        left: clamp(16px, 2.2vw, 26px);
-        z-index: 8;
-        font-family: 'ReplicaLLTT-Bold', sans-serif;
-        font-size: clamp(15px, 2.1vw, 26px);
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: var(--bg);
-        line-height: 1.1;
-        pointer-events: none;
-        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
-      }
-
-      /* Bottom-Left Short Description (Matching User Image) */
-      .project-desc-overlay {
-        position: absolute;
-        bottom: clamp(14px, 2.4vh, 20px);
-        left: clamp(16px, 2.2vw, 26px);
-        max-width: 82%;
-        z-index: 8;
-        font-family: 'ReplicaLLTT-Bold', sans-serif;
-        font-size: clamp(9px, 0.95vw, 11.5px);
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        color: var(--bg);
-        opacity: 0.88;
-        line-height: 1.45;
-        pointer-events: none;
-        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+        width: 100%;
+        height: 100%;
+        display: block;
       }
     `;
     document.head.appendChild(style);
@@ -347,8 +333,8 @@
       }
 
       let currentMediaIdx = 0;
-      const title = project ? project.title : `PROJECT 0${i + 1}`;
-      const desc  = project ? (project.description || project.tagline || '') : '';
+      const title = project ? project.title : 'PROJECT TITLE';
+      const desc  = project ? (project.description || project.tagline || 'SHORT DESCRIPTION') : 'SHORT DESCRIPTION';
 
       sec.innerHTML = `
         <button class="portfolio-section-bar" type="button" aria-expanded="${isExpanded}" title="Expand ${title}">
@@ -357,21 +343,20 @@
 
         <div class="portfolio-section-expanded">
           <div class="project-carousel-media" id="mediaLayer-${boxEl.id}-${i}"></div>
-          <div class="project-carousel-overlay"></div>
 
-          <button class="project-carousel-arrow prev" type="button" aria-label="Previous image" style="${mediaList.length > 1 ? 'opacity:0.75;pointer-events:auto;' : 'opacity:0.35;pointer-events:none;'}">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="15 18 9 12 15 6"></polyline>
+          <button class="project-carousel-arrow prev" type="button" aria-label="Previous image" style="${mediaList.length > 1 ? 'pointer-events:auto;' : 'pointer-events:none;'}">
+            <svg viewBox="0 0 35 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <polyline points="29,5 5,28 29,51" stroke="currentColor" stroke-width="7" stroke-linecap="square" stroke-linejoin="miter"/>
             </svg>
           </button>
-          <button class="project-carousel-arrow next" type="button" aria-label="Next image" style="${mediaList.length > 1 ? 'opacity:0.75;pointer-events:auto;' : 'opacity:0.35;pointer-events:none;'}">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="9 18 15 12 9 6"></polyline>
+          <button class="project-carousel-arrow next" type="button" aria-label="Next image" style="${mediaList.length > 1 ? 'pointer-events:auto;' : 'pointer-events:none;'}">
+            <svg viewBox="0 0 35 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <polyline points="6,5 30,28 6,51" stroke="currentColor" stroke-width="7" stroke-linecap="square" stroke-linejoin="miter"/>
             </svg>
           </button>
 
           <div class="project-title-overlay">${title}</div>
-          ${desc ? `<div class="project-desc-overlay">${desc}</div>` : ''}
+          <div class="project-desc-overlay">${desc}</div>
         </div>
       `;
 
