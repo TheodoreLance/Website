@@ -446,7 +446,7 @@
         letter-spacing: 0.08em;
         text-transform: uppercase;
         padding: 4px 8px;
-        background-color: rgba(218, 56, 39, 0.12);
+        background-color: color-mix(in srgb, var(--dark-red) 12%, transparent);
         color: var(--dark-red);
       }
 
@@ -483,7 +483,7 @@
         width: 100%;
         max-height: 75vh;
         overflow: hidden;
-        background-color: rgba(218, 56, 39, 0.08);
+        background-color: color-mix(in srgb, var(--dark-red) 8%, transparent);
         position: relative;
         display: flex;
         align-items: center;
@@ -512,7 +512,7 @@
         grid-template-columns: 2fr 1fr;
         gap: clamp(20px, 3vw, 48px);
         padding-bottom: 28px;
-        border-bottom: 1.5px solid rgba(218, 56, 39, 0.25);
+        border-bottom: 1.5px solid color-mix(in srgb, var(--dark-red) 25%, transparent);
       }
       @media (max-width: 900px) {
         .cs-project-intro {
@@ -546,7 +546,7 @@
         gap: 14px;
       }
       .cs-metadata-item {
-        border-top: 1px solid rgba(218, 56, 39, 0.2);
+        border-top: 1px solid color-mix(in srgb, var(--dark-red) 20%, transparent);
         padding-top: 8px;
       }
       .cs-meta-label {

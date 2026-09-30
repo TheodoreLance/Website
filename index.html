@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>KILTURA — Theodore Lance</title>
   <meta name="description" content="KILTURA by Theodore Lance — a scroll-driven visual experience." />
+  <meta name="theme-color" content="#2140a5" />
 
   <style>
     @font-face {
@@ -27,9 +28,9 @@
     }
 
     :root {
-      --bg: #e93d25;
-      --dark-red: #da3827;
-      --dark-red-hover: #c8301f;
+      --bg: #2140a5;
+      --dark-red: #182e78;
+      --dark-red-hover: #13245f;
       --p: 0; /* Total vertical scroll progress: 0.0 -> 2.0 */
       --p1: 0; /* Phase 1 progress (0.0 Logo -> 1.0 Boxes) */
       --p2: 0; /* Phase 2 progress (0.0 Boxes -> 1.0 Squeezed Up Contact Section) */
@@ -1822,11 +1823,11 @@
     <!-- Theme Color Picker Box (Revealed on Swipe Left on First Page) -->
     <div class="theme-drawer" id="themeDrawer" aria-label="Theme Color Picker">
       <div class="theme-swatches">
-        <button class="theme-swatch swatch-blue" data-bg="#2140a5" data-dark="#182e78" data-hover="#13245f" title="Cobalt Blue" aria-label="Cobalt Blue Theme"></button>
+        <button class="theme-swatch swatch-blue active" data-bg="#2140a5" data-dark="#182e78" data-hover="#13245f" title="Cobalt Blue" aria-label="Cobalt Blue Theme"></button>
         <button class="theme-swatch swatch-yellow" data-bg="#c0d80c" data-dark="#8c9e09" data-hover="#738206" title="Vibrant Yellow" aria-label="Vibrant Yellow Theme"></button>
         <button class="theme-swatch swatch-purple" data-bg="#7b299e" data-dark="#581d73" data-hover="#441659" title="Deep Purple" aria-label="Deep Purple Theme"></button>
         <button class="theme-swatch swatch-green" data-bg="#029b4c" data-dark="#016f36" data-hover="#015228" title="Emerald Green" aria-label="Emerald Green Theme"></button>
-        <button class="theme-swatch swatch-red active" data-bg="#eb3925" data-dark="#c92c17" data-hover="#b42311" title="Original Red" aria-label="Original Red Theme"></button>
+        <button class="theme-swatch swatch-red" data-bg="#eb3925" data-dark="#c92c17" data-hover="#b42311" title="Original Red" aria-label="Original Red Theme"></button>
       </div>
       <div class="theme-label">CHANGE COLORS</div>
     </div>

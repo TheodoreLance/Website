@@ -46,7 +46,7 @@ module.exports = async (req, res) => {
           text: `Name: ${name}\nEmail: ${email || 'Not provided'}\nSubject: ${subject || 'None'}\n\nMessage:\n${message}`,
           html: `
             <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; border: 1px solid #eee; border-radius: 8px;">
-              <h2 style="color: #eb3925; margin-top: 0;">New Message from Kiltura Website</h2>
+              <h2 style="color: #2140a5; margin-top: 0;">New Message from Kiltura Website</h2>
               <p><strong>Name:</strong> ${escapeHtml(name)}</p>
               <p><strong>Email:</strong> ${email ? `<a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a>` : 'Not provided'}</p>
               <p><strong>Subject:</strong> ${escapeHtml(subject || 'None')}</p>
