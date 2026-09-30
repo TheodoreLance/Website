@@ -75,11 +75,11 @@
         width: calc(1023.67 / 1920 * 100vw);
         top: calc(36.80 / 1080 * 100vh);
         bottom: calc(34.07 / 1080 * 100vh);
-        display: flex;
+        display: none !important; /* Completely removed from layout & hit testing when closed */
         flex-direction: column;
         gap: calc(22.51 / 1080 * 100vh);
         opacity: 0;
-        pointer-events: none;
+        pointer-events: none !important;
         overflow: hidden;
         z-index: 12;
         box-sizing: border-box;
@@ -104,8 +104,9 @@
       /* Smooth entrance when parent box is opened */
       body.box-1-open .box-1 .portfolio-cards-wrap,
       body.box-2-open .box-2 .portfolio-cards-wrap {
-        opacity: 1;
-        pointer-events: auto;
+        display: flex !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
         transform: scale(1);
         transition: opacity 0.35s cubic-bezier(0.2, 0.9, 0.3, 1) 0.08s,
                     transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1);
@@ -121,21 +122,35 @@
         border: none;
         outline: none;
         border-radius: 0;
-        transition: flex 0.45s cubic-bezier(0.2, 0.9, 0.3, 1),
-                    height 0.45s cubic-bezier(0.2, 0.9, 0.3, 1);
+        flex-grow: 0;
+        flex-shrink: 0;
+        flex-basis: clamp(24px, calc(36.53 / 1080 * 100vh), 44px);
+        min-height: clamp(24px, calc(36.53 / 1080 * 100vh), 44px);
+        cursor: pointer;
+        transition: flex-grow 0.45s cubic-bezier(0.2, 0.9, 0.3, 1),
+                    flex-basis 0.45s cubic-bezier(0.2, 0.9, 0.3, 1);
       }
 
       /* Collapsed bar state: exact 36.53px height on 1080 scale, flat var(--bg) */
       .portfolio-section.is-collapsed {
-        flex: 0 0 calc(36.53 / 1080 * 100vh);
-        height: calc(36.53 / 1080 * 100vh);
+        flex-grow: 0;
+        flex-shrink: 0;
+        flex-basis: clamp(24px, calc(36.53 / 1080 * 100vh), 44px);
+        height: clamp(24px, calc(36.53 / 1080 * 100vh), 44px);
         cursor: pointer;
         background-color: var(--bg);
       }
 
+      .portfolio-section.is-collapsed:hover {
+        filter: brightness(0.97);
+      }
+
       /* Expanded state fills available space */
       .portfolio-section.is-expanded {
-        flex: 1 1 0%;
+        flex-grow: 1;
+        flex-shrink: 1;
+        flex-basis: 0%;
+        height: auto;
         min-height: 0;
         cursor: default;
         background-color: var(--bg);
@@ -161,6 +176,7 @@
         transition: opacity 0.2s ease;
         user-select: none;
         box-sizing: border-box;
+        pointer-events: none; /* Allows parent sec to catch all clicks cleanly */
       }
 
       .portfolio-section.is-collapsed:hover .portfolio-section-bar {
@@ -168,7 +184,14 @@
       }
 
       .portfolio-section.is-expanded .portfolio-section-bar {
-        display: none;
+        display: none !important;
+      }
+
+      /* Collapsed section hides expanded view completely (never intercept clicks) */
+      .portfolio-section.is-collapsed .portfolio-section-expanded {
+        display: none !important;
+        pointer-events: none !important;
+        visibility: hidden !important;
       }
 
       /* Expanded Section View: Clean, pure, matching Untitled-1.svg */
@@ -178,14 +201,9 @@
         overflow: hidden;
         display: flex;
         background-color: var(--bg); /* Flat light red */
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.35s cubic-bezier(0.2, 0.9, 0.3, 1) 0.05s;
-      }
-
-      .portfolio-section.is-expanded .portfolio-section-expanded {
         opacity: 1;
         pointer-events: auto;
+        visibility: visible;
       }
 
       .project-carousel-media {
@@ -410,11 +428,13 @@
         });
       }
 
-      // Clicking collapsed bar expands this section
-      const barBtn = sec.querySelector('.portfolio-section-bar');
-      barBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        setExpandedSection(i);
+      // Clicking collapsed section expands this section
+      sec.addEventListener('click', (e) => {
+        if (e.target.closest('.project-carousel-arrow')) return;
+        if (!sec.classList.contains('is-expanded')) {
+          e.stopPropagation();
+          setExpandedSection(i);
+        }
       });
 
       sectionElements.push(sec);
