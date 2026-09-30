@@ -1869,6 +1869,7 @@
 
       function closeBoxes() {
         document.body.classList.remove('box-1-open', 'box-2-open', 'box-3-open');
+        lastClosedBoxTime = Date.now();
       }
 
       function openBox1() {
@@ -1979,14 +1980,15 @@
             targetP = 1.0;
             return;
           }
+          if (e.target && e.target.closest && e.target.closest('.portfolio-cards-wrap')) {
+            return;
+          }
           e.stopPropagation();
           targetP = 1.0;
           const isOpen = document.body.classList.contains('box-1-open');
           document.body.classList.remove('box-2-open', 'box-3-open');
           if (isOpen) {
-            if (!e.target.closest('.portfolio-cards-wrap')) {
-              document.body.classList.remove('box-1-open');
-            }
+            document.body.classList.remove('box-1-open');
           } else {
             document.body.classList.add('box-1-open');
           }
@@ -1999,14 +2001,15 @@
             targetP = 1.0;
             return;
           }
+          if (e.target && e.target.closest && e.target.closest('.portfolio-cards-wrap')) {
+            return;
+          }
           e.stopPropagation();
           targetP = 1.0;
           const isOpen = document.body.classList.contains('box-2-open');
           document.body.classList.remove('box-1-open', 'box-3-open');
           if (isOpen) {
-            if (!e.target.closest('.portfolio-cards-wrap')) {
-              document.body.classList.remove('box-2-open');
-            }
+            document.body.classList.remove('box-2-open');
           } else {
             document.body.classList.add('box-2-open');
           }
@@ -2017,6 +2020,9 @@
         box3.addEventListener('click', function(e) {
           if (currentP < 0.5) {
             targetP = 1.0;
+            return;
+          }
+          if (e.target && e.target.closest && e.target.closest('.resume-scroll')) {
             return;
           }
           e.stopPropagation();
@@ -2030,6 +2036,13 @@
             document.body.classList.add('box-3-open');
             openMenu();
           }
+        });
+      }
+
+      const resumeScroll = document.getElementById('resumeScroll');
+      if (resumeScroll) {
+        resumeScroll.addEventListener('click', function(e) {
+          e.stopPropagation();
         });
       }
 
@@ -2276,6 +2289,10 @@
       function scheduleWheelSnap() {
         clearTimeout(wheelSnapTimer);
         wheelSnapTimer = setTimeout(function() {
+          if (hasOpenBox()) {
+            targetP = 1.0;
+            return;
+          }
           if (targetP < 0.45) {
             targetP = 0.0;
           } else if (targetP < 1.45) {
@@ -2288,6 +2305,48 @@
 
       // Mouse Wheel / Trackpad Scroll (Vertical & Horizontal)
       window.addEventListener('wheel', function(e) {
+        // If scrolling inside an expanded section or resume, allow native smooth scrolling
+        const scrollEl = (e.target && e.target.closest) ? (
+          e.target.closest('.portfolio-section.is-expanded') ||
+          e.target.closest('.resume-scroll')
+        ) : null;
+
+        if (scrollEl) {
+          // Native momentum scroll inside case study or resume container
+          return;
+        }
+
+        const wrapEl = (e.target && e.target.closest) ? e.target.closest('.portfolio-cards-wrap') : null;
+        if (wrapEl) {
+          const activeSec = wrapEl.querySelector('.portfolio-section.is-expanded');
+          if (activeSec) {
+            activeSec.scrollTop += e.deltaY;
+          }
+          e.preventDefault();
+          return;
+        }
+
+        // While a box is open, scrolling anywhere must NEVER close the box or switch pages
+        if (hasOpenBox()) {
+          const activeExp = document.querySelector('.portfolio-cards-wrap .portfolio-section.is-expanded');
+          if (activeExp && (document.body.classList.contains('box-1-open') || document.body.classList.contains('box-2-open'))) {
+            activeExp.scrollTop += e.deltaY;
+            e.preventDefault();
+            return;
+          }
+          if (document.body.classList.contains('box-3-open')) {
+            const resEl = document.getElementById('resumeScroll');
+            if (resEl) {
+              resEl.scrollTop += e.deltaY;
+              e.preventDefault();
+              return;
+            }
+          }
+          e.preventDefault();
+          targetP = 1.0;
+          return;
+        }
+
         e.preventDefault();
 
         // On the first page (p is at or near 0), horizontal trackpad scrolling controls the color selection
@@ -2326,13 +2385,6 @@
             }
             return;
           } else if (e.deltaY < 0) {
-            if (hasOpenBox()) {
-              closeBoxes();
-              closeMenu();
-              targetP = 1.0;
-              lastClosedBoxTime = Date.now();
-              return;
-            }
             closeMenu();
             closeBoxes();
             targetP = 0.0;
@@ -2356,6 +2408,7 @@
       let lastTouchY = 0;
       let touchStartPage = 0;
       let isHorizontalGesture = null;
+      let touchStartedInScrollable = false;
 
       window.addEventListener('touchstart', function(e) {
         touchStartX = e.touches[0].clientX;
@@ -2363,11 +2416,22 @@
         touchStartTime = Date.now();
         touchStartPage = currentP < 0.5 ? 0 : (currentP < 1.5 ? 1 : 2);
         isHorizontalGesture = null;
+        touchStartedInScrollable = Boolean(
+          e.target && e.target.closest && (
+            e.target.closest('.portfolio-section.is-expanded') ||
+            e.target.closest('.portfolio-cards-wrap') ||
+            e.target.closest('.resume-scroll')
+          )
+        );
       }, { passive: true });
 
       window.addEventListener('touchmove', function(e) {
-        // If touching inside an expanded section, allow native vertical scroll of the case study
-        if (e.target && e.target.closest && (e.target.closest('.portfolio-section.is-expanded') || e.target.closest('.portfolio-cards-wrap'))) {
+        // If touching inside an expanded section or resume, allow native vertical scroll
+        if (touchStartedInScrollable || (e.target && e.target.closest && (
+          e.target.closest('.portfolio-section.is-expanded') ||
+          e.target.closest('.portfolio-cards-wrap') ||
+          e.target.closest('.resume-scroll')
+        ))) {
           return;
         }
 
@@ -2408,17 +2472,9 @@
             e.preventDefault();
             return;
           }
-          // If a box is open, do NOT allow small vertical touch to throw user to contact page!
+          // If a box is open, retain position at page 1 while box is open — NEVER close box on touch!
           if (hasOpenBox()) {
-            if (deltaY < -40) {
-              closeBoxes();
-              closeMenu();
-              targetP = 1.0;
-              lastClosedBoxTime = Date.now();
-              e.preventDefault();
-              return;
-            }
-            // Retain position at page 1 while box is open
+            targetP = 1.0;
             e.preventDefault();
             return;
           }
@@ -2451,6 +2507,10 @@
       }, { passive: false });
 
       window.addEventListener('touchend', function() {
+        if (touchStartedInScrollable) {
+          touchStartedInScrollable = false;
+          return;
+        }
         isHorizontalGesture = null;
         const totalDy = touchStartY - lastTouchY;
         const elapsed = Math.max(1, Date.now() - touchStartTime);
@@ -2519,6 +2579,15 @@
         }
 
         if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
+          if (hasOpenBox()) {
+            const activeSec = document.querySelector('.portfolio-cards-wrap .portfolio-section.is-expanded') ||
+                             (document.body.classList.contains('box-3-open') ? document.getElementById('resumeScroll') : null);
+            if (activeSec) {
+              e.preventDefault();
+              activeSec.scrollTop += (e.key === 'ArrowDown' ? 80 : 300);
+              return;
+            }
+          }
           e.preventDefault();
           targetPx = 0;
           if (targetP < 1.0) {
@@ -2530,15 +2599,19 @@
             }
           }
         } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+          if (hasOpenBox()) {
+            const activeSec = document.querySelector('.portfolio-cards-wrap .portfolio-section.is-expanded') ||
+                             (document.body.classList.contains('box-3-open') ? document.getElementById('resumeScroll') : null);
+            if (activeSec) {
+              e.preventDefault();
+              activeSec.scrollTop -= (e.key === 'ArrowUp' ? 80 : 300);
+              return;
+            }
+          }
           e.preventDefault();
           targetPx = 0;
           if (targetP > 1.02) {
             targetP = Math.max(1.0, targetP - 0.2);
-          } else if (hasOpenBox()) {
-            closeBoxes();
-            closeMenu();
-            targetP = 1.0;
-            lastClosedBoxTime = Date.now();
           } else {
             closeMenu();
             closeBoxes();

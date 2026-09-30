@@ -188,9 +188,10 @@
         overflow-y: auto;
         overflow-x: hidden;
         -webkit-overflow-scrolling: touch;
-        scroll-behavior: smooth;
+        overscroll-behavior: contain;
         scrollbar-width: thin;
         scrollbar-color: var(--dark-red) transparent;
+        touch-action: pan-y;
       }
 
       .portfolio-section.is-expanded::-webkit-scrollbar {
@@ -388,6 +389,8 @@
         color: var(--dark-red);
         background-color: var(--bg);
         border-top: 1.5px solid color-mix(in srgb, var(--dark-red) 25%, transparent);
+        user-select: text;
+        -webkit-user-select: text;
       }
 
       .sec-cs-intro {
@@ -785,6 +788,11 @@
     const wrap = document.createElement('div');
     wrap.className = 'portfolio-cards-wrap';
 
+    // Prevent click events inside portfolio cards from bubbling up to box toggle handlers
+    wrap.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+
     // Map projects into 3 ordered slots
     const slots = [null, null, null];
     if (Array.isArray(projects)) {
@@ -954,7 +962,7 @@
         });
       }
 
-      // Clicking collapsed section expands it
+      // Clicking collapsed section expands it; clicks inside section never close parent box
       sec.addEventListener('click', (e) => {
         if (
           e.target.closest('.project-carousel-arrow') ||
@@ -967,8 +975,8 @@
         ) {
           return;
         }
+        e.stopPropagation();
         if (!sec.classList.contains('is-expanded')) {
-          e.stopPropagation();
           setExpandedSection(i);
         }
       });
