@@ -334,38 +334,35 @@
         transition: color 0.3s ease, text-shadow 0.3s ease;
       }
 
-      /* High-contrast typography & controls when cover image is active */
+      /* High-contrast typography & controls when cover image is active (using background brand color) */
       .portfolio-section.has-cover-image .project-media-gradient {
         opacity: 1;
       }
 
       .portfolio-section.has-cover-image .project-title-overlay {
-        color: #ffffff;
-        text-shadow: 0 1px 6px rgba(0, 0, 0, 0.75), 0 2px 14px rgba(0, 0, 0, 0.55);
+        color: var(--bg);
+        text-shadow: 0 1px 6px rgba(0, 0, 0, 0.85), 0 2px 16px rgba(0, 0, 0, 0.65);
       }
 
       .portfolio-section.has-cover-image .project-desc-overlay {
-        color: #ffffff;
-        text-shadow: 0 1px 5px rgba(0, 0, 0, 0.75), 0 2px 12px rgba(0, 0, 0, 0.55);
+        color: var(--bg);
+        text-shadow: 0 1px 5px rgba(0, 0, 0, 0.85), 0 2px 14px rgba(0, 0, 0, 0.65);
       }
 
       .portfolio-section.has-cover-image .project-carousel-arrow {
-        color: #ffffff;
-        filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.75));
+        color: var(--bg);
+        filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.85));
       }
 
       .portfolio-section.has-cover-image .project-scroll-hint {
-        background-color: rgba(0, 0, 0, 0.72);
-        color: #ffffff;
-        border: 1px solid rgba(255, 255, 255, 0.4);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+        background-color: var(--bg);
+        color: var(--dark-red);
+        border: 1.5px solid var(--dark-red);
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
       }
       .portfolio-section.has-cover-image .project-scroll-hint:hover {
-        background-color: #ffffff;
-        color: #000000;
-        border-color: #ffffff;
+        background-color: var(--dark-red);
+        color: var(--bg);
       }
 
       /* Carousel Navigation Chevrons */
