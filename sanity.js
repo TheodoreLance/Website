@@ -563,7 +563,7 @@
         display: flex;
         flex-direction: column;
         gap: var(--cs-g);
-        padding: var(--cs-g) 0 0;
+        padding: var(--cs-g) var(--cs-px) var(--cs-py);
         background: var(--dark-red);
         color: var(--dark-red);
         font-family: 'ReplicaLLTT-Bold', 'Replica LL TT', sans-serif;
@@ -692,10 +692,30 @@
       .cs-next-chev  { right: calc(38.39 / 1920 * 100vw); top: 50%; transform: translateY(-50%); width: clamp(24px, 2.2vw, 42px); height: clamp(36px, 5.5vh, 64px); transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1); }
       .cs-next:hover .cs-next-chev { transform: translateY(-50%) translateX(6px); }
       .cs-next.has-img .cs-next-label, .cs-next.has-img .cs-next-title { text-shadow: 0 1px 6px rgba(0,0,0,0.6); }
-      .cs-top { cursor: pointer; justify-content: space-between; border: 0; width: 100%; font-family: inherit; font-weight: 700; color: var(--dark-red); text-transform: uppercase; }
+      .cs-top {
+        cursor: pointer;
+        justify-content: space-between;
+        border: 0;
+        width: 100%;
+        height: clamp(36px, calc(44 / 1080 * 100vh), 54px);
+        min-height: clamp(36px, calc(44 / 1080 * 100vh), 54px);
+        padding: 0 var(--cs-px);
+        font-family: inherit;
+        font-weight: 700;
+        color: var(--dark-red);
+        text-transform: uppercase;
+        box-sizing: border-box;
+      }
       .cs-top:hover, .cs-credits .cs-bar:hover { filter: brightness(0.97); }
       .cs svg.cs-chev { display: block; width: 100%; height: 100%; }
-      .cs-top svg { width: 1.6em; height: 1em; }
+      .cs-top svg,
+      .cs-top svg.cs-chev,
+      .cs-top .cs-chev {
+        display: block;
+        width: clamp(16px, 1.2vw, 22px) !important;
+        height: clamp(10px, 0.8vw, 14px) !important;
+        flex-shrink: 0;
+      }
       .cs-end-pad { height: 0; }
 
       /* Reveal animation matching site */
