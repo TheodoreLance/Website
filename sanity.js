@@ -13,7 +13,7 @@
   const PROJECT_ID = 'vyncojcj';
   const DATASET    = 'production';
   const API_VER    = '2024-01-01';
-  const CDN_BASE   = `https://${PROJECT_ID}.apicdn.sanity.io/v${API_VER}/data/query/${DATASET}`;
+  const CDN_BASE   = `https://${PROJECT_ID}.api.sanity.io/v${API_VER}/data/query/${DATASET}`;
 
   // ─── Unified GROQ Query ─────────────────────────────────────────────────────
   const QUERY = encodeURIComponent(`{
@@ -74,7 +74,9 @@
       caseStudySections[] {
         _key,
         _type,
+        title,
         heading,
+        eyebrow,
         headingSize,
         subheading,
         orientation,
@@ -100,7 +102,8 @@
           alt,
           "url": asset->url
         },
-        text
+        text,
+        body
       }
     },
     "siteSettings": *[_type == "siteSettings"][0] {
@@ -912,6 +915,8 @@
     if (project.tagline) meta.push({ label: 'Category', value: project.tagline });
     if (project.section) meta.push({ label: 'Discipline', value: project.section === 'video' ? 'Motion & Film' : 'Photography' });
 
+    let hasGalleryBlock = false;
+
     if (Array.isArray(project.caseStudySections) && project.caseStudySections.length) {
       project.caseStudySections.forEach((sec) => {
         if (!sec) return;
@@ -921,8 +926,8 @@
             ratio: sec.splitRatio || '50-50',
             mediaSide: sec.orientation === 'text-left' ? 'right' : 'left',
             eyebrow: sec.eyebrow || 'Process',
-            heading: sec.heading,
-            body: sec.text,
+            heading: sec.title || sec.heading || '',
+            body: sec.body || sec.text || '',
             image: { url: sec.imageUrl, alt: sec.imageAlt },
             aspect: sec.aspectRatio === 'natural' ? 'natural' : '4:5'
           });
@@ -930,10 +935,11 @@
           blocks.push({
             _type: 'csMedia',
             image: { url: sec.imageUrl, alt: sec.imageAlt },
-            aspect: '16:9',
+            aspect: sec.aspectRatio || '16:9',
             caption: sec.caption
           });
         } else if (sec._type === 'layoutGrid') {
+          hasGalleryBlock = true;
           blocks.push({
             _type: 'csGallery',
             columns: sec.columns || 2,
@@ -942,9 +948,10 @@
           });
         } else if (sec._type === 'textBlock') {
           blocks.push({
-            _type: 'csText',
-            heading: sec.heading,
-            body: sec.text
+            _type: 'csIntro',
+            eyebrow: sec.eyebrow || 'Overview',
+            statement: sec.title || sec.heading || '',
+            body: sec.body || sec.text || ''
           });
         } else if (sec._type === 'mediaContainer') {
           blocks.push({
@@ -954,13 +961,9 @@
           });
         }
       });
-    } else if (Array.isArray(project.galleryUrls) && project.galleryUrls.length) {
-      blocks.push({
-        _type: 'csIntro',
-        eyebrow: '01 — OVERVIEW',
-        statement: project.title,
-        body: project.description || `A curated series by Theodore Lance for ${project.client || 'Kiltura Studio'}.`
-      });
+    }
+
+    if (!hasGalleryBlock && Array.isArray(project.galleryUrls) && project.galleryUrls.length) {
       blocks.push({
         _type: 'csGallery',
         columns: 2,
@@ -980,7 +983,10 @@
   function buildSectionCaseStudyHtml(project, allProjects, sectionIndex, boxEl) {
     if (!project) return '';
 
-    const cs = project.caseStudy || synthesizeCaseStudy(project);
+    let cs = project.caseStudy;
+    if (!cs || !Array.isArray(cs.blocks) || cs.blocks.length === 0) {
+      cs = synthesizeCaseStudy(project);
+    }
     if (!cs) return '';
 
     let chapter = 0;
@@ -1623,7 +1629,7 @@
     if (box2) renderExpandingSections(box2, []);
 
     try {
-      const res = await fetch(`${CDN_BASE}?query=${QUERY}`);
+      const res = await fetch(`${CDN_BASE}?query=${QUERY}&_t=${Date.now()}`, { cache: 'no-store' });
       if (!res.ok) throw new Error(`Sanity CDN error: ${res.status}`);
       const data = await res.json();
       const result = data.result || {};
