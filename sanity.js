@@ -1629,7 +1629,7 @@
     if (box2) renderExpandingSections(box2, []);
 
     try {
-      const res = await fetch(`${CDN_BASE}?query=${QUERY}&_t=${Date.now()}`, { cache: 'no-store' });
+      const res = await fetch(`${CDN_BASE}?query=${QUERY}`, { cache: 'no-store' });
       if (!res.ok) throw new Error(`Sanity CDN error: ${res.status}`);
       const data = await res.json();
       const result = data.result || {};
