@@ -32,6 +32,45 @@
       "coverImageAlt": coverImage.alt,
       "galleryUrls": gallery[].asset->url,
       description,
+      caseStudy {
+        meta[] { label, value },
+        blocks[] {
+          _key,
+          _type,
+          eyebrow,
+          statement,
+          heading,
+          body,
+          text,
+          attribution,
+          tone,
+          aspect,
+          caption,
+          alt,
+          mediaSide,
+          ratio,
+          columns,
+          url,
+          loop,
+          label,
+          "image": {
+            "url": image.asset->url,
+            "alt": image.alt
+          },
+          images[] {
+            _key,
+            caption,
+            alt,
+            "url": asset->url
+          },
+          items[] {
+            label,
+            value,
+            role,
+            name
+          }
+        }
+      },
       caseStudySections[] {
         _key,
         _type,
@@ -503,155 +542,203 @@
         color: var(--dark-red);
       }
 
-      /* Modular Layout Sections */
-      .cs-section {
-        width: 100%;
+      /* ── Modern Bespoke Case Study Architecture (Bespoke Swiss System) ──── */
+      .portfolio-section {
+        --cs-g: calc(22.51 / 1080 * 100vh);
+        --cs-px: calc(31.27 / 1920 * 100vw);
+        --cs-py: calc(32 / 1080 * 100vh);
       }
-
-      .cs-sec-heading {
-        font-family: 'ReplicaLLTT-Bold', 'Replica LL TT', sans-serif;
-        font-size: clamp(18px, 2.2vw, 34px);
-        text-transform: uppercase;
-        margin: 0 0 12px 0;
-        line-height: 1.15;
-        color: var(--dark-red);
-      }
-
-      .cs-subheading {
-        font-family: 'ReplicaLLTT-Bold', 'Replica LL TT', sans-serif;
-        font-size: clamp(12px, 1vw, 15px);
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-        opacity: 0.75;
-        margin: 0 0 10px 0;
-        color: var(--dark-red);
-      }
-
-      .cs-paragraph {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        font-size: clamp(14px, 1.1vw, 17px);
-        line-height: 1.6;
-        opacity: 0.92;
-        margin: 0 0 14px 0;
-        color: var(--dark-red);
-      }
-
-      /* Layout: Text with Image */
-      .cs-layout-text-image {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: clamp(20px, 3vw, 40px);
-        align-items: center;
-      }
-      .cs-layout-text-image.image-left {
-        direction: rtl;
-      }
-      .cs-layout-text-image.image-left > * {
-        direction: ltr;
-      }
-      @media (max-width: 860px) {
-        .cs-layout-text-image {
-          grid-template-columns: 1fr !important;
-          direction: ltr !important;
-          gap: 16px;
+      @media (max-width: 768px), (orientation: portrait) {
+        .portfolio-section {
+          --cs-g: 10px;
+          --cs-px: 16px;
+          --cs-py: 16px;
         }
       }
-      .cs-layout-text-image .cs-sec-img img {
-        width: 100%;
-        height: auto;
-        display: block;
-        object-fit: cover;
-      }
 
-      /* Layout: Image Block */
-      .cs-image-block {
-        width: 100%;
-      }
-      .cs-image-block img {
-        width: 100%;
-        height: auto;
-        display: block;
-        max-height: 80vh;
-        object-fit: cover;
-      }
-      .cs-image-caption {
-        font-family: 'ReplicaLLTT-Bold', 'Replica LL TT', sans-serif;
-        font-size: 11px;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-        opacity: 0.65;
-        margin-top: 8px;
-        color: var(--dark-red);
-      }
-
-      /* Layout: Grid */
-      .cs-grid-section {
-        display: grid;
-        gap: clamp(12px, 1.8vw, 20px);
-      }
-      .cs-grid-section.cols-2 { grid-template-columns: repeat(2, 1fr); }
-      .cs-grid-section.cols-3 { grid-template-columns: repeat(3, 1fr); }
-      @media (max-width: 768px) {
-        .cs-grid-section { grid-template-columns: 1fr !important; }
-      }
-      .cs-grid-section img {
-        width: 100%;
-        height: auto;
-        display: block;
-        aspect-ratio: 4 / 3;
-        object-fit: cover;
-      }
-
-      /* Layout: Text Block */
-      .cs-text-block {
-        max-width: 860px;
-      }
-
-      /* Layout: Media Container (Video embed) */
-      .cs-media-container {
-        width: 100%;
-        aspect-ratio: 16 / 9;
-        background-color: #000;
-        overflow: hidden;
-      }
-      .cs-media-container iframe,
-      .cs-media-container video {
-        width: 100%;
-        height: 100%;
-        border: none;
-        display: block;
-      }
-
-      /* Section Footer Navigation */
-      .sec-cs-footer {
+      .cs {
         display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding-top: 24px;
-        border-top: 1.5px solid color-mix(in srgb, var(--dark-red) 25%, transparent);
-        margin-top: 16px;
-        gap: 16px;
-        flex-wrap: wrap;
-      }
-      .sec-cs-top-btn,
-      .sec-cs-next-btn {
-        background: transparent;
-        border: 1.5px solid var(--dark-red);
+        flex-direction: column;
+        gap: var(--cs-g);
+        padding: var(--cs-g) 0 0;
+        background: var(--dark-red);
         color: var(--dark-red);
         font-family: 'ReplicaLLTT-Bold', 'Replica LL TT', sans-serif;
         font-weight: 700;
-        font-size: clamp(10px, 0.9vw, 13px);
-        letter-spacing: 0.05em;
-        padding: 8px 16px;
         text-transform: uppercase;
-        cursor: pointer;
-        transition: all 0.2s ease;
+        -webkit-font-smoothing: antialiased;
+        user-select: text;
+        -webkit-user-select: text;
+        box-sizing: border-box;
       }
-      .sec-cs-top-btn:hover,
-      .sec-cs-next-btn:hover {
-        background-color: var(--dark-red);
-        color: var(--bg);
+      .cs p { margin: 0 0 0.9em; }
+      .cs p:last-child { margin-bottom: 0; }
+      .cs h3 { margin: 0; font-weight: 700; }
+
+      .cs-row {
+        display: grid;
+        grid-template-columns: repeat(var(--cols, 2), minmax(0, 1fr));
+        gap: var(--cs-g);
       }
+      .cs-block {
+        background: var(--bg);
+        padding: var(--cs-py) var(--cs-px);
+        min-width: 0;
+        box-sizing: border-box;
+      }
+      .cs-block.is-dark { background: var(--dark-red); color: var(--bg); }
+
+      /* Type scale matching live site */
+      .cs-label   { font-size: clamp(9px, 0.83vw, 16px); letter-spacing: 0.02em; line-height: 1.2; opacity: 0.62; }
+      .cs-value   { font-size: clamp(13px, 1.379vw, 26.5px); line-height: 1.1; margin-top: 0.55em; }
+      .cs-display { font-size: clamp(20px, 2.758vw, 53px); line-height: 1.02; }
+      .cs-h       { font-size: clamp(16px, 2.07vw, 40px); line-height: 1.04; }
+      .cs-body    { font-size: clamp(11px, 0.83vw, 16px); line-height: 1.5; letter-spacing: 0.03em; }
+      .cs-huge    { font-size: clamp(40px, 6.2vw, 120px); line-height: 0.86; letter-spacing: -0.01em; }
+
+      /* Bar — identical proportions to the collapsed accordion bars */
+      .cs-bar {
+        background: var(--bg);
+        min-height: clamp(24px, calc(36.53 / 1080 * 100vh), 44px);
+        padding: 0 var(--cs-px);
+        display: flex;
+        align-items: center;
+        gap: 1.2em;
+        font-size: clamp(9px, 1.1vw, 16px);
+        letter-spacing: 0.02em;
+        box-sizing: border-box;
+      }
+      .cs-bar .cs-dim { opacity: 0.62; }
+
+      /* Meta */
+      .cs-meta-item { display: flex; flex-direction: column; justify-content: space-between; min-height: clamp(70px, 11vh, 130px); }
+
+      /* Intro */
+      .cs-intro {
+        display: flex; flex-direction: column; justify-content: space-between;
+        gap: calc(var(--cs-py) * 1.5);
+        min-height: clamp(260px, 48vh, 560px);
+      }
+      .cs-intro .cs-display { max-width: 16ch; }
+      .cs-intro-foot { display: grid; grid-template-columns: 1fr 1fr; gap: var(--cs-g); }
+      .cs-intro-foot .cs-body { grid-column: 2; }
+
+      /* Media */
+      .cs-media {
+        position: relative; margin: 0; overflow: hidden;
+        background: var(--bg);
+        aspect-ratio: var(--ar, auto);
+      }
+      .cs-media img {
+        display: block; width: 100%; height: 100%; object-fit: cover;
+        cursor: zoom-in;
+        transition: transform 0.9s cubic-bezier(0.2, 0.9, 0.3, 1);
+      }
+      .cs-media.is-natural img { height: auto; }
+      .cs-media:hover img { transform: scale(1.025); }
+      .cs-media.has-caption::after {
+        content: ''; position: absolute; inset: 0; pointer-events: none;
+        background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0) 38%);
+      }
+      .cs-caption {
+        position: absolute; z-index: 2; left: var(--cs-px); bottom: var(--cs-py); right: var(--cs-px);
+        color: var(--bg); font-size: clamp(9px, 1.1vw, 16px); letter-spacing: 0.02em;
+        text-shadow: 0 1px 6px rgba(0,0,0,0.6); pointer-events: none;
+      }
+      .cs-media iframe, .cs-media video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+
+      /* Split */
+      .cs-split.r-50-50 { grid-template-columns: 1fr 1fr; }
+      .cs-split.r-40-60 { grid-template-columns: 2fr 3fr; }
+      .cs-split.r-60-40 { grid-template-columns: 3fr 2fr; }
+      .cs-split.media-left .cs-media { order: -1; }
+      .cs-split-text { display: flex; flex-direction: column; justify-content: space-between; gap: calc(var(--cs-py) * 2); }
+      .cs-split-text .cs-h { margin-top: 0.6em; }
+
+      /* Gallery */
+      .cs-gallery .cs-media { --ar: var(--gar, 4 / 5); }
+
+      /* Stats */
+      .cs-stat { display: flex; flex-direction: column; justify-content: space-between; gap: 1.5em; min-height: clamp(140px, 24vh, 290px); }
+
+      /* Statement */
+      .cs-statement { display: flex; flex-direction: column; justify-content: space-between; gap: 2.5em; min-height: clamp(220px, 40vh, 480px); }
+      .cs-statement .cs-display { font-size: clamp(22px, 3.6vw, 70px); max-width: 18ch; }
+
+      /* Credits */
+      .cs-credits { display: grid; grid-template-columns: 1fr 1fr; gap: var(--cs-g); }
+      .cs-credits .cs-bar { justify-content: space-between; }
+
+      /* Next project card & top button */
+      .cs-next {
+        position: relative; display: block; width: 100%; overflow: hidden; cursor: pointer;
+        height: clamp(180px, 34vh, 400px);
+        background: var(--bg) center / cover no-repeat;
+        border: 0; padding: 0; text-align: left; font: inherit; color: var(--bg);
+      }
+      .cs-next-img { position: absolute; inset: 0; background: center / cover no-repeat; transition: transform 0.9s cubic-bezier(0.2, 0.9, 0.3, 1); }
+      .cs-next:hover .cs-next-img { transform: scale(1.03); }
+      .cs-next.has-img::after {
+        content: ''; position: absolute; inset: 0;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.7) 100%);
+      }
+      .cs-next:not(.has-img) { color: var(--dark-red); }
+      .cs-next-label, .cs-next-title, .cs-next-chev { position: absolute; z-index: 2; }
+      .cs-next-label { top: var(--cs-py); left: var(--cs-px); font-size: clamp(9px, 1.1vw, 16px); letter-spacing: 0.02em; }
+      .cs-next-title { bottom: var(--cs-py); left: var(--cs-px); right: 18%; font-size: clamp(20px, 2.758vw, 53px); line-height: 1.02; }
+      .cs-next-chev  { right: calc(38.39 / 1920 * 100vw); top: 50%; transform: translateY(-50%); width: clamp(24px, 2.2vw, 42px); height: clamp(36px, 5.5vh, 64px); transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1); }
+      .cs-next:hover .cs-next-chev { transform: translateY(-50%) translateX(6px); }
+      .cs-next.has-img .cs-next-label, .cs-next.has-img .cs-next-title { text-shadow: 0 1px 6px rgba(0,0,0,0.6); }
+      .cs-top { cursor: pointer; justify-content: space-between; border: 0; width: 100%; font-family: inherit; font-weight: 700; color: var(--dark-red); text-transform: uppercase; }
+      .cs-top:hover, .cs-credits .cs-bar:hover { filter: brightness(0.97); }
+      .cs svg.cs-chev { display: block; width: 100%; height: 100%; }
+      .cs-top svg { width: 1.6em; height: 1em; }
+      .cs-end-pad { height: 0; }
+
+      /* Reveal animation matching site */
+      .cs-reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.7s cubic-bezier(0.2, 0.9, 0.3, 1), transform 0.7s cubic-bezier(0.2, 0.9, 0.3, 1); }
+      .cs-reveal.is-in { opacity: 1; transform: none; }
+      @media (prefers-reduced-motion: reduce) { .cs-reveal { opacity: 1; transform: none; transition: none; } }
+
+      /* Mobile Responsive Breakdown */
+      @media (max-width: 768px), (orientation: portrait) {
+        .cs-row.cs-meta { --cols: 2 !important; }
+        .cs-split { grid-template-columns: 1fr !important; }
+        .cs-split .cs-media { order: -1; }
+        .cs-intro { min-height: 0; }
+        .cs-intro-foot { grid-template-columns: 1fr; }
+        .cs-intro-foot .cs-body { grid-column: 1; }
+        .cs-gallery {
+          display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+          scrollbar-width: none; touch-action: pan-x pan-y; overscroll-behavior-x: contain;
+        }
+        .cs-gallery::-webkit-scrollbar { display: none; }
+        .cs-gallery > * { flex: 0 0 82%; scroll-snap-align: start; }
+        .cs-stat { min-height: 110px; }
+        .cs-huge { font-size: clamp(30px, 11vw, 64px); }
+        .cs-statement { min-height: 0; }
+        .cs-credits { grid-template-columns: 1fr; }
+        .cs-next { height: 210px; }
+        .cs-media:hover img { transform: none; }
+      }
+
+      /* Lightbox Modal */
+      .cs-lightbox {
+        position: fixed; inset: 0; z-index: 9999;
+        background: var(--dark-red);
+        display: flex; align-items: center; justify-content: center;
+        opacity: 0; pointer-events: none;
+        transition: opacity 0.35s cubic-bezier(0.2, 0.9, 0.3, 1);
+        font-family: 'ReplicaLLTT-Bold', 'Replica LL TT', sans-serif; text-transform: uppercase; color: var(--bg);
+      }
+      .cs-lightbox.is-open { opacity: 1; pointer-events: auto; }
+      .cs-lightbox img { max-width: calc(100vw - 14vw); max-height: calc(100vh - 16vh); object-fit: contain; display: block; }
+      .cs-lb-btn { position: absolute; background: none; border: 0; padding: 0; color: var(--bg); cursor: pointer; }
+      .cs-lb-prev, .cs-lb-next { top: 50%; transform: translateY(-50%); width: clamp(24px, 2.2vw, 42px); height: clamp(36px, 5.5vh, 64px); }
+      .cs-lb-prev { left: 3vw; } .cs-lb-next { right: 3vw; }
+      .cs-lb-close { top: 3vh; right: 3vw; width: clamp(22px, 1.8vw, 34px); height: clamp(22px, 1.8vw, 34px); }
+      .cs-lb-count { position: absolute; left: 3vw; bottom: 3vh; font-size: clamp(9px, 1.1vw, 16px); letter-spacing: 0.02em; }
+      .cs-lb-btn svg { width: 100%; height: 100%; display: block; }
     `;
     document.head.appendChild(style);
   }
@@ -693,144 +780,363 @@
       .replace(/'/g, '&#039;');
   }
 
+  // ─── Case Study Vector Chevrons & Helpers ──────────────────────────────────
+  const CHEV_R = '<svg class="cs-chev" viewBox="0 0 35 56" fill="none"><polyline points="6,5 30,28 6,51" stroke="currentColor" stroke-width="7" stroke-linecap="square" stroke-linejoin="miter"/></svg>';
+  const CHEV_L = '<svg class="cs-chev" viewBox="0 0 35 56" fill="none"><polyline points="29,5 5,28 29,51" stroke="currentColor" stroke-width="7" stroke-linecap="square" stroke-linejoin="miter"/></svg>';
+  const CHEV_U = '<svg class="cs-chev" viewBox="0 0 56 35" fill="none"><polyline points="5,30 28,6 51,30" stroke="currentColor" stroke-width="7" stroke-linecap="square" stroke-linejoin="miter"/></svg>';
+  const CLOSE_SVG = '<svg class="cs-chev" viewBox="0 0 40 40" fill="none"><path d="M6 6 L34 34 M34 6 L6 34" stroke="currentColor" stroke-width="7" stroke-linecap="square"/></svg>';
+
+  const CS_ASPECT_RATIOS = {
+    '16:9': '16 / 9',
+    '3:2': '3 / 2',
+    '4:3': '4 / 3',
+    '1:1': '1 / 1',
+    '4:5': '4 / 5',
+    '2:3': '2 / 3',
+    '21:9': '21 / 9'
+  };
+
+  function csImg(url, w = 1600) {
+    return url ? `${url}?w=${w}&auto=format&q=82` : '';
+  }
+
+  function csText(v) {
+    if (!v) return '';
+    if (typeof v === 'string') return v.split(/\n\n+/).map(p => `<p>${escapeHtml(p)}</p>`).join('');
+    if (Array.isArray(v)) {
+      return v.map(b => (b && b.children ? `<p>${b.children.map(c => escapeHtml(c.text)).join('')}</p>` : '')).join('');
+    }
+    return '';
+  }
+
+  function csFigure(image, opts = {}) {
+    if (!image || !image.url) return '';
+    const ar = CS_ASPECT_RATIOS[opts.aspect] || (opts.aspect === 'natural' ? null : CS_ASPECT_RATIOS['16:9']);
+    const cap = image.caption || opts.caption;
+    return `
+      <figure class="cs-media${ar ? '' : ' is-natural'}${cap ? ' has-caption' : ''}" ${ar ? `style="--ar:${ar}"` : ''}>
+        <img src="${csImg(image.url, opts.w || 1600)}" data-cs-full="${csImg(image.url, 2400)}" alt="${escapeHtml(image.alt || cap || '')}" loading="lazy" data-cs-lightbox />
+        ${cap ? `<figcaption class="cs-caption">${escapeHtml(cap)}</figcaption>` : ''}
+      </figure>`;
+  }
+
+  const csTone = (b) => (b && b.tone === 'dark' ? ' is-dark' : '');
+
+  // Modular Block Renderers (One per Sanity Studio Block Type)
+  const CS_BLOCK_RENDERERS = {
+    csIntro: (b) => `
+      <div class="cs-block cs-intro${csTone(b)}">
+        <div class="cs-label">${escapeHtml(b.eyebrow || 'Overview')}</div>
+        <h3 class="cs-display">${escapeHtml(b.statement || '')}</h3>
+        <div class="cs-intro-foot"><div class="cs-body">${csText(b.body || b.text)}</div></div>
+      </div>`,
+
+    csChapter: (b) => `
+      <div class="cs-bar cs-chapter${csTone(b)}"><span class="cs-dim">${b._num || '01'}</span><span>${escapeHtml(b.label || '')}</span></div>`,
+
+    csMedia: (b) => csFigure(b.image || { url: b.imageUrl, caption: b.caption, alt: b.imageAlt }, { aspect: b.aspect || '16:9', caption: b.caption, w: 2000 }),
+
+    csSplit: (b) => `
+      <div class="cs-row cs-split r-${b.ratio || '50-50'} media-${b.mediaSide || 'right'}">
+        <div class="cs-block cs-split-text${csTone(b)}">
+          <div>
+            ${b.eyebrow ? `<div class="cs-label">${escapeHtml(b.eyebrow)}</div>` : ''}
+            ${b.heading ? `<h3 class="cs-h">${escapeHtml(b.heading)}</h3>` : ''}
+          </div>
+          <div class="cs-body">${csText(b.body || b.text)}</div>
+        </div>
+        ${csFigure(b.image || { url: b.imageUrl, alt: b.imageAlt }, { aspect: b.aspect || '4:5', w: 1400 })}
+      </div>`,
+
+    csGallery: (b) => `
+      <div class="cs-row cs-gallery" style="--cols:${b.columns || 2}; --gar:${CS_ASPECT_RATIOS[b.aspect] || CS_ASPECT_RATIOS['4:5']}">
+        ${(b.images || []).map(im => csFigure(im, { aspect: b.aspect || '4:5', w: 1200 })).join('')}
+      </div>`,
+
+    csStats: (b) => `
+      <div class="cs-row cs-stats" style="--cols:${(b.items || []).length || 3}">
+        ${(b.items || []).map(s => `
+          <div class="cs-block cs-stat${csTone(b)}">
+            <div class="cs-label">${escapeHtml(s.label || '')}</div>
+            <div class="cs-huge">${escapeHtml(s.value || '')}</div>
+          </div>`).join('')}
+      </div>`,
+
+    csStatement: (b) => `
+      <div class="cs-block cs-statement${csTone(b)}">
+        <h3 class="cs-display">${escapeHtml(b.text || '')}</h3>
+        ${b.attribution ? `<div class="cs-label">${escapeHtml(b.attribution)}</div>` : ''}
+      </div>`,
+
+    csText: (b) => `
+      <div class="cs-block cs-split-text${csTone(b)}">
+        ${b.heading ? `<h3 class="cs-h">${escapeHtml(b.heading)}</h3>` : ''}
+        <div class="cs-body" style="max-width:64ch">${csText(b.body || b.text)}</div>
+      </div>`,
+
+    csVideo: (b) => {
+      const u = b.url || b.videoUrl || b.videoFileUrl || '';
+      let embed = '';
+      if (u.includes('vimeo.com')) {
+        const id = u.split('/').pop().split('?')[0];
+        embed = `<iframe src="https://player.vimeo.com/video/${id}?title=0&byline=0&portrait=0${b.loop ? '&background=1' : ''}" allow="autoplay; fullscreen" loading="lazy"></iframe>`;
+      } else if (u.includes('youtu')) {
+        const id = u.includes('youtu.be') ? u.split('/').pop() : new URL(u).searchParams.get('v');
+        embed = `<iframe src="https://www.youtube.com/embed/${id}" allow="fullscreen" loading="lazy"></iframe>`;
+      } else if (u) {
+        embed = `<video src="${escapeHtml(u)}" playsinline ${b.loop ? 'autoplay muted loop' : 'controls'}></video>`;
+      }
+      return `<figure class="cs-media" style="--ar:${CS_ASPECT_RATIOS[b.aspect] || CS_ASPECT_RATIOS['16:9']}">${embed}</figure>`;
+    },
+
+    csCredits: (b) => `
+      <div class="cs-credits">
+        ${(b.items || []).map(c => `<div class="cs-bar${csTone(b)}"><span class="cs-dim">${escapeHtml(c.role || '')}</span><span>${escapeHtml(c.name || '')}</span></div>`).join('')}
+      </div>`,
+  };
+
+  function renderMetaRow(meta) {
+    if (!Array.isArray(meta) || !meta.length) return '';
+    return `
+      <div class="cs-row cs-meta" style="--cols:${meta.length}">
+        ${meta.map(m => `<div class="cs-block cs-meta-item"><div class="cs-label">${escapeHtml(m.label || '')}</div><div class="cs-value">${escapeHtml(m.value || '')}</div></div>`).join('')}
+      </div>`;
+  }
+
+  function synthesizeCaseStudy(project) {
+    if (!project) return null;
+    const blocks = [];
+    const meta = [];
+    if (project.client) meta.push({ label: 'Client', value: project.client });
+    if (project.year) meta.push({ label: 'Year', value: project.year });
+    if (project.tagline) meta.push({ label: 'Category', value: project.tagline });
+    if (project.section) meta.push({ label: 'Discipline', value: project.section === 'video' ? 'Motion & Film' : 'Photography' });
+
+    if (Array.isArray(project.caseStudySections) && project.caseStudySections.length) {
+      project.caseStudySections.forEach((sec) => {
+        if (!sec) return;
+        if (sec._type === 'layoutTextWithImage') {
+          blocks.push({
+            _type: 'csSplit',
+            ratio: sec.splitRatio || '50-50',
+            mediaSide: sec.orientation === 'text-left' ? 'right' : 'left',
+            eyebrow: sec.eyebrow || 'Process',
+            heading: sec.heading,
+            body: sec.text,
+            image: { url: sec.imageUrl, alt: sec.imageAlt },
+            aspect: sec.aspectRatio === 'natural' ? 'natural' : '4:5'
+          });
+        } else if (sec._type === 'imageBlock') {
+          blocks.push({
+            _type: 'csMedia',
+            image: { url: sec.imageUrl, alt: sec.imageAlt },
+            aspect: '16:9',
+            caption: sec.caption
+          });
+        } else if (sec._type === 'layoutGrid') {
+          blocks.push({
+            _type: 'csGallery',
+            columns: sec.columns || 2,
+            aspect: '4:5',
+            images: (sec.images || []).map((im) => ({ url: im.url, caption: im.caption, alt: im.alt }))
+          });
+        } else if (sec._type === 'textBlock') {
+          blocks.push({
+            _type: 'csText',
+            heading: sec.heading,
+            body: sec.text
+          });
+        } else if (sec._type === 'mediaContainer') {
+          blocks.push({
+            _type: 'csVideo',
+            url: sec.videoUrl || sec.videoFileUrl,
+            aspect: '16:9'
+          });
+        }
+      });
+    } else if (Array.isArray(project.galleryUrls) && project.galleryUrls.length) {
+      blocks.push({
+        _type: 'csIntro',
+        eyebrow: '01 — OVERVIEW',
+        statement: project.title,
+        body: project.description || `A curated series by Theodore Lance for ${project.client || 'Kiltura Studio'}.`
+      });
+      blocks.push({
+        _type: 'csGallery',
+        columns: 2,
+        aspect: '4:5',
+        images: project.galleryUrls.map((url, i) => ({
+          url,
+          caption: `STILL CAPTURE 0${i + 1}`
+        }))
+      });
+    }
+
+    if (!blocks.length && !meta.length) return null;
+    return { meta, blocks };
+  }
+
   // ─── Case Study Markup Generator for In-Section Viewing ────────────────────
   function buildSectionCaseStudyHtml(project, allProjects, sectionIndex, boxEl) {
     if (!project) return '';
 
-    const title = escapeHtml(project.title || 'Untitled Project');
-    const client = escapeHtml(project.client || '');
-    const year = escapeHtml(project.year || '');
-    const tagline = escapeHtml(project.tagline || '');
-    const descHtml = renderPortableText(project.description);
-    const vidUrl = project.videoUrl || project.videoFileUrl;
+    const cs = project.caseStudy || synthesizeCaseStudy(project);
+    if (!cs) return '';
 
-    // Modular sections from Sanity Studio caseStudySections
-    let sectionsHtml = '';
-    if (Array.isArray(project.caseStudySections) && project.caseStudySections.length > 0) {
-      sectionsHtml = project.caseStudySections.map((sec) => {
-        if (!sec) return '';
-        const secType = sec._type;
+    let chapter = 0;
+    const blocksHtml = (cs.blocks || []).map((b) => {
+      if (!b) return '';
+      if (b._type === 'csChapter') {
+        chapter += 1;
+        b._num = String(chapter).padStart(2, '0');
+      }
+      const renderer = CS_BLOCK_RENDERERS[b._type];
+      return renderer ? `<div class="cs-reveal">${renderer(b)}</div>` : '';
+    }).join('');
 
-        if (secType === 'layoutTextWithImage') {
-          const isImgLeft = sec.orientation === 'image-left';
-          const heading = sec.heading ? `<h3 class="cs-sec-heading">${escapeHtml(sec.heading)}</h3>` : '';
-          const bodyText = renderPortableText(sec.text);
-          const imgUrl = sec.imageUrl ? buildImageUrl(sec.imageUrl, 1200) : '';
-          return `
-            <div class="cs-section">
-              <div class="cs-layout-text-image ${isImgLeft ? 'image-left' : 'text-left'}">
-                <div class="cs-sec-text">
-                  ${heading}
-                  ${bodyText}
-                </div>
-                <div class="cs-sec-img">
-                  ${imgUrl ? `<img src="${imgUrl}" alt="${sec.heading || title}" loading="lazy" />` : ''}
-                </div>
-              </div>
-            </div>
-          `;
+    // Find next project in this animal box
+    let nextIdx = -1;
+    if (Array.isArray(allProjects) && allProjects.length > 1) {
+      for (let k = 1; k < allProjects.length; k++) {
+        const j = (sectionIndex + k) % allProjects.length;
+        if (allProjects[j]) {
+          nextIdx = j;
+          break;
         }
-
-        if (secType === 'imageBlock') {
-          const imgUrl = sec.imageUrl ? buildImageUrl(sec.imageUrl, 1600) : '';
-          return `
-            <div class="cs-section">
-              <div class="cs-image-block">
-                ${imgUrl ? `<img src="${imgUrl}" alt="${sec.caption || title}" loading="lazy" />` : ''}
-                ${sec.caption ? `<div class="cs-image-caption">${escapeHtml(sec.caption)}</div>` : ''}
-              </div>
-            </div>
-          `;
-        }
-
-        if (secType === 'layoutGrid') {
-          const cols = sec.columns || 2;
-          const images = Array.isArray(sec.images) ? sec.images : [];
-          return `
-            <div class="cs-section">
-              ${sec.heading ? `<h3 class="cs-sec-heading">${escapeHtml(sec.heading)}</h3>` : ''}
-              <div class="cs-grid-section cols-${cols}">
-                ${images.map(img => img.url ? `<div class="cs-grid-item"><img src="${buildImageUrl(img.url, 1000)}" alt="${img.caption || ''}" loading="lazy" />${img.caption ? `<div class="cs-image-caption">${escapeHtml(img.caption)}</div>` : ''}</div>` : '').join('')}
-              </div>
-            </div>
-          `;
-        }
-
-        if (secType === 'textBlock') {
-          return `
-            <div class="cs-section">
-              <div class="cs-text-block">
-                ${sec.heading ? `<h3 class="cs-sec-heading">${escapeHtml(sec.heading)}</h3>` : ''}
-                ${sec.subheading ? `<div class="cs-subheading">${escapeHtml(sec.subheading)}</div>` : ''}
-                ${renderPortableText(sec.text)}
-              </div>
-            </div>
-          `;
-        }
-
-        if (secType === 'mediaContainer') {
-          const vUrl = sec.videoUrl || sec.videoFileUrl;
-          if (!vUrl) return '';
-          let mediaEmbed = '';
-          if (vUrl.includes('vimeo.com')) {
-            const id = vUrl.split('/').pop().split('?')[0];
-            mediaEmbed = `<iframe src="https://player.vimeo.com/video/${id}" frameborder="0" allow="fullscreen"></iframe>`;
-          } else if (vUrl.includes('youtube.com') || vUrl.includes('youtu.be')) {
-            const id = vUrl.includes('youtu.be') ? vUrl.split('/').pop() : new URL(vUrl).searchParams.get('v');
-            mediaEmbed = `<iframe src="https://www.youtube.com/embed/${id}" frameborder="0" allow="fullscreen"></iframe>`;
-          } else {
-            mediaEmbed = `<video src="${vUrl}" controls playsinline></video>`;
-          }
-          return `
-            <div class="cs-section">
-              <div class="cs-media-container">${mediaEmbed}</div>
-              ${sec.caption ? `<div class="cs-image-caption">${escapeHtml(sec.caption)}</div>` : ''}
-            </div>
-          `;
-        }
-
-        return '';
-      }).join('');
-    } else if (Array.isArray(project.galleryUrls) && project.galleryUrls.length > 0) {
-      sectionsHtml = `
-        <div class="cs-section">
-          <div class="cs-grid-section cols-2">
-            ${project.galleryUrls.map(url => `
-              <div class="cs-grid-item">
-                <img src="${buildImageUrl(url, 1200)}" alt="${title}" loading="lazy" />
-              </div>
-            `).join('')}
-          </div>
-        </div>
-      `;
+      }
     }
-
-    const hasContent = Boolean(sectionsHtml || descHtml || client || year);
-    if (!hasContent) return '';
+    const nextProj = nextIdx > -1 ? allProjects[nextIdx] : null;
+    const nextImg = nextProj && nextProj.coverImageUrl ? csImg(nextProj.coverImageUrl, 1600) : '';
 
     return `
-      <div class="project-case-study-body">
-        <div class="sec-cs-intro">
-          <div>
-            <h2 class="sec-cs-title">${title}</h2>
-            ${descHtml || (tagline ? `<p class="sec-cs-desc">${tagline}</p>` : '')}
-          </div>
-          <div class="sec-cs-meta-list">
-            ${client ? `<div class="sec-cs-meta-item"><div class="sec-cs-meta-label">Client</div><div class="sec-cs-meta-value">${client}</div></div>` : ''}
-            ${year ? `<div class="sec-cs-meta-item"><div class="sec-cs-meta-label">Year</div><div class="sec-cs-meta-value">${year}</div></div>` : ''}
-            ${tagline ? `<div class="sec-cs-meta-item"><div class="sec-cs-meta-label">Category</div><div class="sec-cs-meta-value">${tagline}</div></div>` : ''}
-            ${vidUrl ? `<div class="sec-cs-meta-item"><div class="sec-cs-meta-label">Direct Media</div><div class="sec-cs-meta-value"><a href="${vidUrl}" target="_blank" rel="noopener noreferrer" style="color:var(--dark-red);text-decoration:underline;">Watch Direct ↗</a></div></div>` : ''}
-          </div>
-        </div>
-
-        ${sectionsHtml}
-
-        <div class="sec-cs-footer">
-          <button class="sec-cs-top-btn" type="button" aria-label="Scroll back to top">↑ TOP OF PROJECT</button>
-          <button class="sec-cs-next-btn" type="button" aria-label="Go to next section">NEXT SECTION (${((sectionIndex + 1) % 3) + 1}) ↓</button>
-        </div>
+      <div class="cs" data-cs>
+        ${cs.meta ? `<div class="cs-reveal">${renderMetaRow(cs.meta)}</div>` : ''}
+        ${blocksHtml}
+        ${nextProj ? `
+        <div class="cs-reveal">
+          <button class="cs-next${nextImg ? ' has-img' : ''}" type="button" data-cs-next="${nextIdx}" aria-label="Next project: ${escapeHtml(nextProj.title || '')}">
+            ${nextImg ? `<span class="cs-next-img" style="background-image:url('${nextImg}')"></span>` : ''}
+            <span class="cs-next-label">Next Project</span>
+            <span class="cs-next-title">${escapeHtml(nextProj.title || '')}</span>
+            <span class="cs-next-chev">${CHEV_R}</span>
+          </button>
+        </div>` : ''}
+        <button class="cs-bar cs-top" type="button" data-cs-top><span>Back to top</span>${CHEV_U}</button>
+        <div class="cs-end-pad"></div>
       </div>
     `;
+  }
+
+  // ─── Shared Theme Lightbox Modal ──────────────────────────────────────────
+  let csLightboxEl, csLightboxImg, csLightboxCount, csLightboxList = [], csLightboxIdx = 0;
+  function ensureCsLightbox() {
+    if (csLightboxEl) return;
+    csLightboxEl = document.createElement('div');
+    csLightboxEl.className = 'cs-lightbox';
+    csLightboxEl.innerHTML = `
+      <img alt="" />
+      <button class="cs-lb-btn cs-lb-prev" type="button" aria-label="Previous">${CHEV_L}</button>
+      <button class="cs-lb-btn cs-lb-next" type="button" aria-label="Next">${CHEV_R}</button>
+      <button class="cs-lb-btn cs-lb-close" type="button" aria-label="Close">${CLOSE_SVG}</button>
+      <div class="cs-lb-count"></div>`;
+    document.body.appendChild(csLightboxEl);
+    csLightboxImg = csLightboxEl.querySelector('img');
+    csLightboxCount = csLightboxEl.querySelector('.cs-lb-count');
+
+    const stop = (e) => { e.stopPropagation(); };
+    ['click', 'wheel', 'touchmove'].forEach((t) => csLightboxEl.addEventListener(t, stop, { passive: t !== 'wheel' }));
+    csLightboxEl.addEventListener('wheel', (e) => e.preventDefault(), { passive: false });
+    csLightboxEl.querySelector('.cs-lb-prev').addEventListener('click', () => showCsLightbox(csLightboxIdx - 1));
+    csLightboxEl.querySelector('.cs-lb-next').addEventListener('click', () => showCsLightbox(csLightboxIdx + 1));
+    csLightboxEl.querySelector('.cs-lb-close').addEventListener('click', closeCsLightbox);
+    csLightboxEl.addEventListener('click', (e) => { if (e.target === csLightboxEl) closeCsLightbox(); });
+
+    let sx = 0;
+    csLightboxEl.addEventListener('touchstart', (e) => { sx = e.touches[0].clientX; }, { passive: true });
+    csLightboxEl.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - sx;
+      if (Math.abs(dx) > 40) showCsLightbox(csLightboxIdx + (dx < 0 ? 1 : -1));
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (!csLightboxEl.classList.contains('is-open')) return;
+      if (['Escape', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '].includes(e.key)) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        if (e.key === 'Escape') closeCsLightbox();
+        if (e.key === 'ArrowLeft') showCsLightbox(csLightboxIdx - 1);
+        if (e.key === 'ArrowRight') showCsLightbox(csLightboxIdx + 1);
+      }
+    }, true);
+  }
+
+  function showCsLightbox(i) {
+    if (!csLightboxList.length) return;
+    csLightboxIdx = (i + csLightboxList.length) % csLightboxList.length;
+    csLightboxImg.src = csLightboxList[csLightboxIdx];
+    csLightboxCount.textContent = `${String(csLightboxIdx + 1).padStart(2, '0')} / ${String(csLightboxList.length).padStart(2, '0')}`;
+    const multi = csLightboxList.length > 1;
+    csLightboxEl.querySelector('.cs-lb-prev').style.display = multi ? '' : 'none';
+    csLightboxEl.querySelector('.cs-lb-next').style.display = multi ? '' : 'none';
+  }
+
+  function openCsLightbox(list, i) {
+    ensureCsLightbox();
+    csLightboxList = list;
+    showCsLightbox(i);
+    csLightboxEl.classList.add('is-open');
+  }
+
+  function closeCsLightbox() {
+    if (csLightboxEl) csLightboxEl.classList.remove('is-open');
+  }
+
+  function mountCaseStudy(sec, ctx) {
+    const root = sec.querySelector('[data-cs]');
+    if (!root) return;
+
+    const reveals = root.querySelectorAll('.cs-reveal');
+    if (!('IntersectionObserver' in window)) {
+      reveals.forEach(el => el.classList.add('is-in'));
+    } else {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(en => {
+          if (en.isIntersecting) {
+            en.target.classList.add('is-in');
+            io.unobserve(en.target);
+          }
+        });
+      }, { root: sec, threshold: 0.08 });
+      reveals.forEach(el => io.observe(el));
+    }
+
+    const nextBtn = root.querySelector('[data-cs-next]');
+    if (nextBtn) {
+      nextBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        ctx.setExpandedSection(+nextBtn.dataset.csNext);
+      });
+    }
+
+    const topBtn = root.querySelector('[data-cs-top]');
+    if (topBtn) {
+      topBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        sec.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+
+    const imgs = Array.from(root.querySelectorAll('[data-cs-lightbox]'));
+    const fullUrls = imgs.map(im => im.dataset.csFull || im.src);
+    imgs.forEach((im, i) => {
+      im.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openCsLightbox(fullUrls, i);
+      });
+    });
   }
 
   // ─── Render Expanding Sections (Interactive Accordion Matching Frames) ─────
@@ -1030,6 +1336,7 @@
           e.target.closest('.project-scroll-hint') ||
           e.target.closest('.sec-cs-top-btn') ||
           e.target.closest('.sec-cs-next-btn') ||
+          e.target.closest('[data-cs]') ||
           e.target.closest('a') ||
           e.target.closest('video') ||
           e.target.closest('iframe')
@@ -1044,6 +1351,7 @@
 
       sectionElements.push(sec);
       wrap.appendChild(sec);
+      mountCaseStudy(sec, { setExpandedSection });
     });
 
     function setExpandedSection(targetIdx) {
