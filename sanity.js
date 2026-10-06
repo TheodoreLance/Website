@@ -39,11 +39,24 @@
           _type,
           eyebrow,
           statement,
+          title,
           heading,
+          headingSize,
+          headingTransform,
           body,
           text,
-          attribution,
+          alignment,
+          fontStyle,
+          textSize,
+          lineHeight,
+          textTransform,
+          layoutColumns,
+          maxWidth,
+          colorTone,
+          tileTone,
           tone,
+          paddingY,
+          attribution,
           aspect,
           caption,
           alt,
@@ -78,6 +91,18 @@
         heading,
         eyebrow,
         headingSize,
+        headingTransform,
+        alignment,
+        fontStyle,
+        textSize,
+        lineHeight,
+        textTransform,
+        layoutColumns,
+        maxWidth,
+        colorTone,
+        tileTone,
+        tone,
+        paddingY,
         subheading,
         orientation,
         splitRatio,
@@ -114,6 +139,8 @@
       linkedinUrl,
       instagramUrl,
       vimeoUrl,
+      "faviconUrl": favicon.asset->url,
+      "shareImageUrl": shareImage.asset->url,
       seoDescription
     },
     "resume": *[_type == "resume"][0] {
@@ -845,9 +872,131 @@
     if (!v) return '';
     if (typeof v === 'string') return v.split(/\n\n+/).map(p => `<p>${escapeHtml(p)}</p>`).join('');
     if (Array.isArray(v)) {
-      return v.map(b => (b && b.children ? `<p>${b.children.map(c => escapeHtml(c.text)).join('')}</p>` : '')).join('');
+      return v.map((b) => {
+        if (!b) return '';
+        if (b._type === 'block') {
+          const tag = b.style === 'h1' ? 'h1' : b.style === 'h2' ? 'h2' : b.style === 'h3' ? 'h3' : b.style === 'h4' ? 'h4' : b.style === 'blockquote' ? 'blockquote' : 'p';
+          const childrenHtml = (b.children || []).map((c) => {
+            if (!c) return '';
+            let t = escapeHtml(c.text || '');
+            const marks = c.marks || [];
+            if (marks.includes('strong')) t = `<strong>${t}</strong>`;
+            if (marks.includes('em')) t = `<em>${t}</em>`;
+            if (marks.includes('underline')) t = `<u>${t}</u>`;
+            if (marks.includes('code')) t = `<code>${t}</code>`;
+            if (Array.isArray(b.markDefs)) {
+              marks.forEach((mKey) => {
+                const def = b.markDefs.find((d) => d._key === mKey);
+                if (!def) return;
+                if (def._type === 'link' && def.href) {
+                  t = `<a href="${escapeHtml(def.href)}" target="_blank" rel="noopener noreferrer" style="text-decoration: underline; color: inherit;">${t}</a>`;
+                } else if (def._type === 'textColor') {
+                  const col = def.customHex || def.color;
+                  if (col) t = `<span style="color: ${escapeHtml(col)}">${t}</span>`;
+                }
+              });
+            }
+            return t;
+          }).join('');
+          return `<${tag}>${childrenHtml}</${tag}>`;
+        }
+        return '';
+      }).join('');
     }
     return '';
+  }
+
+  function renderTextBlock(b) {
+    if (!b) return '';
+    const align = b.alignment || 'left';
+    const alignStyle = align === 'center' ? 'text-align: center; margin-inline: auto;' :
+                       align === 'right' ? 'text-align: right; margin-left: auto;' :
+                       align === 'justify' ? 'text-align: justify;' :
+                       'text-align: left;';
+
+    // Width
+    let maxW = '840px';
+    if (b.maxWidth === 'narrow') maxW = '580px';
+    else if (b.maxWidth === 'wide') maxW = '1100px';
+    else if (b.maxWidth === 'full') maxW = '100%';
+
+    // Font family preset
+    let fontFam = "'ReplicaLLTT-Bold', 'Replica LL TT', sans-serif";
+    let fontWt = '700';
+    if (b.fontStyle === 'sans') {
+      fontFam = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif";
+      fontWt = '500';
+    } else if (b.fontStyle === 'mono') {
+      fontFam = "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace";
+      fontWt = '400';
+    }
+
+    // Font size preset
+    let bodyFontSize = 'clamp(13px, 1.25vw, 18px)';
+    if (b.textSize === 'small') bodyFontSize = 'clamp(11px, 1.0vw, 15px)';
+    else if (b.textSize === 'large') bodyFontSize = 'clamp(16px, 1.6vw, 24px)';
+    else if (b.textSize === 'xl') bodyFontSize = 'clamp(20px, 2.2vw, 32px)';
+
+    // Line height
+    let lh = '1.45';
+    if (b.lineHeight === 'tight') lh = '1.2';
+    else if (b.lineHeight === 'relaxed') lh = '1.75';
+
+    // Text transform
+    const textTrans = b.textTransform === 'none' ? 'none' : 'uppercase';
+    const letterSp = textTrans === 'uppercase' ? '0.02em' : '0.01em';
+
+    // Color tone
+    let colorStyle = 'color: #ffffff;';
+    if (b.colorTone === 'bg') colorStyle = 'color: var(--bg);';
+    else if (b.colorTone === 'dark-red') colorStyle = 'color: var(--dark-red);';
+    else if (b.colorTone === 'accent') colorStyle = 'color: #EB3925;';
+    else if (b.colorTone === 'muted') colorStyle = 'color: rgba(255, 255, 255, 0.68);';
+
+    // Tile tone
+    let tileClass = '';
+    let tileStyle = '';
+    const tile = b.tileTone || b.tone || 'transparent';
+    if (tile === 'dark') {
+      tileClass = ' cs-tone-dark';
+      tileStyle = 'background-color: var(--dark-red); color: var(--bg); padding: var(--cs-p);';
+      if (!b.colorTone || b.colorTone === 'white') colorStyle = 'color: var(--bg);';
+    } else if (tile === 'light') {
+      tileClass = ' cs-tone-light';
+      tileStyle = 'background-color: var(--bg); color: var(--dark-red); padding: var(--cs-p);';
+      if (!b.colorTone || b.colorTone === 'white') colorStyle = 'color: var(--dark-red);';
+    }
+
+    // Padding Y
+    let padY = 'padding-block: var(--cs-py);';
+    if (b.paddingY === 'compact') padY = 'padding-block: calc(var(--cs-py) * 0.4);';
+    else if (b.paddingY === 'spacious') padY = 'padding-block: calc(var(--cs-py) * 2.2);';
+
+    // Columns
+    const cols = b.layoutColumns === '2' ? 'column-count: 2; column-gap: var(--cs-g);' : '';
+
+    // Heading Size
+    const headingText = b.title || b.heading || '';
+    let headingFontSize = 'clamp(16px, 2.0vw, 36px)';
+    if (b.headingSize === 'display') headingFontSize = 'clamp(24px, 3.8vw, 70px)';
+    else if (b.headingSize === 'h1') headingFontSize = 'clamp(20px, 2.8vw, 50px)';
+    else if (b.headingSize === 'h3') headingFontSize = 'clamp(14px, 1.5vw, 26px)';
+    else if (b.headingSize === 'h4') headingFontSize = 'clamp(12px, 1.2vw, 20px)';
+
+    const headingTrans = b.headingTransform === 'none' ? 'none' : 'uppercase';
+
+    return `
+      <div class="cs-block cs-text-block${tileClass}" style="${tileStyle} ${padY}">
+        <div style="max-width: ${maxW}; width: 100%; ${alignStyle} ${colorStyle}">
+          ${b.eyebrow ? `<div class="cs-label" style="margin-bottom: 0.8em; ${alignStyle}">${escapeHtml(b.eyebrow)}</div>` : ''}
+          ${headingText ? `<h3 class="cs-h" style="font-size: ${headingFontSize}; text-transform: ${headingTrans}; line-height: 1.08; margin-bottom: 1em; ${alignStyle}">${escapeHtml(headingText)}</h3>` : ''}
+          ${b.body || b.text ? `
+          <div class="cs-body" style="font-family: ${fontFam}; font-weight: ${fontWt}; font-size: ${bodyFontSize}; line-height: ${lh}; text-transform: ${textTrans}; letter-spacing: ${letterSp}; ${cols} ${alignStyle}">
+            ${csText(b.body || b.text)}
+          </div>` : ''}
+        </div>
+      </div>
+    `;
   }
 
   function csFigure(image, opts = {}) {
@@ -865,12 +1014,17 @@
 
   // Modular Block Renderers (One per Sanity Studio Block Type)
   const CS_BLOCK_RENDERERS = {
-    csIntro: (b) => `
-      <div class="cs-block cs-intro${csTone(b)}">
-        <div class="cs-label">${escapeHtml(b.eyebrow || 'Overview')}</div>
-        <h3 class="cs-display">${escapeHtml(b.statement || '')}</h3>
-        <div class="cs-intro-foot"><div class="cs-body">${csText(b.body || b.text)}</div></div>
-      </div>`,
+    textBlock: (b) => renderTextBlock(b),
+    csText: (b) => renderTextBlock(b),
+
+    csIntro: (b) => renderTextBlock({
+      ...b,
+      title: b.statement || b.title,
+      headingSize: 'display',
+      maxWidth: b.maxWidth || 'medium',
+      alignment: b.alignment || 'left',
+      tileTone: b.tone || 'transparent'
+    }),
 
     csChapter: (b) => `
       <div class="cs-bar cs-chapter${csTone(b)}"><span class="cs-dim">${b._num || '01'}</span><span>${escapeHtml(b.label || '')}</span></div>`,
@@ -907,12 +1061,6 @@
       <div class="cs-block cs-statement${csTone(b)}">
         <h3 class="cs-display">${escapeHtml(b.text || '')}</h3>
         ${b.attribution ? `<div class="cs-label">${escapeHtml(b.attribution)}</div>` : ''}
-      </div>`,
-
-    csText: (b) => `
-      <div class="cs-block cs-split-text${csTone(b)}">
-        ${b.heading ? `<h3 class="cs-h">${escapeHtml(b.heading)}</h3>` : ''}
-        <div class="cs-body" style="max-width:64ch">${csText(b.body || b.text)}</div>
       </div>`,
 
     csVideo: (b) => {
@@ -986,10 +1134,22 @@
           });
         } else if (sec._type === 'textBlock') {
           blocks.push({
-            _type: 'csIntro',
-            eyebrow: sec.eyebrow || 'Overview',
-            statement: sec.title || sec.heading || '',
-            body: sec.body || sec.text || ''
+            _type: 'textBlock',
+            eyebrow: sec.eyebrow,
+            title: sec.title || sec.heading || '',
+            headingSize: sec.headingSize || 'h2',
+            headingTransform: sec.headingTransform || 'uppercase',
+            body: sec.body || sec.text || '',
+            alignment: sec.alignment || 'left',
+            fontStyle: sec.fontStyle || 'replica',
+            textSize: sec.textSize || 'regular',
+            lineHeight: sec.lineHeight || 'normal',
+            textTransform: sec.textTransform || 'uppercase',
+            layoutColumns: sec.layoutColumns || '1',
+            maxWidth: sec.maxWidth || 'medium',
+            colorTone: sec.colorTone || 'white',
+            tileTone: sec.tileTone || sec.tone || 'transparent',
+            paddingY: sec.paddingY || 'standard'
           });
         } else if (sec._type === 'mediaContainer') {
           blocks.push({
@@ -1451,6 +1611,24 @@
 
     if (settings.title) {
       document.title = settings.title;
+    }
+
+    if (settings.faviconUrl) {
+      let iconLink = document.querySelector("link[rel*='icon']");
+      if (!iconLink) {
+        iconLink = document.createElement('link');
+        iconLink.rel = 'icon';
+        document.head.appendChild(iconLink);
+      }
+      iconLink.href = settings.faviconUrl;
+
+      let appleIcon = document.querySelector("link[rel='apple-touch-icon']");
+      if (!appleIcon) {
+        appleIcon = document.createElement('link');
+        appleIcon.rel = 'apple-touch-icon';
+        document.head.appendChild(appleIcon);
+      }
+      appleIcon.href = settings.faviconUrl;
     }
 
     if (settings.contactEmail) {
