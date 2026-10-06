@@ -919,8 +919,11 @@
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        gap: 6px !important;
-        z-index: 10 !important;
+        gap: 8px !important;
+        z-index: 60 !important;
+        background: var(--bg) !important;
+        border: 1.5px solid var(--dark-red) !important;
+        box-sizing: border-box !important;
         text-decoration: none !important;
       }
 
@@ -2305,16 +2308,63 @@
         }, 180);
       }
 
-      // Mouse Wheel / Trackpad Scroll (Vertical & Horizontal)
+        // Mouse Wheel / Trackpad Scroll (Vertical & Horizontal)
       window.addEventListener('wheel', function(e) {
-        // If scrolling inside an expanded section or resume, allow native smooth scrolling
+        // While a box is open or inside an expanded section
+        if (hasOpenBox()) {
+          const activeExp = document.querySelector('.portfolio-cards-wrap .portfolio-section.is-expanded') ||
+                            (document.body.classList.contains('box-3-open') ? document.getElementById('resumeScroll') : null);
+
+          // If user scrolls up and is already at the very top of the case study/box content:
+          if (e.deltaY < 0 && activeExp && activeExp.scrollTop <= 1) {
+            e.preventDefault();
+            closeBoxes();
+            closeMenu();
+            targetP = 0.0;
+            scheduleWheelSnap();
+            return;
+          }
+
+          if (activeExp) {
+            // If the event target was outside the scrollable element, forward the scroll
+            const isInside = (e.target && e.target.closest) ? (
+              e.target.closest('.portfolio-section.is-expanded') ||
+              e.target.closest('.resume-scroll')
+            ) : null;
+            if (!isInside) {
+              activeExp.scrollTop += e.deltaY;
+              e.preventDefault();
+            }
+            return;
+          }
+
+          // If no active internal element is found, scrolling up returns to page 0
+          if (e.deltaY < 0) {
+            e.preventDefault();
+            closeBoxes();
+            closeMenu();
+            targetP = 0.0;
+            scheduleWheelSnap();
+            return;
+          }
+          e.preventDefault();
+          targetP = 1.0;
+          return;
+        }
+
+        // If scrolling inside an expanded section or resume without box open
         const scrollEl = (e.target && e.target.closest) ? (
           e.target.closest('.portfolio-section.is-expanded') ||
           e.target.closest('.resume-scroll')
         ) : null;
 
         if (scrollEl) {
-          // Native momentum scroll inside case study or resume container
+          if (e.deltaY < 0 && scrollEl.scrollTop <= 1) {
+            closeBoxes();
+            closeMenu();
+            targetP = 0.0;
+            scheduleWheelSnap();
+          }
           return;
         }
 
@@ -2322,30 +2372,17 @@
         if (wrapEl) {
           const activeSec = wrapEl.querySelector('.portfolio-section.is-expanded');
           if (activeSec) {
-            activeSec.scrollTop += e.deltaY;
-          }
-          e.preventDefault();
-          return;
-        }
-
-        // While a box is open, scrolling anywhere must NEVER close the box or switch pages
-        if (hasOpenBox()) {
-          const activeExp = document.querySelector('.portfolio-cards-wrap .portfolio-section.is-expanded');
-          if (activeExp && (document.body.classList.contains('box-1-open') || document.body.classList.contains('box-2-open'))) {
-            activeExp.scrollTop += e.deltaY;
-            e.preventDefault();
-            return;
-          }
-          if (document.body.classList.contains('box-3-open')) {
-            const resEl = document.getElementById('resumeScroll');
-            if (resEl) {
-              resEl.scrollTop += e.deltaY;
+            if (e.deltaY < 0 && activeSec.scrollTop <= 1) {
+              closeBoxes();
+              closeMenu();
+              targetP = 0.0;
+              scheduleWheelSnap();
               e.preventDefault();
               return;
             }
+            activeSec.scrollTop += e.deltaY;
           }
           e.preventDefault();
-          targetP = 1.0;
           return;
         }
 
@@ -2428,20 +2465,35 @@
       }, { passive: true });
 
       window.addEventListener('touchmove', function(e) {
-        // If touching inside an expanded section or resume, allow native vertical scroll
-        if (touchStartedInScrollable || (e.target && e.target.closest && (
-          e.target.closest('.portfolio-section.is-expanded') ||
-          e.target.closest('.portfolio-cards-wrap') ||
-          e.target.closest('.resume-scroll')
-        ))) {
-          return;
-        }
-
         const touchX = e.touches[0].clientX;
         const touchY = e.touches[0].clientY;
         lastTouchY = touchY;
         const deltaX = touchStartX - touchX;
-        const deltaY = touchStartY - touchY; // Swiping up (scrolling down) has deltaY > 0
+        const deltaY = touchStartY - touchY; // Swiping up (scrolling down) has deltaY > 0; swiping down has deltaY < 0
+
+        // If touching inside an expanded section or resume
+        const activeScrollEl = (e.target && e.target.closest) ? (
+          e.target.closest('.portfolio-section.is-expanded') ||
+          e.target.closest('.resume-scroll')
+        ) : (
+          document.querySelector('.portfolio-cards-wrap .portfolio-section.is-expanded') ||
+          (document.body.classList.contains('box-3-open') ? document.getElementById('resumeScroll') : null)
+        );
+
+        // If a box is open or touch started in scrollable
+        if (hasOpenBox() || touchStartedInScrollable) {
+          // When user swipes down (deltaY < -24) and is at or near the top of the case study:
+          if (deltaY < -24 && activeScrollEl && activeScrollEl.scrollTop <= 1) {
+            closeBoxes();
+            closeMenu();
+            targetP = 0.0;
+            touchStartedInScrollable = false;
+            e.preventDefault();
+            return;
+          }
+          // Native vertical scroll inside the case study / resume container
+          return;
+        }
 
         // When on first page (currentP < 0.1), determine gesture direction
         if (currentP < 0.1 && isHorizontalGesture === null) {
@@ -2470,12 +2522,6 @@
           }
         } else if (touchStartPage === 1) {
           if (Date.now() - lastReturnedFromContact < 350 || Date.now() - lastClosedBoxTime < 350) {
-            targetP = 1.0;
-            e.preventDefault();
-            return;
-          }
-          // If a box is open, retain position at page 1 while box is open — NEVER close box on touch!
-          if (hasOpenBox()) {
             targetP = 1.0;
             e.preventDefault();
             return;
@@ -2526,7 +2572,13 @@
           }
         } else if (touchStartPage === 1) {
           if (hasOpenBox()) {
-            targetP = 1.0;
+            if (totalDy < -35 && velocity < -0.15) {
+              closeBoxes();
+              closeMenu();
+              targetP = 0.0;
+            } else {
+              targetP = 1.0;
+            }
             return;
           }
           if (totalDy > 35 && velocity > 0.15) {

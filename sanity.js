@@ -1400,7 +1400,14 @@
       topBtn.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        sec.scrollTo({ top: 0, behavior: 'smooth' });
+        if (sec.scrollTop <= 15) {
+          // Already at top: smoothly close case study and scroll back to landing page
+          if (typeof closeBoxes === 'function') closeBoxes();
+          if (typeof closeMenu === 'function') closeMenu();
+          if (typeof targetP !== 'undefined') targetP = 0.0;
+        } else {
+          sec.scrollTo({ top: 0, behavior: 'smooth' });
+        }
       });
     }
 
@@ -1461,7 +1468,9 @@
             }
           });
         }
-        const vid = project.videoUrl || project.videoFileUrl;
+        // Only include video in mediaList if this is a video section (Box 1 / section === 'video')
+        const isVideoBox = (boxEl && boxEl.id === 'box1') || (project.section === 'video');
+        const vid = isVideoBox ? (project.videoUrl || project.videoFileUrl) : null;
         if (vid) {
           mediaList.push({ type: 'video', url: vid });
         }
