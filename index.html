@@ -419,8 +419,7 @@
       display: none;
     }
 
-    .contact-mobile-label,
-    .mobile-scroll-down-btn {
+    .contact-mobile-label {
       display: none;
     }
 
@@ -965,37 +964,7 @@
         50% { transform: translateY(3.5px); }
       }
 
-      /* Mobile Hero "SCROLL DOWN" Prompt Button */
-      .mobile-scroll-down-btn {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        gap: 8px !important;
-        position: fixed !important;
-        bottom: calc(var(--m-bottom) + 8px) !important;
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-        background: transparent !important;
-        border: 1.5px solid var(--dark-red) !important;
-        color: var(--dark-red) !important;
-        padding: 8px 18px !important;
-        font-family: 'ReplicaLLTT-Bold', 'Replica LL TT', sans-serif !important;
-        font-size: 11px !important;
-        font-weight: 700 !important;
-        letter-spacing: 0.14em !important;
-        text-transform: uppercase !important;
-        cursor: pointer !important;
-        z-index: 45 !important;
-        opacity: calc(max(0, 1 - var(--p1) * 3)) !important;
-        pointer-events: auto !important;
-        transition: opacity 0.25s ease !important;
-        animation: mobileScrollBounce 2s infinite ease-in-out !important;
-      }
 
-      @keyframes mobileScrollBounce {
-        0%, 100% { transform: translateX(-50%) translateY(0); }
-        50% { transform: translateX(-50%) translateY(4px); }
-      }
 
       .menu-btn {
         left: calc(var(--m-margin) + 2 * (var(--m-col-w) + var(--m-gap))) !important;
@@ -1784,14 +1753,6 @@
       <div class="theme-label">CHANGE COLORS</div>
     </div>
 
-    <!-- Mobile-Only Scroll Down Button (Hero Landing Page) -->
-    <button class="mobile-scroll-down-btn" id="mobileScrollDownBtn" type="button" aria-label="Scroll Down">
-      <span>SCROLL DOWN</span>
-      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="6 9 12 15 18 9"></polyline>
-      </svg>
-    </button>
-
     <!-- Contact Page Overlay matching reference design -->
     <div class="contact-modal" id="contactModal" aria-hidden="false">
       <!-- Main Layout Body (Two column / side panel layout matching reference design) -->
@@ -1851,15 +1812,7 @@
   <script>
     (function() {
       const menuBtn = document.getElementById('menuBtn');
-      const mobileScrollDownBtn = document.getElementById('mobileScrollDownBtn');
 
-      if (mobileScrollDownBtn) {
-        mobileScrollDownBtn.addEventListener('click', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          targetP = 1.0;
-        });
-      }
 
       function openMenu() {
         document.body.classList.add('menu-open');
