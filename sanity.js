@@ -26,6 +26,10 @@
       tagline,
       client,
       year,
+      discipline,
+      showMetadataRow,
+      customMeta[] { label, value },
+      "siteFaviconUrl": siteFavicon.asset->url,
       videoUrl,
       "videoFileUrl": videoFile.asset->url,
       "coverImageUrl": coverImage.asset->url,
@@ -625,8 +629,8 @@
       .cs-block.is-dark { background: var(--dark-red); color: var(--bg); }
 
       /* Type scale matching live site */
-      .cs-label   { font-size: clamp(9px, 0.83vw, 16px); letter-spacing: 0.02em; line-height: 1.2; opacity: 0.62; }
-      .cs-value   { font-size: clamp(13px, 1.379vw, 26.5px); line-height: 1.1; margin-top: 0.55em; }
+      .cs-label   { font-size: clamp(9px, 0.83vw, 15px); letter-spacing: 0.02em; line-height: 1.2; opacity: 0.62; }
+      .cs-value   { font-size: clamp(10px, 0.92vw, 16.5px); line-height: 1.15; margin-top: 0.45em; overflow-wrap: break-word; word-break: break-word; hyphens: auto; }
       .cs-display { font-size: clamp(20px, 2.758vw, 53px); line-height: 1.02; }
       .cs-h       { font-size: clamp(16px, 2.07vw, 40px); line-height: 1.04; }
       .cs-body    { font-size: clamp(11px, 0.83vw, 16px); line-height: 1.5; letter-spacing: 0.03em; }
@@ -647,7 +651,41 @@
       .cs-bar .cs-dim { opacity: 0.62; }
 
       /* Meta */
-      .cs-meta-item { display: flex; flex-direction: column; justify-content: space-between; min-height: clamp(70px, 11vh, 130px); }
+      .cs-row.cs-meta {
+        grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr));
+        gap: var(--cs-g);
+      }
+      .cs-meta-item {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: clamp(52px, 7.5vh, 88px);
+        padding: clamp(8px, 1vh, 14px) clamp(10px, 0.9vw, 18px);
+        min-width: 0;
+        overflow: hidden;
+      }
+      .cs-meta-item .cs-label {
+        font-size: clamp(8px, 0.65vw, 11px);
+        letter-spacing: 0.05em;
+        line-height: 1.2;
+        opacity: 0.65;
+        text-transform: uppercase;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .cs-meta-item .cs-value {
+        font-size: clamp(10px, 0.8vw, 14.5px);
+        font-weight: 500;
+        line-height: 1.15;
+        margin-top: 0.35em;
+        letter-spacing: 0.01em;
+        text-transform: uppercase;
+        white-space: normal;
+        overflow-wrap: break-word;
+        word-break: break-word;
+        hyphens: auto;
+      }
 
       /* Intro */
       .cs-intro {
@@ -768,9 +806,14 @@
       .cs-reveal.is-in { opacity: 1; transform: none; }
       @media (prefers-reduced-motion: reduce) { .cs-reveal { opacity: 1; transform: none; transition: none; } }
 
-      /* Mobile Responsive Breakdown */
-      @media (max-width: 768px), (orientation: portrait) {
+      /* Responsive Breakdown */
+      @media (max-width: 1100px) {
         .cs-row.cs-meta { --cols: 2 !important; }
+      }
+      @media (max-width: 550px) {
+        .cs-row.cs-meta { --cols: 1 !important; }
+      }
+      @media (max-width: 768px), (orientation: portrait) {
         .cs-split { grid-template-columns: 1fr !important; }
         .cs-split .cs-media { order: -1; }
         .cs-intro { min-height: 0; }
@@ -1092,14 +1135,41 @@
       </div>`;
   }
 
-  function synthesizeCaseStudy(project) {
-    if (!project) return null;
-    const blocks = [];
+  function resolveProjectMetadata(project, cs) {
+    if (!project) return [];
+    if (project.showMetadataRow === false) return [];
+
+    // 1. Explicit custom metadata pills on the project document
+    if (Array.isArray(project.customMeta) && project.customMeta.length) {
+      return project.customMeta
+        .filter(m => m && (m.label || m.value))
+        .map(m => ({ label: m.label || '', value: m.value || '' }));
+    }
+
+    // 2. Explicit metadata array defined within caseStudy
+    if (cs && Array.isArray(cs.meta) && cs.meta.length) {
+      return cs.meta
+        .filter(m => m && (m.label || m.value))
+        .map(m => ({ label: m.label || '', value: m.value || '' }));
+    }
+
+    // 3. Fallback to overview metadata fields
     const meta = [];
     if (project.client) meta.push({ label: 'Client', value: project.client });
     if (project.year) meta.push({ label: 'Year', value: project.year });
     if (project.tagline) meta.push({ label: 'Category', value: project.tagline });
-    if (project.section) meta.push({ label: 'Discipline', value: project.section === 'video' ? 'Motion & Film' : 'Photography' });
+    if (project.discipline) {
+      meta.push({ label: 'Discipline', value: project.discipline });
+    } else if (project.section) {
+      meta.push({ label: 'Discipline', value: project.section === 'video' ? 'Motion & Film' : 'Photography' });
+    }
+    return meta;
+  }
+
+  function synthesizeCaseStudy(project) {
+    if (!project) return null;
+    const blocks = [];
+    const meta = resolveProjectMetadata(project, null);
 
     let hasGalleryBlock = false;
 
@@ -1187,6 +1257,8 @@
     }
     if (!cs) return '';
 
+    const activeMeta = resolveProjectMetadata(project, cs);
+
     let chapter = 0;
     const blocksHtml = (cs.blocks || []).map((b) => {
       if (!b) return '';
@@ -1214,7 +1286,7 @@
 
     return `
       <div class="cs" data-cs>
-        ${cs.meta ? `<div class="cs-reveal">${renderMetaRow(cs.meta)}</div>` : ''}
+        ${activeMeta.length ? `<div class="cs-reveal">${renderMetaRow(activeMeta)}</div>` : ''}
         ${blocksHtml}
         ${nextProj ? `
         <div class="cs-reveal">
@@ -1606,21 +1678,22 @@
   }
 
   // ─── Apply Dynamic Site Settings ──────────────────────────────────────────
-  function applySiteSettings(settings) {
-    if (!settings) return;
+  function applySiteSettings(settings, projects) {
+    if (!settings && !projects) return;
 
-    if (settings.title) {
+    if (settings && settings.title) {
       document.title = settings.title;
     }
 
-    if (settings.faviconUrl) {
+    const faviconUrl = (settings && settings.faviconUrl) || (Array.isArray(projects) && projects.find(p => p.siteFaviconUrl)?.siteFaviconUrl);
+    if (faviconUrl) {
       let iconLink = document.querySelector("link[rel*='icon']");
       if (!iconLink) {
         iconLink = document.createElement('link');
         iconLink.rel = 'icon';
         document.head.appendChild(iconLink);
       }
-      iconLink.href = settings.faviconUrl;
+      iconLink.href = faviconUrl;
 
       let appleIcon = document.querySelector("link[rel='apple-touch-icon']");
       if (!appleIcon) {
@@ -1628,7 +1701,7 @@
         appleIcon.rel = 'apple-touch-icon';
         document.head.appendChild(appleIcon);
       }
-      appleIcon.href = settings.faviconUrl;
+      appleIcon.href = faviconUrl;
     }
 
     if (settings.contactEmail) {
@@ -1857,8 +1930,8 @@
       if (box1) renderExpandingSections(box1, videoProjects);
       if (box2) renderExpandingSections(box2, photoProjects);
 
-      if (result.siteSettings) {
-        applySiteSettings(result.siteSettings);
+      if (result.siteSettings || projects.length) {
+        applySiteSettings(result.siteSettings || {}, projects);
       }
 
       if (result.resume) {
