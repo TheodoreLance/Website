@@ -308,6 +308,7 @@
         flex-shrink: 0;
         overflow: hidden;
         background-color: var(--bg);
+        isolation: isolate;
       }
 
       .project-carousel-media {
@@ -376,35 +377,40 @@
         transition: color 0.3s ease, text-shadow 0.3s ease;
       }
 
-      /* High-contrast typography & controls when cover image is active (using background brand color) */
+      /* Difference Blend Mode over Cover Images */
       .portfolio-section.has-cover-image .project-media-gradient {
-        opacity: 1;
+        opacity: 0 !important;
+        display: none !important;
       }
 
       .portfolio-section.has-cover-image .project-title-overlay {
-        color: var(--bg);
-        text-shadow: 0 1px 6px rgba(0, 0, 0, 0.85), 0 2px 16px rgba(0, 0, 0, 0.65);
+        color: #ffffff;
+        mix-blend-mode: difference;
+        text-shadow: none;
       }
 
       .portfolio-section.has-cover-image .project-desc-overlay {
-        color: var(--bg);
-        text-shadow: 0 1px 5px rgba(0, 0, 0, 0.85), 0 2px 14px rgba(0, 0, 0, 0.65);
+        color: #ffffff;
+        mix-blend-mode: difference;
+        text-shadow: none;
       }
 
       .portfolio-section.has-cover-image .project-carousel-arrow {
-        color: var(--bg);
-        filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.85));
+        color: #ffffff;
+        mix-blend-mode: difference;
+        filter: none;
       }
 
       .portfolio-section.has-cover-image .project-scroll-hint {
-        background-color: var(--bg);
-        color: var(--dark-red);
-        border: 1.5px solid var(--dark-red);
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+        background-color: transparent;
+        color: #ffffff;
+        mix-blend-mode: difference;
+        border: 1.5px solid #ffffff;
+        box-shadow: none;
       }
       .portfolio-section.has-cover-image .project-scroll-hint:hover {
-        background-color: var(--dark-red);
-        color: var(--bg);
+        background-color: #ffffff;
+        color: #000000;
       }
 
       /* Carousel Navigation Chevrons */
@@ -631,6 +637,7 @@
         position: relative; margin: 0; overflow: hidden;
         background: var(--bg);
         aspect-ratio: var(--ar, auto);
+        isolation: isolate;
       }
       .cs-media img {
         display: block; width: 100%; height: 100%; object-fit: cover;
@@ -641,12 +648,16 @@
       .cs-media:hover img { transform: scale(1.025); }
       .cs-media.has-caption::after {
         content: ''; position: absolute; inset: 0; pointer-events: none;
-        background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0) 38%);
+        background: transparent;
       }
       .cs-caption {
         position: absolute; z-index: 2; left: var(--cs-px); bottom: var(--cs-py); right: var(--cs-px);
-        color: var(--bg); font-size: clamp(9px, 1.1vw, 16px); letter-spacing: 0.02em;
-        text-shadow: 0 1px 6px rgba(0,0,0,0.6); pointer-events: none;
+        color: #ffffff;
+        mix-blend-mode: difference;
+        font-size: clamp(9px, 1.1vw, 16px);
+        letter-spacing: 0.02em;
+        text-shadow: none;
+        pointer-events: none;
       }
       .cs-media iframe, .cs-media video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
 
@@ -678,12 +689,13 @@
         height: clamp(180px, 34vh, 400px);
         background: var(--bg) center / cover no-repeat;
         border: 0; padding: 0; text-align: left; font: inherit; color: var(--bg);
+        isolation: isolate;
       }
       .cs-next-img { position: absolute; inset: 0; background: center / cover no-repeat; transition: transform 0.9s cubic-bezier(0.2, 0.9, 0.3, 1); }
       .cs-next:hover .cs-next-img { transform: scale(1.03); }
       .cs-next.has-img::after {
         content: ''; position: absolute; inset: 0;
-        background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.7) 100%);
+        background: transparent;
       }
       .cs-next:not(.has-img) { color: var(--dark-red); }
       .cs-next-label, .cs-next-title, .cs-next-chev { position: absolute; z-index: 2; }
@@ -691,7 +703,13 @@
       .cs-next-title { bottom: var(--cs-py); left: var(--cs-px); right: 18%; font-size: clamp(20px, 2.758vw, 53px); line-height: 1.02; }
       .cs-next-chev  { right: calc(38.39 / 1920 * 100vw); top: 50%; transform: translateY(-50%); width: clamp(24px, 2.2vw, 42px); height: clamp(36px, 5.5vh, 64px); transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1); }
       .cs-next:hover .cs-next-chev { transform: translateY(-50%) translateX(6px); }
-      .cs-next.has-img .cs-next-label, .cs-next.has-img .cs-next-title { text-shadow: 0 1px 6px rgba(0,0,0,0.6); }
+      .cs-next.has-img .cs-next-label,
+      .cs-next.has-img .cs-next-title,
+      .cs-next.has-img .cs-next-chev {
+        color: #ffffff;
+        mix-blend-mode: difference;
+        text-shadow: none;
+      }
       .cs-top {
         cursor: pointer;
         justify-content: space-between;
@@ -1282,7 +1300,7 @@
           return;
         }
         sec.classList.add('has-cover-image');
-        if (gradientLayer) gradientLayer.style.opacity = '1';
+        if (gradientLayer) gradientLayer.style.opacity = '0';
         const item = mediaList[currentMediaIdx];
         if (item.type === 'video') {
           mediaLayer.style.backgroundImage = 'none';
