@@ -2267,19 +2267,10 @@
         // Mouse Wheel / Trackpad Scroll (Vertical & Horizontal)
       window.addEventListener('wheel', function(e) {
         // While a box is open or inside an expanded section
+        // While a box is open or inside an expanded section
         if (hasOpenBox()) {
           const activeExp = document.querySelector('.portfolio-cards-wrap .portfolio-section.is-expanded') ||
                             (document.body.classList.contains('box-3-open') ? document.getElementById('resumeScroll') : null);
-
-          // If user scrolls up and is already at the very top of the case study/box content:
-          if (e.deltaY < 0 && activeExp && activeExp.scrollTop <= 1) {
-            e.preventDefault();
-            closeBoxes();
-            closeMenu();
-            targetP = 0.0;
-            scheduleWheelSnap();
-            return;
-          }
 
           if (activeExp) {
             // If the event target was outside the scrollable element, forward the scroll
@@ -2294,51 +2285,9 @@
             return;
           }
 
-          // If no active internal element is found, scrolling up returns to page 0
-          if (e.deltaY < 0) {
-            e.preventDefault();
-            closeBoxes();
-            closeMenu();
-            targetP = 0.0;
-            scheduleWheelSnap();
-            return;
-          }
+          // If no active internal element is found, keep in place unless explicit close button is used
           e.preventDefault();
           targetP = 1.0;
-          return;
-        }
-
-        // If scrolling inside an expanded section or resume without box open
-        const scrollEl = (e.target && e.target.closest) ? (
-          e.target.closest('.portfolio-section.is-expanded') ||
-          e.target.closest('.resume-scroll')
-        ) : null;
-
-        if (scrollEl) {
-          if (e.deltaY < 0 && scrollEl.scrollTop <= 1) {
-            closeBoxes();
-            closeMenu();
-            targetP = 0.0;
-            scheduleWheelSnap();
-          }
-          return;
-        }
-
-        const wrapEl = (e.target && e.target.closest) ? e.target.closest('.portfolio-cards-wrap') : null;
-        if (wrapEl) {
-          const activeSec = wrapEl.querySelector('.portfolio-section.is-expanded');
-          if (activeSec) {
-            if (e.deltaY < 0 && activeSec.scrollTop <= 1) {
-              closeBoxes();
-              closeMenu();
-              targetP = 0.0;
-              scheduleWheelSnap();
-              e.preventDefault();
-              return;
-            }
-            activeSec.scrollTop += e.deltaY;
-          }
-          e.preventDefault();
           return;
         }
 
@@ -2438,15 +2387,6 @@
 
         // If a box is open or touch started in scrollable
         if (hasOpenBox() || touchStartedInScrollable) {
-          // When user swipes down (deltaY < -24) and is at or near the top of the case study:
-          if (deltaY < -24 && activeScrollEl && activeScrollEl.scrollTop <= 1) {
-            closeBoxes();
-            closeMenu();
-            targetP = 0.0;
-            touchStartedInScrollable = false;
-            e.preventDefault();
-            return;
-          }
           // Native vertical scroll inside the case study / resume container
           return;
         }
@@ -2528,13 +2468,7 @@
           }
         } else if (touchStartPage === 1) {
           if (hasOpenBox()) {
-            if (totalDy < -35 && velocity < -0.15) {
-              closeBoxes();
-              closeMenu();
-              targetP = 0.0;
-            } else {
-              targetP = 1.0;
-            }
+            targetP = 1.0;
             return;
           }
           if (totalDy > 35 && velocity > 0.15) {
