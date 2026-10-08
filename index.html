@@ -2264,9 +2264,8 @@
         }, 180);
       }
 
-        // Mouse Wheel / Trackpad Scroll (Vertical & Horizontal)
+      // Mouse Wheel / Trackpad Scroll (Vertical & Horizontal)
       window.addEventListener('wheel', function(e) {
-        // While a box is open or inside an expanded section
         // While a box is open or inside an expanded section
         if (hasOpenBox()) {
           const activeExp = document.querySelector('.portfolio-cards-wrap .portfolio-section.is-expanded') ||
@@ -2294,7 +2293,7 @@
         e.preventDefault();
 
         // On the first page (p is at or near 0), horizontal trackpad scrolling controls the color selection
-        if (currentP <= 0.05 && Math.abs(e.deltaX) > Math.abs(e.deltaY) * 0.7) {
+        if (currentP <= 0.05 && targetP <= 0.1 && Math.abs(e.deltaX) > Math.abs(e.deltaY) * 0.7) {
           targetPx += e.deltaX * 0.002;
           targetPx = Math.max(0, Math.min(1, targetPx));
           return;
@@ -2304,42 +2303,36 @@
           targetPx = 0;
         }
 
-        const wheelPage = currentP < 0.5 ? 0 : (currentP < 1.5 ? 1 : 2);
         const isMobile = window.innerWidth <= 768 || window.innerHeight > window.innerWidth;
 
-        if (wheelPage === 0) {
-          if (e.deltaY > 0) {
+        if (e.deltaY < 0) {
+          // Scrolling UP
+          clearTimeout(wheelSnapTimer);
+          if (targetP > 1.2 || currentP > 1.2) {
+            targetP = 1.0;
+            closeBoxes();
+            scheduleWheelSnap();
+          } else {
+            closeMenu();
+            closeBoxes();
+            targetPx = 0;
+            targetP = 0.0;
+            scheduleWheelSnap();
+          }
+          return;
+        } else if (e.deltaY > 0) {
+          // Scrolling DOWN
+          if (targetP < 0.5 && currentP < 0.5) {
             targetPx = 0;
             targetP = 1.0;
             scheduleWheelSnap();
             return;
-          }
-        } else if (wheelPage === 1) {
-          if (Date.now() - lastReturnedFromContact < 350 || Date.now() - lastClosedBoxTime < 350) {
-            targetP = 1.0;
-            return;
-          }
-          if (e.deltaY > 0) {
-            // On desktop, only scroll to contact if the menu/contact bar is open
-            // On mobile, contact section is always accessible via scroll
+          } else if (targetP >= 0.8 || currentP >= 0.8) {
             const menuIsOpen = document.body.classList.contains('menu-open') || (menuBtn && menuBtn.classList.contains('open'));
             if (isMobile || menuIsOpen) {
               targetP = 2.0;
               scheduleWheelSnap();
             }
-            return;
-          } else if (e.deltaY < 0) {
-            closeMenu();
-            closeBoxes();
-            targetP = 0.0;
-            scheduleWheelSnap();
-            return;
-          }
-        } else if (wheelPage === 2) {
-          if (e.deltaY < 0) {
-            targetP = 1.0;
-            closeBoxes();
-            scheduleWheelSnap();
             return;
           }
         }
